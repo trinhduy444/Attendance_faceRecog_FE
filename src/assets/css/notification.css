@@ -1,0 +1,11 @@
+.btnSaveNotification {
+    width: 100px;
+    height: 50px;
+    position: absolute;
+    right: 40px;
+    top: calc(50% - 25px);
+}
+
+.btnSaveNotification:hover {
+    background-color: #4CAF50;
+}

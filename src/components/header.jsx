@@ -1,7 +1,7 @@
 import React from 'react';
 import sclogo from "../assets/images/sclogo.jpg"
 
-function Header() {
+export const Header = () => {
     return (
         <header id='header' className="bg-surface-primary border-bottom pt-6">
             <div className="container">
@@ -19,4 +19,3 @@ function Header() {
     );
 }
 
-export default Header;

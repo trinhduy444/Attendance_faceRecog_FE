@@ -1,21 +1,31 @@
 import React, { useEffect } from "react"
+import { useNavigate } from 'react-router-dom';
 import { NavBar } from "../../components/NavBar"
-import Header from "../../components/Header"
+import { Header } from "../../components/Header"
 import "../../assets/css/home.css"
 import slide1 from "../../assets/images/slide1.jpg"
 import slide2 from "../../assets/images/slide2.jpg"
 import slide3 from "../../assets/images/slide3.jpg"
 export const Home = () => {
+    const navigate = useNavigate();
+
     useEffect(() => {
         document.title = "Trang chủ"
-    }, [])
+    }, []);
+
+    const handleCardClick = (page) => {
+        if(page) {
+            navigate("/"+page);
+        }
+    };
+
     // console.log("Home")
     return (
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary" >
             <NavBar />
             {/* <!--Main content-- > */}
             <div className="h-screen flex-grow-1 overflow-y-lg-auto">
-                <Header/>
+                <Header />
                 <main className="py-6 bg-surface-secondary">
                     <div className="container">
                         <div className="row ">
@@ -65,7 +75,7 @@ export const Home = () => {
                         </div>
                         <div className="row g-6 mb-6">
                             <div className="col-xl-3 col-sm-6 col-12" >
-                                <div className="card shadow border-0">
+                                <div className="card shadow border-0" onClick={() => handleCardClick('notification')} style={{ cursor: 'pointer' }}>
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col">
@@ -90,7 +100,7 @@ export const Home = () => {
                                 </div>
                             </div>
                             <div className="col-xl-3 col-sm-6 col-12">
-                                <div className="card shadow border-0">
+                                <div className="card shadow border-0" onClick={() => handleCardClick('')} style={{ cursor: 'pointer' }}>
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col">
@@ -116,7 +126,7 @@ export const Home = () => {
                             </div>
 
                             <div className="col-xl-3 col-sm-6 col-12">
-                                <div className="card shadow border-0">
+                                <div className="card shadow border-0" onClick={() => handleCardClick('news')} style={{ cursor: 'pointer' }}>
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col">
@@ -139,7 +149,7 @@ export const Home = () => {
                                 </div>
                             </div>
                             <div className="col-xl-3 col-sm-6 col-12">
-                                <div className="card shadow border-0">
+                                <div className="card shadow border-0" onClick={() => handleCardClick('')} style={{ cursor: 'pointer' }}>
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col">
@@ -166,7 +176,7 @@ export const Home = () => {
                         </div>
                         <div className="row g-6 mb-6">
                             <div className="col-xl-3 col-sm-6 col-12">
-                                <div className="card shadow border-0">
+                                <div className="card shadow border-0" onClick={() => handleCardClick('')} style={{ cursor: 'pointer' }}>
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col">
@@ -189,7 +199,7 @@ export const Home = () => {
                                 </div>
                             </div>
                             <div className="col-xl-3 col-sm-6 col-12">
-                                <div className="card shadow border-0">
+                                <div className="card shadow border-0" onClick={() => handleCardClick('')} style={{ cursor: 'pointer' }}>
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col">
@@ -213,7 +223,7 @@ export const Home = () => {
                                 </div>
                             </div>
                             <div className="col-xl-3 col-sm-6 col-12">
-                                <div className="card shadow border-0">
+                                <div className="card shadow border-0" onClick={() => handleCardClick('')} style={{ cursor: 'pointer' }}>
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col">
@@ -238,7 +248,7 @@ export const Home = () => {
                                 </div>
                             </div>
                             <div className="col-xl-3 col-sm-6 col-12">
-                                <div className="card shadow border-0">
+                                <div className="card shadow border-0" onClick={() => handleCardClick('')} style={{ cursor: 'pointer' }}>
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col">

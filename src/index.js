@@ -7,8 +7,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import {isAuthenticated} from './utils/checkAuthentication';
 import { Login } from './pages/Authentication/Login';
 import { Home } from './pages/Home/Home';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import 'jquery/dist/jquery.min.js';
+import { Notification } from './pages/Notification/Notification';
 import 'bootstrap/dist/js/bootstrap.min.js';
 
 
@@ -24,6 +23,7 @@ root.render(
       <Routes>
         <Route path="/" element={<ProtectedRoute element={<Home />} />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/notification" element={<ProtectedRoute element={<Notification />} />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
