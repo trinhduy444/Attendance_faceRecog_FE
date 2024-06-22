@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { useNavigate } from 'react-router-dom';
-import { NavBar } from "../../components/NavBar"
+import  NavBar  from "../../components/NavBar"
 import { Header } from "../../components/Header"
 import "../../assets/css/home.css"
 import slide1 from "../../assets/images/slide1.jpg"

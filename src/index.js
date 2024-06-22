@@ -5,11 +5,14 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import {isAuthenticated} from './utils/checkAuthentication';
+//Pages
 import { Login } from './pages/Authentication/Login';
 import { Home } from './pages/Home/Home';
 import { Notification } from './pages/Notification/Notification';
 import { Attendance } from './pages/Attendance/Attendance';
 import { AttendanceDetail } from './pages/Attendance/AttendanceDetail';
+import { EditProfile } from './pages/Profile/EditProfile';
+import { ChangePassword } from './pages/Profile/ChangePassword';
 import 'bootstrap/dist/js/bootstrap.min.js';
 
 
@@ -28,6 +31,8 @@ root.render(
         <Route path="/notification" element={<ProtectedRoute element={<Notification />} />} />
         <Route path="/attendance" element={<ProtectedRoute element={<Attendance />} />} />
         <Route path="/attendanceDetail" element={<ProtectedRoute element={<AttendanceDetail />} />} />
+        <Route path="/editProfile" element={<ProtectedRoute element={<EditProfile />} />} />
+        <Route path="/changePassword" element={<ProtectedRoute element={<ChangePassword />} />} />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
