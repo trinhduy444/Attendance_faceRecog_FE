@@ -176,7 +176,7 @@ export const Home = () => {
                         </div>
                         <div className="row g-6 mb-6">
                             <div className="col-xl-3 col-sm-6 col-12">
-                                <div className="card shadow border-0" onClick={() => handleCardClick('')} style={{ cursor: 'pointer' }}>
+                                <div className="card shadow border-0" onClick={() => handleCardClick('attendance')} style={{ cursor: 'pointer' }}>
                                     <div className="card-body">
                                         <div className="row">
                                             <div className="col">

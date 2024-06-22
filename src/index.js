@@ -8,6 +8,8 @@ import {isAuthenticated} from './utils/checkAuthentication';
 import { Login } from './pages/Authentication/Login';
 import { Home } from './pages/Home/Home';
 import { Notification } from './pages/Notification/Notification';
+import { Attendance } from './pages/Attendance/Attendance';
+import { AttendanceDetail } from './pages/Attendance/AttendanceDetail';
 import 'bootstrap/dist/js/bootstrap.min.js';
 
 
@@ -24,6 +26,9 @@ root.render(
         <Route path="/" element={<ProtectedRoute element={<Home />} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/notification" element={<ProtectedRoute element={<Notification />} />} />
+        <Route path="/attendance" element={<ProtectedRoute element={<Attendance />} />} />
+        <Route path="/attendanceDetail" element={<ProtectedRoute element={<AttendanceDetail />} />} />
+
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
