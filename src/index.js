@@ -7,6 +7,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import {isAuthenticated} from './utils/checkAuthentication';
 import { Login } from './pages/Authentication/Login';
 import { Home } from './pages/Home/Home';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'jquery/dist/jquery.min.js';
+import 'bootstrap/dist/js/bootstrap.min.js';
+
+
 const ProtectedRoute = ({ element, ...rest }) => {
   const isLogged = isAuthenticated();
   return isLogged ? element : <Navigate to="/login" />;

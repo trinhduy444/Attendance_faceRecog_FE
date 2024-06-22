@@ -1,51 +1,23 @@
 import React, { useEffect } from "react"
 import { NavBar } from "../../components/NavBar"
+import Header from "../../components/Header"
 import "../../assets/css/home.css"
+import slide1 from "../../assets/images/slide1.jpg"
+import slide2 from "../../assets/images/slide2.jpg"
+import slide3 from "../../assets/images/slide3.jpg"
 export const Home = () => {
     useEffect(() => {
-        const scripts = [
-            "https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js",
-            'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js',
-            'https://code.jquery.com/jquery-3.6.0.min.js    ',
-        ];
-
-        scripts.forEach((src) => {
-            const script = document.createElement('script');
-            script.src = src;
-            script.crossOrigin = 'anonymous';
-            document.body.appendChild(script);
-        });
-
-        return () => {
-            scripts.forEach((src) => {
-                const script = document.querySelector(`script[src="${src}"]`);
-                document.body.removeChild(script);
-            });
-        };
-    }, []);
+        document.title = "Trang chủ"
+    }, [])
+    // console.log("Home")
     return (
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary" >
             <NavBar />
             {/* <!--Main content-- > */}
             <div className="h-screen flex-grow-1 overflow-y-lg-auto">
-                {/* <!-- Header --> */}
-                <header id='header' className="bg-surface-primary border-bottom pt-6">
-                    <div className="container-fluid">
-                        <div className="mb-npx">
-                            <div className="row align-items-center">
-                                <div className="col-sm-6 col-12 mb-4 mb-sm-0">
-                                    <h1 className="h2 mb-0 ls-tight">
-                                        <img src="sclogo.jpg" width="40" className="rounded-circle" /> SCHOOL'S NAME UNIVERSITY
-                                    </h1>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </header>
-                {/* <!-- Main --> */}
+                <Header/>
                 <main className="py-6 bg-surface-secondary">
-                    <div className="container-fluid">
+                    <div className="container">
                         <div className="row ">
                             <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
                                 <div className="carousel-indicators">
@@ -57,22 +29,22 @@ export const Home = () => {
                                         aria-label="Slide 3"></button>
                                 </div>
                                 <div className="carousel-inner">
-                                    <div className="carousel-item active">/
-                                        <img src="slide1.jpg" className="img-fluid" alt="..." />
+                                    <div className="carousel-item active">
+                                        <img src={slide1} className="img-fluid" alt="..." />
                                         <div className="carousel-caption d-none d-md-block">
                                             <h5>First slide label</h5>
                                             <p>Coppyright by SCHOOL'S NAME UNIVERSITY</p>
                                         </div>
                                     </div>
                                     <div className="carousel-item">
-                                        <img src="slide2.jpg" className="img-fluid w-100" alt="..." />
+                                        <img src={slide2} className="img-fluid w-100" alt="..." />
                                         <div className="carousel-caption d-none d-md-block">
                                             <h5>Second slide label</h5>
                                             <p>Some representative placeholder content for the second slide.</p>
                                         </div>
                                     </div>
                                     <div className="carousel-item">
-                                        <img src="slide3.jpg" className="img-fluid" alt="..." />
+                                        <img src={slide3} className="img-fluid" alt="..." />
                                         <div className="carousel-caption d-none d-md-block">
                                             <h5>Third slide label</h5>
                                             <p>Some representative placeholder content for the third slide.</p>
