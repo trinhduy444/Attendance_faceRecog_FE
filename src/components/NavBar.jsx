@@ -1,18 +1,19 @@
 import React from 'react';
+import sclogo from "../assets/images/sclogo.jpg";
 
 export const NavBar = () => {
+    console.log("navBar");
     return(
-        // narBar
         <nav className="navbar show navbar-vertical h-lg-screen navbar-expand-lg px-0 py-3 navbar-light bg-white border-bottom border-bottom-lg-0 border-end-lg"
         id="navbarVertical">
-        <div className="container-fluid">
+        <div className="container">
             <button className="navbar-toggler ms-n2" type="button" data-bs-toggle="collapse"
                 data-bs-target="#sidebarCollapse" aria-controls="sidebarCollapse" aria-expanded="false"
                 aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
             </button>
-            <a className="navbar-brand py-lg-2 mb-lg-5 px-lg-6 me-0" href="#">
-                <h3 className="text-success"><img src="sclogo.jpg" width="40" className="rounded-circle"/><span
+            <a className="navbar-brand py-lg-2 mb-lg-5 px-lg-6 me-0" href="/">
+                <h3 className="text-success"><img src={sclogo} width="40" className="rounded-circle"/><span
                         className="text-info">Attendance</span>System</h3>
             </a>
             <div className="navbar-user d-lg-none">
