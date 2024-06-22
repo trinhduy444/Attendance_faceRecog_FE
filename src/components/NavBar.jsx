@@ -39,7 +39,7 @@ export const NavBar = () => {
             <div className="collapse navbar-collapse" id="sidebarCollapse">
                 <ul className="navbar-nav">
                     <li className="nav-item ">
-                        <a className="nav-link active" href="#">
+                        <a className="nav-link active" href="/">
                             <i className="bi bi-house"></i> Trang chủ
                         </a>
                     </li>
@@ -61,7 +61,7 @@ export const NavBar = () => {
                             <i className="bi bi-activity"></i> Hoạt động
                         </a>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a className="dropdown-item" href="/homepage/notification.html"><i className="bi bi-bell"> Thông báo</i></a></li>
+                            <li><a className="dropdown-item" href="/notification"><i className="bi bi-bell"> Thông báo</i></a></li>
                             <li><a className="dropdown-item" href="#"><i className="bi bi-calendar2-week"> Thời khóa biểu</i></a></li>
                             <li><a className="dropdown-item" href="#"><i className="bi bi-newspaper"> Tin tức</i></a></li>
                             <li><a className="dropdown-item" href="/homepage/attendance.html"><i className="bi bi-clipboard-data"> Dữ liệu điểm danh</i></a></li>
