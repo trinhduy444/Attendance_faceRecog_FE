@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { NavBar } from "../../components/NavBar"
+import  NavBar  from "../../components/NavBar"
 import { Header } from "../../components/Header"
 export const Attendance = () => {
     useEffect(() => {
