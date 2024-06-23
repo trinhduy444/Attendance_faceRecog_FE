@@ -35,7 +35,7 @@ export const Schedule = () => {
                 null,
                 null,
                 null,
-                { name: "Phát triển Website", time: "18:05 - 20:35", instructor: "GV: Vũ Đình Hồng| Nhóm 03", room: "D608" }
+                { name: "Phát triển Website", time: "18:05 - 20:35", instructor: "GV: Vũ Đình Hồng| Nhóm 03", room: "D607" }
             ]
         },
 
