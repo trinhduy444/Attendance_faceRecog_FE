@@ -22,7 +22,7 @@ export const Attendance = () => {
                             </div>
                             <ul class="nav nav-tabs overflow-x border-0">
                                 <li class="nav-item ">
-                                    <a href="#" class="nav-link font-regular"><i class="bi bi-house"></i> Trang chủ</a>
+                                    <a href="/" class="nav-link font-regular"><i class="bi bi-house"></i> Trang chủ</a>
                                 </li>
                                 <li class="nav-item ">
                                     <a href="#" class="nav-link active"><i class="bi bi-clipboard-data"></i> Dữ liệu điểm

@@ -13,6 +13,7 @@ import { Attendance } from './pages/Attendance/Attendance';
 import { AttendanceDetail } from './pages/Attendance/AttendanceDetail';
 import { EditProfile } from './pages/Profile/EditProfile';
 import { ChangePassword } from './pages/Profile/ChangePassword';
+import { Schedule } from './pages/Schedule/Schedule';
 import 'bootstrap/dist/js/bootstrap.min.js';
 
 
@@ -33,7 +34,7 @@ root.render(
         <Route path="/attendanceDetail" element={<ProtectedRoute element={<AttendanceDetail />} />} />
         <Route path="/editProfile" element={<ProtectedRoute element={<EditProfile />} />} />
         <Route path="/changePassword" element={<ProtectedRoute element={<ChangePassword />} />} />
-
+        <Route path="/schedule" element={<ProtectedRoute element={<Schedule />} />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

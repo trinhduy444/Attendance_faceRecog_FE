@@ -61,7 +61,7 @@ function NavBar() {
                             </a>
                             <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <li><a className="dropdown-item" href="/notification"><i className="bi bi-bell"> Thông báo</i></a></li>
-                                <li><a className="dropdown-item" href="#"><i className="bi bi-calendar2-week"> Thời khóa biểu</i></a></li>
+                                <li><a className="dropdown-item" href="/schedule"><i className="bi bi-calendar2-week"> Thời khóa biểu</i></a></li>
                                 <li><a className="dropdown-item" href="#"><i className="bi bi-newspaper"> Tin tức</i></a></li>
                                 <li><a className="dropdown-item" href="/attendance"><i className="bi bi-clipboard-data"> Dữ liệu điểm danh</i></a></li>
                                 <li><a className="dropdown-item" href="#"><i className="bi bi-people"> Phòng học</i></a></li>
