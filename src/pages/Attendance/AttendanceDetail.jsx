@@ -37,7 +37,7 @@ export const AttendanceDetail = () => {
                     <div className="container">
                         <div className="mb-5 row">
                             <div className="d-flex justify-content-center">
-                                <h2>Lập trình hướng đối tượng N01 (300201) </h2>
+                                <h2 className="text-primary">Lập trình hướng đối tượng N01 (300201) </h2>
                             </div>
                         </div>
                         <div className="p-5 border border-dark">
