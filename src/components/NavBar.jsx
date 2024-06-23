@@ -76,7 +76,7 @@ function NavBar() {
                                 <li><a className="dropdown-item" href="#"><i className="bi bi-clipboard-data"> Quản lý dữ liệu
                                     điểm
                                     danh</i></a></li>
-                                <li><a className="dropdown-item" href="#"><i className="bi bi-people"> Quản lý người
+                                <li><a className="dropdown-item" href="/admin/userManagement"><i className="bi bi-people"> Quản lý người
                                     dùng</i></a></li>
 
                                 <li><a className="dropdown-item" href="#"><i className="bi bi-person"> Quản lý phòng học</i></a>
