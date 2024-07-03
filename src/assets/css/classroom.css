@@ -1,0 +1,77 @@
+.card-title.classroom {
+    height: 80px;
+    border-radius: 5px;
+    border: 1px solid rgb(22, 22, 22);
+}
+
+.nameofSubject:hover {
+    text-decoration: underline;
+}
+
+.joinRoomBtn:hover {
+    text-decoration: underline;
+
+}
+
+.classroomDetailHeader {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+}
+
+.overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+}
+
+.overlay-text2 {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+}
+
+.commentPost {
+    width: 600px;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.btnCommentPost {
+    border: 2px solid #73eda0;
+    width: 70px;
+    border-radius: 15px;
+}
+
+.infoTeacherPost {
+    margin-left: 10px;
+}
+
+.infoTeacherPost p {
+    font-size: 13px;
+}
+.file-display a{
+    color: black;
+}
+
+.file-display a:hover{
+    text-decoration: underline;
+    color: #59a9ef;
+}
+
+.post-classroom{
+    border: 1px solid #090909;
+}
+.event-classroom{
+    border: 1px solid #090909;
+}

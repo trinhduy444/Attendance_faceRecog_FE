@@ -8,18 +8,16 @@ export const ChangePassword = () => {
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary" >
             <NavBar />
             <div className="h-screen flex-grow-1 overflow-y-lg-auto">
-                <header className="bg-surface-primary border-bottom pt-6">
+                <header className="bg-surface-primary border-bottom pt-3">
                     <div className="container">
                         <div className="mb-npx">
                             <div className="row align-items-center">
                                 <div className="col-sm-6 col-12 mb-4 mb-sm-0">
-                                    {/* <!-- Title --> */}
                                     <h1 className="h2 mb-0 ls-tight">
                                         ĐỔI MẬT KHẨU
                                     </h1>
                                 </div>
                             </div>
-                            {/* <!-- Nav --> */}
                             <ul className="nav nav-tabs overflow-x border-0">
                                 <li className="nav-item ">
                                     <a href="/" className="nav-link font-regular"><i className="bi bi-house"></i> Trang chủ</a>

@@ -14,12 +14,14 @@ import { AttendanceDetail } from './pages/Attendance/AttendanceDetail';
 import { EditProfile } from './pages/Profile/EditProfile';
 import { ChangePassword } from './pages/Profile/ChangePassword';
 import { Schedule } from './pages/Schedule/Schedule';
+import { ClassRoom } from './pages/ClassRoom/ClassRoom';
+import { ClassRoomDetail } from './pages/ClassRoom/ClassRoomDetail';
 //Admin Pages
 import { UserManagement } from './pages/AdminDashBoard/UserManagement/UserManagement';
 import 'bootstrap/dist/js/bootstrap.min.js';
 
 
-const ProtectedRoute = ({ element, ...rest }) => {
+const ProtectedRoute = ({ element}) => {
   const isLogged = isAuthenticated();
   return isLogged ? element : <Navigate to="/login" />;
 };
@@ -37,6 +39,8 @@ root.render(
         <Route path="/editProfile" element={<ProtectedRoute element={<EditProfile />} />} />
         <Route path="/changePassword" element={<ProtectedRoute element={<ChangePassword />} />} />
         <Route path="/schedule" element={<ProtectedRoute element={<Schedule />} />} />
+        <Route path="/classroom" element={<ProtectedRoute element={<ClassRoom />} />} />
+        <Route path="/classroom/detail" element={<ProtectedRoute element={<ClassRoomDetail />} />} />
         <Route path="/admin/userManagement" element={<ProtectedRoute element={<UserManagement />} />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

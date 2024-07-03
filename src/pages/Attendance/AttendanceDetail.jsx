@@ -7,7 +7,7 @@ export const AttendanceDetail = () => {
     return (
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
             <div className="h-screen flex-grow-1 overflow-y-lg-auto">
-                <header className="bg-surface-primary border-bottom pt-6">
+                <header className="bg-surface-primary border-bottom pt-3">
                     <div className="container">
                         <div className="mb-npx">
                             <div className="row align-items-center">

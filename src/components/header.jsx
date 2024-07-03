@@ -3,7 +3,7 @@ import sclogo from "../assets/images/sclogo.jpg"
 
 export const Header = () => {
     return (
-        <header id='header' className="bg-surface-primary border-bottom pt-6">
+        <header id='header' className="bg-surface-primary border-bottom pt-3">
             <div className="container">
                 <div className="mb-npx">
                     <div className="row align-items-center">
