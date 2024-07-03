@@ -14,7 +14,7 @@ export const Notification = () => {
             
             {/* <!-- Main content --> */}
             <div className="h-screen flex-grow-1 overflow-y-lg-auto">
-                <header className="bg-surface-primary border-bottom pt-6">
+                <header className="bg-surface-primary border-bottom pt-3">
                     <div className="container">
                         <div className="mb-npx">
                             <div className="row align-items-center">
