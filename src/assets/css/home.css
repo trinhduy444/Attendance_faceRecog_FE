@@ -20,3 +20,7 @@
     width: 100%;
     height: 400px;
 }
+
+.h2.mb-0.ls-tight{
+    font-family: 'Helvetica', Courier, monospace;
+}
