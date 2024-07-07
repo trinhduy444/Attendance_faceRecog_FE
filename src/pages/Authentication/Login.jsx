@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "../../assets/css/login.css";
 import { authService } from '../../services/authService';
@@ -9,6 +9,9 @@ export const Login = () => {
   const [userName, setUserName] = useState(undefined);
   const [password, setPassword] = useState(undefined);
 
+  useEffect(() => {
+    window.title = 'Hệ thống điểm danh';
+  },[])
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -23,7 +26,7 @@ export const Login = () => {
           timer: 1500
         });
         navigate('/');
-      }else{
+      } else {
         Swal.fire({
           icon: 'error',
           title: response.message,
@@ -35,6 +38,9 @@ export const Login = () => {
       console.error(err);
     }
   };
+  const handleLoginGoogle = async function () { 
+    window.open('http://localhost:5000/api/v1/auth/google',"_self");
+  }
   return (
     <div className="container-fluid">
       <div className="loginDiv">
@@ -46,16 +52,17 @@ export const Login = () => {
           <a href="/haha" className="fw-light" id="loginAdmin">Đăng nhập admin --  </a>
           <form onSubmit={handleLogin}>
             <div className="form-group">
-              <label for="username">Tên đăng nhập:</label>
+              <label htmlFor="username">Tên đăng nhập:</label>
               <input type="text" className="form-control" onChange={(e) => setUserName(e.target.value)} id="username" aria-describedby="textStudentID" placeholder="Nhập Student ID..." />
             </div>
             <div className="form-group">
-              <label for="password">Mật khẩu:</label>
+              <label htmlFor="password">Mật khẩu:</label>
               <input type="password" className="form-control" onChange={(e) => setPassword(e.target.value)} id="password" aria-describedby="passWord" placeholder="Nhập mật khẩu..." />
             </div>
             <div className="form-group">
               <a href="/hehe" className="fw-light">Quên mật khẩu?</a>
               <button type="submit" id="loginSubmit" className="btn btn-primary">Đăng nhập</button>
+              <button type="button" id="loginGoogleBtn" onClick={handleLoginGoogle} className='bg-danger'><i className="bi bi-google"></i> Đăng nhập với Google</button>
             </div>
           </form>
         </div>
