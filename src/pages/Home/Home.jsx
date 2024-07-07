@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
-import { useNavigate } from 'react-router-dom';
-import  NavBar  from "../../components/NavBar"
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import NavBar from "../../components/NavBar"
 import { Header } from "../../components/Header"
 import "../../assets/css/home.css"
 import slide1 from "../../assets/images/slide1.jpg"
@@ -8,14 +8,30 @@ import slide2 from "../../assets/images/slide2.jpg"
 import slide3 from "../../assets/images/slide3.jpg"
 export const Home = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+
+   
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const token = params.get('token');
+
+        if (token) {
+            localStorage.setItem('accessToken', token);
+            navigate('/');
+        }
+        if (!localStorage.getItem('accessToken')) {
+            navigate('/login');
+        }
+    }, [location.search]);
 
     useEffect(() => {
         document.title = "Trang chủ"
     }, []);
 
     const handleCardClick = (page) => {
-        if(page) {
-            navigate("/"+page);
+        if (page) {
+            navigate("/" + page);
         }
     };
 

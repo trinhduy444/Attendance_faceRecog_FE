@@ -2,6 +2,10 @@ import React, { memo } from 'react';
 import sclogo from "../assets/images/sclogo.jpg";
 function NavBar() {
     console.log("navBar");
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken')
+        window.open('http://localhost:5000/api/v1/auth/logout', "_self");
+    }
     return (
         <nav className="navbar show navbar-vertical h-lg-screen navbar-expand-lg px-0 py-3 navbar-light bg-white border-bottom border-bottom-lg-0 border-end-lg"
             id="navbarVertical">
@@ -51,7 +55,7 @@ function NavBar() {
                                 <li><a className="dropdown-item" href="/editProfile"><i className="bi bi-person"> Thông tin sinh
                                     viên</i></a></li>
                                 <li><a className="dropdown-item" href='/changePassword'><i className="bi bi-arrow-left-right"> Đổi mật
-                                        khẩu</i></a></li>
+                                    khẩu</i></a></li>
                             </ul>
                         </li>
                         <li className="nav-item dropdown">
@@ -168,14 +172,15 @@ function NavBar() {
                     <div className="mt-auto"></div>
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <a className="nav-link" href="#">
-                                <i className="bi bi-box-arrow-left"></i> Đăng xuất
-                            </a>
+                            <button className="nav-link" onClick={handleLogout}>
+                                    <i className="bi bi-box-arrow-left"></i> Đăng xuất
+
+                            </button>
                         </li>
                     </ul>
                 </div>
             </div>
-    
+
         </nav>
 
     );

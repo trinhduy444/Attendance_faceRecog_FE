@@ -4,7 +4,7 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-import {isAuthenticated} from './utils/checkAuthentication';
+import { isAuthenticated } from './utils/checkAuthentication';
 //Pages
 import { Login } from './pages/Authentication/Login';
 import { Home } from './pages/Home/Home';
@@ -21,7 +21,7 @@ import { UserManagement } from './pages/AdminDashBoard/UserManagement/UserManage
 import 'bootstrap/dist/js/bootstrap.min.js';
 
 
-const ProtectedRoute = ({ element}) => {
+const ProtectedRoute = ({ element }) => {
   const isLogged = isAuthenticated();
   return isLogged ? element : <Navigate to="/login" />;
 };
@@ -31,7 +31,7 @@ root.render(
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<ProtectedRoute element={<Home />} />} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/notification" element={<ProtectedRoute element={<Notification />} />} />
         <Route path="/attendance" element={<ProtectedRoute element={<Attendance />} />} />
