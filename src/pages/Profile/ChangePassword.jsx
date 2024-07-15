@@ -1,12 +1,14 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import NavBar from "../../components/NavBar"
 export const ChangePassword = () => {
+    const [isNavBarVisible, setIsNavBarVisible] = useState(true);
+
     useEffect(() => {
         document.title = "Đổi mật khẩu"
     }, [])
     return (
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary" >
-            <NavBar />
+            <NavBar isNavBarVisible={isNavBarVisible} />
             <div className="h-screen flex-grow-1 overflow-y-lg-auto">
                 <header className="bg-surface-primary border-bottom pt-3">
                     <div className="container">

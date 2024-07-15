@@ -35,7 +35,7 @@ root.render(
         <Route path="/login" element={<Login />} />
         <Route path="/notification" element={<ProtectedRoute element={<Notification />} />} />
         <Route path="/attendance" element={<ProtectedRoute element={<Attendance />} />} />
-        <Route path="/attendanceDetail" element={<ProtectedRoute element={<AttendanceDetail />} />} />
+        <Route path="/attendance/detail" element={<ProtectedRoute element={<AttendanceDetail />} />} />
         <Route path="/editProfile" element={<ProtectedRoute element={<EditProfile />} />} />
         <Route path="/changePassword" element={<ProtectedRoute element={<ChangePassword />} />} />
         <Route path="/schedule" element={<ProtectedRoute element={<Schedule />} />} />
