@@ -1,11 +1,19 @@
 import React, { memo } from 'react';
 import sclogo from "../assets/images/sclogo.jpg";
-function NavBar() {
+function NavBar({ isNavBarVisible }) {
     console.log("navBar");
+    if (!isNavBarVisible) {
+        return null;
+    }
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken')
+        window.open('http://localhost:5000/api/v1/auth/logout', "_self");
+    }
     return (
         <nav className="navbar show navbar-vertical h-lg-screen navbar-expand-lg px-0 py-3 navbar-light bg-white border-bottom border-bottom-lg-0 border-end-lg"
             id="navbarVertical">
             <div className="container">
+
                 <button className="navbar-toggler ms-n2" type="button" data-bs-toggle="collapse"
                     data-bs-target="#sidebarCollapse" aria-controls="sidebarCollapse" aria-expanded="false"
                     aria-label="Toggle navigation">
@@ -15,6 +23,7 @@ function NavBar() {
                     <h3 className="text-success"><img src={sclogo} width="40" className="rounded-circle" /><span
                         className="text-info">Attendance</span>System</h3>
                 </a>
+
                 <div className="navbar-user d-lg-none">
                     <div className="dropdown">
                         <a href="#" id="sidebarAvatar" role="button" data-bs-toggle="dropdown" aria-haspopup="true"
@@ -51,7 +60,7 @@ function NavBar() {
                                 <li><a className="dropdown-item" href="/editProfile"><i className="bi bi-person"> Thông tin sinh
                                     viên</i></a></li>
                                 <li><a className="dropdown-item" href='/changePassword'><i className="bi bi-arrow-left-right"> Đổi mật
-                                        khẩu</i></a></li>
+                                    khẩu</i></a></li>
                             </ul>
                         </li>
                         <li className="nav-item dropdown">
@@ -84,6 +93,7 @@ function NavBar() {
 
                             </ul>
                         </li>
+
                     </ul>
                     <hr className="navbar-divider my-5 opacity-20" />
                     <ul className="navbar-nav mb-md-4">
@@ -168,16 +178,17 @@ function NavBar() {
                     <div className="mt-auto"></div>
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <a className="nav-link" href="#">
+                            <button className="nav-link" onClick={handleLogout}>
                                 <i className="bi bi-box-arrow-left"></i> Đăng xuất
-                            </a>
+
+                            </button>
                         </li>
                     </ul>
                 </div>
             </div>
-    
+
         </nav>
 
     );
 }
-export default memo(NavBar);
+export default React.memo(NavBar);
