@@ -1,5 +1,6 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import "../../assets/css/login.css";
 import { authService } from '../../services/authService';
 import Swal from 'sweetalert2';
@@ -8,17 +9,19 @@ export const Login = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState(undefined);
   const [password, setPassword] = useState(undefined);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     window.title = 'Hệ thống điểm danh';
-  },[])
+  }, [])
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      console.log(userName, password);
       const response = await authService.login(userName, password);
       if (response.status === 200) {
-        localStorage.setItem('accessToken', response.data.token);
+        localStorage.setItem('accessToken', response.accessToken);
+
+        handleLoginSuccess(response);
         Swal.fire({
           icon: 'success',
           title: response.message,
@@ -38,9 +41,20 @@ export const Login = () => {
       console.error(err);
     }
   };
-  const handleLoginGoogle = async function () { 
-    window.open('http://localhost:5000/api/v1/auth/google',"_self");
+  const handleLoginGoogle = async function () {
+    window.open('http://localhost:5000/api/v1/auth/google', "_self");
   }
+  const handleLoginSuccess = (response) => {
+    console.log("login:",response);
+    dispatch({
+      type: 'LOGIN_SUCCESS',
+      payload: {
+        user: response.metadata,
+        refreshToken: response.refreshToken,
+      }
+    });
+  };
+
   return (
     <div className="container-fluid">
       <div className="loginDiv">
@@ -57,7 +71,8 @@ export const Login = () => {
             </div>
             <div className="form-group">
               <label htmlFor="password">Mật khẩu:</label>
-              <input type="password" className="form-control" onChange={(e) => setPassword(e.target.value)} id="password" aria-describedby="passWord" placeholder="Nhập mật khẩu..." />
+              <input type="password" className="form-control" onChange={(e) => setPassword(e.target.value)} id="password" aria-describedby="passWord"
+                placeholder="Nhập mật khẩu..." />
             </div>
             <div className="form-group">
               <a href="/hehe" className="fw-light">Quên mật khẩu?</a>

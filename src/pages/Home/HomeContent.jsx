@@ -1,17 +1,38 @@
-import React , { useEffect}from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import slide1 from "../../assets/images/slide1.jpg"
 import slide2 from "../../assets/images/slide2.jpg"
 import slide3 from "../../assets/images/slide3.jpg"
 function HomeContent() {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+
     useEffect(() => {
         const params = new URLSearchParams(location.search);
-        const token = params.get('token');
+        const accessToken = params.get('accessToken');
+        const status = params.get('status');
+        const message = params.get('message');
+        const user = JSON.parse(params.get('metadata'));
+        const refreshToken = params.get('refreshToken');
 
-        if (token) {
-            localStorage.setItem('accessToken', token);
+        if (accessToken && status ==='200') {
+            localStorage.setItem('accessToken', accessToken);
+            dispatch({
+                type: 'LOGIN_SUCCESS',
+                payload: {
+                    user: user,
+                    refreshToken: refreshToken,
+                }
+            });
+            Swal.fire({
+                icon: 'success',
+                title: message,
+                showConfirmButton: false,
+                timer: 1500
+            });
             navigate('/');
         }
         if (!localStorage.getItem('accessToken')) {
@@ -23,6 +44,7 @@ function HomeContent() {
             navigate("/" + page);
         }
     };
+
     // console.log("Render Home Content")
     return (
         <main className="bg-surface-secondary">

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+
 import NavBar from "../../components/NavBar"
 import NavBarToggle from "../../components/NavBarToggle";
 import HomeContent from "./HomeContent";
@@ -7,11 +8,7 @@ import "../../assets/css/home.css"
 import sclogo from "../../assets/images/sclogo.jpg"
 
 export const Home = () => {
-
     const [isNavBarVisible, setIsNavBarVisible] = useState(true);
-    console.log("Home")
-
-
     useEffect(() => {
         document.title = "Trang chủ"
     }, []);
