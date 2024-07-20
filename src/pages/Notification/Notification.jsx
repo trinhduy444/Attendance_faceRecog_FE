@@ -15,7 +15,7 @@ export const Notification = () => {
         setIsNavBarVisible(!isNavBarVisible);
     };
 
-    // console.log("render notifi");
+    console.log("render notifi");
     return (
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
             <NavBar isNavBarVisible={isNavBarVisible} />
