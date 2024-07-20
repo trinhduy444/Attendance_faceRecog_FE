@@ -7,7 +7,7 @@ export const authService = {
                 username: username,
                 password: password,
             });
-
+            // console.log("o service", response.data);
             return response.data;
         } catch (error) {
             return error.response.data;
@@ -24,7 +24,7 @@ export const authService = {
         }
     },
     callBackGoogle: async (code) => {
-        axiosConfig.get(`http://localhost:5000/api/v1/auth/google/callback?code=${code}`)
+        axiosConfig.get(`/auth/google/callback?code=${code}`)
             .then(response => {
                 const { token, user } = response.data;
                 localStorage.setItem('token', token);
@@ -35,5 +35,18 @@ export const authService = {
                 console.error('Error during Google login:', error);
             });
     },
-
+    logout: async () => {
+        const accessToken = localStorage.getItem('accessToken');
+        return await axiosConfig.post('/auth/logout', {}, {
+            headers: { 'Authorization': 'Bearer ' + accessToken }
+        }).then(response => {
+            if (response.data.status === 200) {
+                localStorage.removeItem('accessToken');
+                return response.data;
+            }
+            return response.data;
+        }).catch(error => {
+            console.error('Error during', error);
+        });
+    }
 }
