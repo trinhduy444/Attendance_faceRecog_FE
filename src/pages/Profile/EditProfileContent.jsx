@@ -1,6 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { userService } from '../../services/userService';
+import Swal from 'sweetalert2';
 
 function EditProfileContent() {
+
+    const user = useSelector(state => state.auth.user);
+    const [userData, setUserData] = useState([]);
+
+    useEffect(() => {
+        if (user) {
+            fetchProfileData()
+        }
+    }, [])
+    const fetchProfileData = async () => {
+        const response = await userService.getProfile();
+
+        if (response.status !== 200) {
+            return Swal.fire({
+                icon: 'error',
+                title: "Không tìm thấy người dùng",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        } else {
+            setUserData(response.metadata);
+
+        }
+    }
     return (
 
         <div className="row">
@@ -8,7 +35,7 @@ function EditProfileContent() {
                 <div className="card mb-4 mb-xl-0">
                     <div className="card-header text-bg-info">Chân dung gốc</div>
                     <div className="card-body text-center">
-                        <img className="img-account-profile rounded-circle mb-2" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="" />
+                        <img className="img-account-profile rounded-circle mb-2" src={userData.avatar_path} alt="Ảnh người dùng" />
                     </div>
                 </div>
             </div>
@@ -18,47 +45,48 @@ function EditProfileContent() {
                     <div className="card-body">
                         <div className="mb-3">
                             <label className="small mb-1" htmlFor="studentID">MSSV</label>
-                            <input className="form-control" id="studentID" type="text" disabled value="52000655" />
+                            <input className="form-control" id="studentID" type="text" disabled value={userData.username} />
                         </div>
 
                         <div className="row gx-3 mb-3">
-                            <div className="col-md-6">
-                                <label className="small mb-1" htmlFor="lastName">Họ lót</label>
-                                <input className="form-control" id="lastName" type="text" disabled value="Trịnh Trường" />
+                            <div className="col-md-12">
+                                <label className="small mb-1" htmlFor="nickname">Họ và tên</label>
+                                <input className="form-control" id="nickname" type="text" disabled value={userData.nickname} />
                             </div>
-                            <div className="col-md-6">
-                                <label className="small mb-1" htmlFor="firstName">Tên</label>
-                                <input className="form-control" id="firstName" type="text" disabled value="Duy" />
-                            </div>
+
                         </div>
                         <div className="row gx-3 mb-3">
                             <div className="col-md-6">
                                 <label className="small mb-1" htmlFor="major">Chuyên ngành</label>
-                                <input className="form-control" id="major" type="text" disabled value="Kỹ thuật phần mềm" />
+                                <input className="form-control" id="major" type="text" disabled value={userData.faculty_name} />
                             </div>
                             <div className="col-md-6">
                                 <label className="small mb-1" htmlFor="faculty">Khoa</label>
-                                <input className="form-control" id="faculty" type="text" disabled value="Công nghệ thông tin" />
+                                <input className="form-control" id="faculty" type="text" disabled value={userData.faculty_name} />
                             </div>
                         </div>
                         <div className="row gx-3 mb-3">
                             <div className="col-md-6">
                                 <label className="small mb-1" htmlFor="admission">Khóa</label>
-                                <input className="form-control" id="admission" type="text" disabled value="2020" />
+                                <input className="form-control" id="admission" type="text" disabled value={userData.course_year} />
                             </div>
-                            <div className="col-md-6">
+                            {userData.gender ? (<div className="col-md-6">
                                 <label className="small mb-1" htmlFor="gender">Giới tính</label>
                                 <input className="form-control" id="gender" type="text" disabled value="Nam" />
-                            </div>
+                            </div>) : (<div className="col-md-6">
+                                <label className="small mb-1" htmlFor="gender">Giới tính</label>
+                                <input className="form-control" id="gender" type="text" disabled value="Nữ" />
+                            </div>)}
+
                         </div>
                         <div className="mb-3">
                             <label className="small mb-1" htmlFor="studentEmail">Email sinh viên</label>
-                            <input className="form-control" id="studentEmail" type="email" disabled value="52000655@student.tdtu.edu.vn" />
+                            <input className="form-control" id="studentEmail" type="email" disabled value={userData.email} />
                         </div>
                         <div className="row gx-3 mb-3">
                             <div className="col-md-6">
                                 <label className="small mb-1" htmlFor="inputPhone">Số điện thoại</label>
-                                <input className="form-control" id="inputPhone" type="tel" disabled value="+84-344-511-607" />
+                                <input className="form-control" id="inputPhone" type="tel" disabled value={userData.phone} />
                             </div>
                             <div className="col-md-6">
                                 <label className="small mb-1" htmlFor="inputBirthday">Ngày sinh</label>
@@ -107,7 +135,7 @@ function EditProfileContent() {
                             </div>
                         </div>
                         <div className="row m-2 d-flex justify-content-between">
-                            <button className="col-md-2 btn btn-info"><a href="/changePassword" className="text-white">Đổi mật khẩu</a></button>
+                            <a href="/changePassword" type="button " className="text-white col-md-2 btn btn-info">Đổi mật khẩu</a>
                             <button className="col-md-1 btn btn-success" type="submit" >Lưu</button>
                         </div>
 

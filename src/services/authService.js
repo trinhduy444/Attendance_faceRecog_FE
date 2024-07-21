@@ -48,5 +48,29 @@ export const authService = {
         }).catch(error => {
             console.error('Error during', error);
         });
-    }
+    },
+    checkPassword: async (password) => {
+        const accessToken = localStorage.getItem('accessToken');
+        const response = await axiosConfig.post('/auth/checkPassword', {
+            'password': password
+        }, {
+            headers: { 'Authorization': 'Bearer ' + accessToken }
+        });
+        return response.data;
+
+    },
+    changePassword: async (newPassword) => {
+        const accessToken = localStorage.getItem('accessToken');
+        try {
+            const response = await axiosConfig.put('/auth/changePassword', {
+                'newPassword': newPassword
+            }, {
+                headers: { 'Authorization': 'Bearer ' + accessToken }
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error during changePassword:', error);
+            throw error;
+        }
+    },
 }
