@@ -25,6 +25,9 @@ import { ClassRoom } from './pages/ClassRoom/ClassRoom';
 import { ClassRoomDetail } from './pages/ClassRoom/ClassRoomDetail';
 //Admin Pages
 import { UserManagement } from './pages/AdminDashBoard/UserManagement/UserManagement';
+import { ClassRoomManagement } from './pages/AdminDashBoard/ClassRoomManagement/ClassRoomManagement';
+import { ScheduleManagement } from './pages/AdminDashBoard/ScheduleManagement/ScheduleManagement';
+import { TeacherManagement } from './pages/AdminDashBoard/TeacherManagement/TeacherManagement'
 import 'bootstrap/dist/js/bootstrap.min.js';
 
 
@@ -60,6 +63,11 @@ root.render(
             <Route path="/classroom" element={<ProtectedRoute element={<ClassRoom />} />} />
             <Route path="/classroom/detail" element={<ProtectedRoute element={<ClassRoomDetail />} />} />
             <Route path="/admin/userManagement" element={<ProtectedRoute element={<UserManagement />} />} />
+            <Route path="/admin/teacherManagement" element={<ProtectedRoute element={<TeacherManagement />} />} />
+
+            <Route path="/admin/classRoomManagement" element={<ProtectedRoute element={<ClassRoomManagement />} />} />
+            <Route path="/admin/scheduleManagement" element={<ProtectedRoute element={<ScheduleManagement />} />} />
+
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Router>
