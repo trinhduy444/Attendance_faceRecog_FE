@@ -45,7 +45,7 @@ export const Login = () => {
     window.open('http://localhost:5000/api/v1/auth/google', "_self");
   }
   const handleLoginSuccess = (response) => {
-    console.log("login:",response);
+    // console.log("login:",response);
     dispatch({
       type: 'LOGIN_SUCCESS',
       payload: {
