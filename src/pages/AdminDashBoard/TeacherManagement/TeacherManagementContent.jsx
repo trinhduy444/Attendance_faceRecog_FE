@@ -1,61 +1,20 @@
-import React, { useEffect, useState, useMemo } from "react"
+import React, { useEffect, useState } from "react"
 import * as XLSX from "xlsx"
 import Swal from "sweetalert2"
 import { adminService } from "../../../services/adminService";
-function UserManagementContent() {
-    const [data, setData] = useState([]);
-    const [showUser, setShowUser] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const usersPerPage = 10;
-
-    const fetchUsers = async () => {
-        const response = await adminService.getAllUsers();
-        if (response.status === 200) {
-            setShowUser(response.data.metadata);
-        }
-
-    }
+function TeacherManagementContent() {
+    const [showTeacher, setShowTeacher] = useState([]);
     useEffect(() => {
-        fetchUsers();
+        fetchTeachers();
     }, [])
-    // Sort
-
-
-    // Tính toán dữ liệu người dùng cho trang hiện tại
-    const indexOfLastUser = currentPage * usersPerPage;
-    const indexOfFirstUser = indexOfLastUser - usersPerPage;
-    const currentUsers = showUser.slice(indexOfFirstUser, indexOfLastUser);
-
-    const totalPages = Math.ceil(showUser.length / usersPerPage);
-
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-        if(currentUsers.length){
-            console.log(currentUsers);
+    const fetchTeachers = async () => {
+        const response = await adminService.getAllTeachers();
+        if (response.status === 200) {
+            setShowTeacher(response.data.metadata);
         }
-    };
 
-
-    // Fetch create users
-    const handleFectchCreateUserAPI = async (data) => {
-        try {
-            const response = await adminService.createUsers(data);
-            if (response.status === 201) {
-                Swal.fire('Thêm thành công', `Đã thêm ${data.length} users`, 'success');
-
-                window.location.reload();
-            } else {
-                Swal.fire('Có lỗi xảy ra', 'Vui lòng thử lại', 'error');
-            }
-        } catch (error) {
-            console.error('Error adding users:', error);
-            Swal.fire('Lỗi', 'Không thể thêm users. Vui lòng thử lại sau.', 'error');
-        }
     }
-
-    // Thao tác upload
-
-    const handleFileUploadUser = async (e) => {
+    const handleFileUploadTeacher = async (e) => {
         const reader = new FileReader();
         const file = e.target.files[0];
         const validFileExtensions = ['.xls', '.xlsx'];
@@ -70,6 +29,7 @@ function UserManagementContent() {
             });
             return;
         }
+
         if (file) {
             reader.onload = (evt) => {
                 const bstr = evt.target.result;
@@ -79,24 +39,41 @@ function UserManagementContent() {
                 const data = XLSX.utils.sheet_to_json(workSheet);
 
                 Swal.fire({
-                    title: `Bạn có chắc thêm ${data.length} người dùng?`,
+                    title: `Bạn có chắc thêm ${data.length} giảng viên?`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'OK',
                     cancelButtonText: 'Cancel',
                 }).then(async (result) => {
                     if (result.isConfirmed) {
-                        setData(data);
-                        Swal.fire('Đã xác nhận dữ liệu', 'Đang tiến hành thêm users...', 'info');
-                        handleFectchCreateUserAPI(data);
+                        Swal.fire('Đã xác nhận dữ liệu', 'Đang tiến hành thêm giảng viên...', 'info');
+                        // if (data) {
+                        //     console.log("data", data)
+                        // }
+                        handleFectchCreateTeacherAPI(data);
                     }
+
                 });
             };
             reader.readAsBinaryString(file);
         }
     };
 
-    const handleUploadImageUsers = async (event) => {
+    const handleFectchCreateTeacherAPI = async (data) => {
+        try {
+            const response = await adminService.createTeachers(data);
+            if (response.status === 201) {
+                Swal.fire('Thêm thành công', `Đã thêm ${data.length} giảng viên`, 'success');
+
+            } else {
+                Swal.fire('Có lỗi xảy ra', 'Vui lòng thử lại', 'error');
+            }
+        } catch (error) {
+            console.error('Error adding Teachers:', error);
+            Swal.fire('Lỗi', 'Không thể thêm Teachers. Vui lòng thử lại sau.', 'error');
+        }
+    }
+    const handleUploadImageTeachers = async (event) => {
         const files = event.target.files;
         if (files.length === 0) return;
 
@@ -133,7 +110,10 @@ function UserManagementContent() {
                 Swal.fire('Lỗi', 'Không thể tải ảnh lên. Vui lòng thử lại sau.', 'error');
             }
         }
+
+
     };
+
 
     return (
 
@@ -145,7 +125,7 @@ function UserManagementContent() {
                             <div className="col-sm-6 col-12 mb-4 mb-sm-0">
 
                                 <h1 className="h2 mb-0 ls-tight">
-                                    QUẢN LÝ SINH VIÊN - ADMIN DASHBOARD</h1>
+                                    QUẢN LÝ GIẢNG VIÊN - ADMIN DASHBOARD</h1>
                             </div>
                             <div className="col-sm-6 col-12 text-sm-end">
                                 <div className="mx-n1">
@@ -159,14 +139,14 @@ function UserManagementContent() {
                                         <span className=" pe-2">
                                             <i className="bi bi-plus"></i>
                                         </span>
-                                        <span>Create user</span>
+                                        <span>Create teacher</span>
                                     </a>
                                     <button type="button" data-bs-toggle="modal"
-                                        data-bs-target="#importUserFile" className="btn d-inline-flex btn-sm btn-warning mx-1">
+                                        data-bs-target="#importTeacherFile" className="btn d-inline-flex btn-sm btn-warning mx-1">
                                         <span className="pe-2">
                                             <i className="bi bi-plus"></i>
                                         </span>
-                                        <span>Create multiple users</span>
+                                        <span>Create multiple teachers</span>
                                     </button>
 
 
@@ -186,7 +166,7 @@ function UserManagementContent() {
                             <table className="table table-hover table-nowrap">
                                 <thead className="thead-light">
                                     <tr>
-                                        {/* <th scope="col">Ảnh</th> */}
+                                        <th scope="col">Ảnh</th>
                                         <th scope="col">MSSV</th>
                                         <th scope="col">Họ Và Tên</th>
                                         <th scope="col">Email</th>
@@ -195,21 +175,22 @@ function UserManagementContent() {
                                         <th scope="col">Khóa</th>
                                         <th scope="col">Giới tính</th>
                                         <th scope="col">Thao tác</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {currentUsers.map((item, index) => (
+                                    {showTeacher.map((item, index) => (
                                         <tr key={index}>
-                                            {/* <td>
+                                            <td>
                                                 <img src={item.avatar_path} alt="Ảnh SV" className="rounded-circle" width="50" />
-                                            </td> */}
-                                            <td><b>{item.username}</b></td>
+                                            </td>
+                                            <td><b>{item.Teachername}</b></td>
                                             <td>{item.nickname}</td>
                                             <td>{item.email}</td>
                                             <td>+{item.phone}</td>
                                             <td>{item.faculty_name}</td>
                                             <td>{item.course_year}</td>
-                                            <td>{item.gender ? "Nam" : "Nữ"}</td>
+                                            {item.gender ? <td>Nam</td> : <td>Nữ</td>}
                                             <td><button>View</button></td>
                                         </tr>
                                     ))}
@@ -217,18 +198,14 @@ function UserManagementContent() {
                             </table>
                         </div>
                         <div className="card-footer border-0 py-5">
-                            <span className="text-muted text-sm">
-                                Showing {usersPerPage} items out of {showUser.length} results found
-                            </span>
+                            <span className="text-muted text-sm">Showing 10 items out of 250 results found</span>
                             <nav aria-label="Page navigation example">
                                 <ul className="pagination">
-                                    {Array.from({ length: totalPages }, (_, i) => (
-                                        <li key={i} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
-                                            <button className="page-link" onClick={() => handlePageChange(i + 1)}>
-                                                {i + 1}
-                                            </button>
-                                        </li>
-                                    ))}
+                                    <li className="page-item"><a className="page-link disabled" href="#">Previous</a></li>
+                                    <li className="page-item"><a className="page-link bg-info text-white" href="#">1</a></li>
+                                    <li className="page-item"><a className="page-link" href="#">2</a></li>
+                                    <li className="page-item"><a className="page-link" href="#">3</a></li>
+                                    <li className="page-item"><a className="page-link" href="#">Next</a></li>
                                 </ul>
                             </nav>
 
@@ -236,7 +213,7 @@ function UserManagementContent() {
                     </div>
                 </div>
             </main>
-            <div className="modal" id="importUserFile" tabIndex="-1" aria-labelledby="importUserFile" aria-hidden="true">
+            <div className="modal" id="importTeacherFile" tabIndex="-1" aria-labelledby="importTeacherFile" aria-hidden="true">
                 <div className="modal-dialog model-md">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -245,12 +222,12 @@ function UserManagementContent() {
                         </div>
                         <div className="modal-body">
                             <div className="mb-3">
-                                <label htmlFor="userFile">Nhập file người dùng(.xlsx hoặc .xls)</label>
-                                <input className="btn d-inline-flex btn-sm btn-success mx-1" type="file" id="userFile" accept=".xlsx, .xls" onChange={handleFileUploadUser} />
+                                <label htmlFor="TeacherFile">Nhập file người dùng(.xlsx hoặc .xls)</label>
+                                <input className="btn d-inline-flex btn-sm btn-success mx-1" type="file" id="TeacherFile" accept=".xlsx, .xls" onChange={handleFileUploadTeacher} />
                             </div>
                             <div className="mb-3">
-                                <label htmlFor="userImages">Nhập ảnh người dùng(.png hoặc .jpg)</label>
-                                <input className="btn d-inline-flex btn-sm btn-warning mx-1" type="file" id="userImages" accept=".png, .jpg" onChange={handleUploadImageUsers} multiple />
+                                <label htmlFor="TeacherImages">Nhập ảnh người dùng(.png hoặc .jpg)</label>
+                                <input className="btn d-inline-flex btn-sm btn-warning mx-1" type="file" id="TeacherImages" accept=".png, .jpg" onChange={handleUploadImageTeachers} multiple />
                             </div>
                         </div>
                         <div className="modal-footer">
@@ -263,4 +240,4 @@ function UserManagementContent() {
         </div>
     );
 }
-export default React.memo(UserManagementContent);
+export default React.memo(TeacherManagementContent);

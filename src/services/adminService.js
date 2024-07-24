@@ -4,7 +4,23 @@ export const adminService = {
     getAllUsers: async () => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axiosConfig.post('/admin/getUsers',{}, {
+            const response = await axiosConfig.post('/admin/getUsers', {}, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    getAllTeachers: async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/admin/getTeachers', {}, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + accessToken,
@@ -28,6 +44,24 @@ export const adminService = {
                 withCredentials: true
             });
             return response;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    createTeachers: async (data) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/admin/createTeachers', {
+                teachers: data
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken
+                },
+                withCredentials: true
+            });
+            return response.data;
         } catch (err) {
             console.error(err);
             throw err;

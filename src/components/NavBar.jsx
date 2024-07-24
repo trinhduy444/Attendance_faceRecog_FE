@@ -126,14 +126,11 @@ function NavBar({ isNavBarVisible }) {
                                         <i className="bi bi-file-text"></i> Admin Dashboard
                                     </a>
                                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                        <li><a className="dropdown-item" href="#"><i className="bi bi-clipboard-data"> Quản lý dữ liệu
-                                            điểm
-                                            danh</i></a></li>
-                                        <li><a className="dropdown-item" href="/admin/userManagement"><i className="bi bi-people"> Quản lý người
-                                            dùng</i></a></li>
-
-                                        <li><a className="dropdown-item" href="#"><i className="bi bi-person"> Quản lý phòng học</i></a>
-                                        </li>
+                                        <li><a className="dropdown-item" href="#"><i className="bi bi-clipboard-data"> Quản lý dữ liệu điểm danh</i></a></li>
+                                        <li><a className="dropdown-item" href="/admin/userManagement"><i className="bi bi-people"> Quản lý sinh viên</i></a></li>
+                                        <li><a className="dropdown-item" href="/admin/teacherManagement"><i className="bi bi-people"> Quản lý giảng viên</i></a></li>
+                                        <li><a className="dropdown-item" href="/admin/classRoomManagement"><i className="bi bi-person"> Quản lý phòng học</i></a></li>
+                                        <li><a className="dropdown-item" href="/admin/scheduleManagement"><i className="bi bi-calendar2-week"> Quản lý lịch học</i></a></li>
 
                                     </ul>
                                 </li>)}
