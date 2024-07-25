@@ -66,6 +66,7 @@ function ClassManagementContent() {
         try {
             const response = await roomService.createRooms(data);
             if (response.status === 201) {
+                console.log(response)
                 Swal.fire('Thêm thành công', `Đã thêm các phòng: ${response.created}, và không thêm được các phòng: ${response.skipped}`, 'info');
             } else {
                 Swal.fire('Có lỗi xảy ra', 'Vui lòng thử lại', 'error');
@@ -150,8 +151,7 @@ function ClassManagementContent() {
                                         <th scope="col">Tòa</th>
                                         <th scope="col">Số lượng tối đa</th>
                                         <th scope="col">Tầng</th>
-                                        <th scope="col">Ca trống</th>
-                                        <th></th>
+                                        <th scope="col">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -162,7 +162,6 @@ function ClassManagementContent() {
 
                                             <td>{room.capacity} người</td>
                                             <td>{room.floor}</td>
-                                            <td>1,2,3,4</td>
                                         </tr>
                                     ))}
                                 </tbody>

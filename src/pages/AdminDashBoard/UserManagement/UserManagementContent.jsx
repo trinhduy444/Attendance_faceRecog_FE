@@ -2,12 +2,26 @@ import React, { useEffect, useState, useMemo } from "react"
 import * as XLSX from "xlsx"
 import Swal from "sweetalert2"
 import { adminService } from "../../../services/adminService";
+import { sortArray } from "../../../utils/sortArray"
+import '../../../assets/css/adminDashboard.css'
+import MyErrorBoundary from "../../Error/ErrorFallback";
 function UserManagementContent() {
-    const [data, setData] = useState([]);
+    // Declare array to show
     const [showUser, setShowUser] = useState([]);
+    // Declare pagination and sort arrays
     const [currentPage, setCurrentPage] = useState(1);
+    const [currentUsers, setCurrentUsers] = useState([]);
+    const [lastSortedColumn, setLastSortedColumn] = useState({ key: '', ascending: true });
     const usersPerPage = 10;
 
+    // Declare fetch by filtering
+    const [facultyId, setFacultyId] = useState("");
+    const [inputFilter, setInputFilter] = useState("");
+    const [genderFilter, setGenderFilter] = useState(undefined);
+
+    // View User
+    const [viewUser, setViewUser] = useState(null);
+    // Fetch all users
     const fetchUsers = async () => {
         const response = await adminService.getAllUsers();
         if (response.status === 200) {
@@ -18,24 +32,58 @@ function UserManagementContent() {
     useEffect(() => {
         fetchUsers();
     }, [])
-    // Sort
 
+    // Fetch all users have filters
 
+    const handleFetchUserFilter = async () => {
+        let type = isNaN(inputFilter.charAt(0)) ? 0 : 1;
+        if (genderFilter !== undefined) {
+            setGenderFilter(parseInt(genderFilter))
+
+        }
+        const requestBody = {
+            faculty_id: facultyId,
+            inputFilter: inputFilter,
+            type: type,
+            genderFilter: genderFilter
+        };
+        const response = await adminService.getAllUsersDetail(requestBody);
+        if (response.status === 200) {
+            setShowUser(response.data.metadata);
+        }
+    };
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleFetchUserFilter();
+        }
+    };
     // Tính toán dữ liệu người dùng cho trang hiện tại
-    const indexOfLastUser = currentPage * usersPerPage;
-    const indexOfFirstUser = indexOfLastUser - usersPerPage;
-    const currentUsers = showUser.slice(indexOfFirstUser, indexOfLastUser);
+    useEffect(() => {
+        const indexOfLastUser = currentPage * usersPerPage;
+        const indexOfFirstUser = indexOfLastUser - usersPerPage;
+        setCurrentUsers(showUser.slice(indexOfFirstUser, indexOfLastUser));
+    }, [showUser, currentPage]);
 
     const totalPages = Math.ceil(showUser.length / usersPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
-        if(currentUsers.length){
-            console.log(currentUsers);
-        }
     };
 
 
+    // Sort
+    const handleSortUser = function (key) {
+        const ascending = lastSortedColumn.key === key ? !lastSortedColumn.ascending : true;
+        const sortedUsers = sortArray([...showUser], key, ascending);
+        setShowUser(sortedUsers);
+        setCurrentPage(1);
+        setLastSortedColumn({ key, ascending });
+    }
+
+    const getSortIcon = (key) => {
+        if (lastSortedColumn.key !== key) return null;
+        return lastSortedColumn.ascending ? '▲' : '▼';
+    };
     // Fetch create users
     const handleFectchCreateUserAPI = async (data) => {
         try {
@@ -86,7 +134,6 @@ function UserManagementContent() {
                     cancelButtonText: 'Cancel',
                 }).then(async (result) => {
                     if (result.isConfirmed) {
-                        setData(data);
                         Swal.fire('Đã xác nhận dữ liệu', 'Đang tiến hành thêm users...', 'info');
                         handleFectchCreateUserAPI(data);
                     }
@@ -130,14 +177,70 @@ function UserManagementContent() {
 
             } catch (error) {
                 console.error('Error uploading images:', error);
-                Swal.fire('Lỗi', 'Không thể tải ảnh lên. Vui lòng thử lại sau.', 'error');
+                // Swal.fire('Lỗi', 'Không thể tải ảnh lên. Vui lòng thử lại sau.', 'error');
             }
         }
     };
 
+    // Export 
+    const handleExportToExcel = () => {
+        // Dữ liệu
+        const data = showUser.map(user => ({
+            'Email Sinh Viên': user.email,
+            'MSSV': user.username,
+            'Họ Và Tên': user.nickname,
+            'Đường dẫn khuôn mặt': user.avatar_path,
+            'Khóa nhập học': user.course_year,
+            'Giới tính': user.gender ? 'Nam' : 'Nữ',
+            'Khoa': user.faculty_name
+        }));
+
+        // Define headers
+        const headers = [
+            'Email Sinh Viên',
+            'MSSV',
+            'Họ Và Tên',
+            'Đường dẫn khuôn mặt',
+            'Khóa nhập học',
+            'Giới tính',
+            'Khoa'
+        ];
+
+        const ws = XLSX.utils.aoa_to_sheet([]);
+        XLSX.utils.sheet_add_aoa(ws, [[`Danh Sách Sinh Viên xuất file ngày ${new Date().toLocaleDateString()}`]], { origin: 'A1' });
+        XLSX.utils.sheet_add_aoa(ws, [headers], { origin: 'A2' });
+        XLSX.utils.sheet_add_json(ws, data, { origin: 'A3', skipHeader: true });
+
+        const columnWidths = [
+            { wch: 30 }, // Email
+            { wch: 15 }, // MSSV
+            { wch: 30 }, // Họ Và Tên
+            { wch: 50 }, // Đường dẫn khuôn mặt
+            { wch: 15 }, // Khóa nhập học
+            { wch: 10 }, // Giới tính
+            { wch: 30 }  // Khoa
+        ];
+        ws['!cols'] = columnWidths;
+
+        // Merge cells for title
+        ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 6 } }];
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Danh Sách Sinh Viên');
+
+        const fileName = `DanhSachSinhVien_${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+        XLSX.writeFile(wb, fileName);
+    };
+
+    // View user
+    const handleViewUser = (user) => {
+        setViewUser(user)
+    }
     return (
 
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
+
             <header className="bg-surface-primary border-bottom pt-3 pb-3">
                 <div className="container">
                     <div className="mb-npx">
@@ -159,14 +262,14 @@ function UserManagementContent() {
                                         <span className=" pe-2">
                                             <i className="bi bi-plus"></i>
                                         </span>
-                                        <span>Create user</span>
+                                        <span>Tạo sinh viên</span>
                                     </a>
                                     <button type="button" data-bs-toggle="modal"
                                         data-bs-target="#importUserFile" className="btn d-inline-flex btn-sm btn-warning mx-1">
                                         <span className="pe-2">
                                             <i className="bi bi-plus"></i>
                                         </span>
-                                        <span>Create multiple users</span>
+                                        <span>Tạo nhiều sinh viên</span>
                                     </button>
 
 
@@ -179,8 +282,59 @@ function UserManagementContent() {
             <main className="py-6 bg-surface-secondary">
                 <div className="container">
                     <div className="card shadow border-1 mb-7">
-                        <div className="card-header">
-                            <h5 className="mb-0">DANH SÁCH SINH VIÊN</h5>
+                        <div className="card-header ">
+                            <div className="row ">
+                                <div className="col-3"> <h5 className="mb-0">DANH SÁCH SINH VIÊN</h5></div>
+                                <div className="col-3 border border-dark rounded p-0">
+                                    <select
+                                        className="form-select"
+                                        aria-label="Select Faculty"
+                                        onChange={(e) => setFacultyId(e.target.value)}
+                                    >
+                                        <option value="">Chọn Khoa(nếu có)</option>
+                                        <option value="10010">Công Nghệ Thông Tin</option>
+                                        <option value="10011">Quản Trị Kinh Doanh</option>
+                                        <option value="10012">Điện - Điện tử</option>
+                                        <option value="10013">Kế Toán</option>
+                                        <option value="10014">Luật</option>
+                                        <option value="10015">Thiết kế đồ họa</option>
+                                    </select>
+                                </div>
+                                <div className="col-2 border border-dark rounded p-0">
+                                    <select
+                                        className="form-select"
+                                        aria-label="Select Gender"
+                                        onChange={(e) => setGenderFilter(e.target.value)}
+                                    >
+                                        <option value="">Chọn giới tính</option>
+                                        <option value="1">Nam</option>
+                                        <option value="0">Nữ</option>
+                                    </select>
+                                </div>
+                                <div className="col-4">
+                                    <div className="input-group">
+                                        <input
+                                            type="search"
+                                            className="form-control rounded"
+                                            placeholder="Nhập tên hoặc MSSV"
+                                            aria-label="Search"
+                                            aria-describedby="search-addon"
+                                            onChange={(e) => setInputFilter(e.target.value)}
+                                            onKeyDown={handleKeyDown}
+                                        />
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline-primary"
+                                            onClick={handleFetchUserFilter}
+                                        >
+                                            Tìm kiếm
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
                         </div>
                         <div className="table-responsive">
                             <table className="table table-hover table-nowrap">
@@ -191,18 +345,18 @@ function UserManagementContent() {
                                         <th scope="col">Họ Và Tên</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Số điện thoại</th>
-                                        <th scope="col">Khoa</th>
-                                        <th scope="col">Khóa</th>
-                                        <th scope="col">Giới tính</th>
+                                        <th scope="col" onClick={() => handleSortUser('faculty_name')}>Khoa {getSortIcon('faculty_name')}</th>
+                                        <th scope="col" onClick={() => handleSortUser('course_year')}>
+                                            Khóa {getSortIcon('course_year')}
+                                        </th>
+                                        <th scope="col" onClick={() => handleSortUser('gender')}>
+                                            Giới tính {getSortIcon('gender')}</th>
                                         <th scope="col">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {currentUsers.map((item, index) => (
                                         <tr key={index}>
-                                            {/* <td>
-                                                <img src={item.avatar_path} alt="Ảnh SV" className="rounded-circle" width="50" />
-                                            </td> */}
                                             <td><b>{item.username}</b></td>
                                             <td>{item.nickname}</td>
                                             <td>{item.email}</td>
@@ -210,27 +364,40 @@ function UserManagementContent() {
                                             <td>{item.faculty_name}</td>
                                             <td>{item.course_year}</td>
                                             <td>{item.gender ? "Nam" : "Nữ"}</td>
-                                            <td><button>View</button></td>
+                                            <td><button type="button" className="btn btn-warning" onClick={() => handleViewUser(item)} data-bs-toggle="modal"
+                                                data-bs-target="#viewUserModel">Xem</button></td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
                         <div className="card-footer border-0 py-5">
-                            <span className="text-muted text-sm">
-                                Showing {usersPerPage} items out of {showUser.length} results found
-                            </span>
-                            <nav aria-label="Page navigation example">
-                                <ul className="pagination">
-                                    {Array.from({ length: totalPages }, (_, i) => (
-                                        <li key={i} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
-                                            <button className="page-link" onClick={() => handlePageChange(i + 1)}>
-                                                {i + 1}
-                                            </button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </nav>
+                            <div className="row">
+                                <div className="col-9">
+                                    <span className="text-muted text-sm">
+                                        Hiển thị {currentUsers.length} sinh viên trong số <b className="text-danger">{showUser.length}</b> sinh viên
+                                    </span>
+                                    <nav aria-label="Page navigation example">
+                                        <ul className="pagination">
+                                            {Array.from({ length: totalPages }, (_, i) => (
+                                                <li key={i} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
+                                                    <button className="page-link" onClick={() => handlePageChange(i + 1)}>
+                                                        {i + 1}
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </nav>
+                                </div>
+                                <div className="col-3 d-flex justify-content-end">
+                                    <button
+                                        className="btn btn-outline-success"
+                                        onClick={handleExportToExcel}
+                                    >
+                                        <i className="bi bi-box-arrow-up-right"></i> Xuất file (excel)
+                                    </button>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -248,10 +415,12 @@ function UserManagementContent() {
                                 <label htmlFor="userFile">Nhập file người dùng(.xlsx hoặc .xls)</label>
                                 <input className="btn d-inline-flex btn-sm btn-success mx-1" type="file" id="userFile" accept=".xlsx, .xls" onChange={handleFileUploadUser} />
                             </div>
-                            <div className="mb-3">
-                                <label htmlFor="userImages">Nhập ảnh người dùng(.png hoặc .jpg)</label>
-                                <input className="btn d-inline-flex btn-sm btn-warning mx-1" type="file" id="userImages" accept=".png, .jpg" onChange={handleUploadImageUsers} multiple />
-                            </div>
+
+                                <div className="mb-3">
+                                    <label htmlFor="userImages">Nhập ảnh người dùng(.png hoặc .jpg)</label>
+                                    <input className="btn d-inline-flex btn-sm btn-warning mx-1" type="file" id="userImages" accept=".png, .jpg" onChange={handleUploadImageUsers} multiple />
+                                </div>
+
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -260,6 +429,53 @@ function UserManagementContent() {
                     </div>
                 </div>
             </div>
+            <div className="modal fade bd-example-modal-lg" id="viewUserModel" tabIndex="-1" aria-labelledby="viewUserModel" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Thông tin Sinh viên: {viewUser?.nickname}</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="row p-2 border border-bottom-3 ">
+                                <div className="col-4">
+                                    <img src={viewUser?.avatar_path} className="rounded" alt="Ảnh sinh viên.." />
+                                </div>
+                                <div className="col-8">
+                                    <div className="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded p-3">
+                                        <h3 className="h2 text-black mb-0">{viewUser?.nickname}</h3>
+                                        <span >Sinh viên khoa: <b className="text-danger">{viewUser?.faculty_name} | {viewUser?.course_year}</b></span>
+                                    </div>
+                                    <hr />
+                                    <h5 className="mb-2">Thông tin chi tiết:</h5>
+                                    <ul className="list-unstyled mb-1-9 ms-3">
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">MSSV:</span> {viewUser?.username}</li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Giới tính:</span>{viewUser?.gender ? 'Nam' : 'Nữ'}</li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Email:</span><a href={`mailto:${viewUser?.email}`}>{viewUser?.email}</a> </li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Số điện thoại:</span>+{viewUser?.phone}</li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Địa chỉ:</span> Phường Tân Phong, TP. Hồ Chí Minh, Việt Nam</li>
+
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="row p-2 border border-bottom-3 ">
+
+                                <label htmlFor="message" className="fw-bold">Gửi tin nhắn cho sinh viên:</label>
+
+                                <textarea name="message" className="border border-black rounded p-2" id="messageText" rows="5" placeholder="Nhập tin nhắn..."></textarea>
+
+                            </div>
+
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="button" id="submitFileBtn" className="btn btn-warning">Nhập</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     );
 }

@@ -166,8 +166,7 @@ function TeacherManagementContent() {
                             <table className="table table-hover table-nowrap">
                                 <thead className="thead-light">
                                     <tr>
-                                        <th scope="col">Ảnh</th>
-                                        <th scope="col">MSSV</th>
+                                        <th scope="col">MSGV</th>
                                         <th scope="col">Họ Và Tên</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Số điện thoại</th>
@@ -181,10 +180,7 @@ function TeacherManagementContent() {
                                 <tbody>
                                     {showTeacher.map((item, index) => (
                                         <tr key={index}>
-                                            <td>
-                                                <img src={item.avatar_path} alt="Ảnh SV" className="rounded-circle" width="50" />
-                                            </td>
-                                            <td><b>{item.Teachername}</b></td>
+                                            <td><b>{item.username}</b></td>
                                             <td>{item.nickname}</td>
                                             <td>{item.email}</td>
                                             <td>+{item.phone}</td>

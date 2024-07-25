@@ -28,19 +28,19 @@ function NavBar({ isNavBarVisible }) {
             });
         }
     }
-    useEffect(() => {
-        if (accessToken) {
-            const tokenExpiry = 10 * 60 * 1000;
-            const bufferTime = 10 * 1000;
+    // useEffect(() => {
+    //     if (accessToken) {
+    //         const tokenExpiry = 10 * 60 * 1000;
+    //         const bufferTime = 10 * 1000;
 
-            const timeId = setTimeout(() => {
-                handleLogout();
-            }, tokenExpiry - bufferTime);
+    //         const timeId = setTimeout(() => {
+    //             handleLogout();
+    //         }, tokenExpiry - bufferTime);
 
-            return () => clearTimeout(timeId);
-        }
+    //         return () => clearTimeout(timeId);
+    //     }
 
-    }, [accessToken])
+    // }, [accessToken])
 
     console.log("navBar");
     if (!isNavBarVisible) {
@@ -127,9 +127,11 @@ function NavBar({ isNavBarVisible }) {
                                     </a>
                                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                         <li><a className="dropdown-item" href="#"><i className="bi bi-clipboard-data"> Quản lý dữ liệu điểm danh</i></a></li>
+
                                         <li><a className="dropdown-item" href="/admin/userManagement"><i className="bi bi-people"> Quản lý sinh viên</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/teacherManagement"><i className="bi bi-people"> Quản lý giảng viên</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/classRoomManagement"><i className="bi bi-person"> Quản lý phòng học</i></a></li>
+                                        <li><a className="dropdown-item" href="/admin/courseManagement"><i className="bi bi-book-half"> Quản lý môn học</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/scheduleManagement"><i className="bi bi-calendar2-week"> Quản lý lịch học</i></a></li>
 
                                     </ul>
