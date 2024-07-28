@@ -23,8 +23,8 @@ import { AttendanceDetail } from './pages/Attendance/AttendanceDetail';
 import { EditProfile } from './pages/Profile/EditProfile';
 import { ChangePassword } from './pages/Profile/ChangePassword';
 import { Schedule } from './pages/Schedule/Schedule';
-import { ClassRoom } from './pages/ClassRoom/ClassRoom';
-import { ClassRoomDetail } from './pages/ClassRoom/ClassRoomDetail';
+import { CourseGroup } from './pages/CourseGroup/CourseGroup';
+import { CourseGroupDetail } from './pages/CourseGroup/CourseGroupDetail';
 //Admin Pages
 import { UserManagement } from './pages/AdminDashBoard/UserManagement/UserManagement';
 import { ClassRoomManagement } from './pages/AdminDashBoard/ClassRoomManagement/ClassRoomManagement';
@@ -32,6 +32,8 @@ import { ScheduleManagement } from './pages/AdminDashBoard/ScheduleManagement/Sc
 import { TeacherManagement } from './pages/AdminDashBoard/TeacherManagement/TeacherManagement'
 import { CourseManagement } from './pages/AdminDashBoard/CourseManagemet/CourseManagement';
 import 'bootstrap/dist/js/bootstrap.min.js';
+import 'react-quill/dist/quill.snow.css';
+
 // import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 
@@ -66,8 +68,8 @@ root.render(
               <Route path="/editProfile" element={<ProtectedRoute element={<EditProfile />} />} />
               <Route path="/changePassword" element={<ProtectedRoute element={<ChangePassword />} />} />
               <Route path="/schedule" element={<ProtectedRoute element={<Schedule />} />} />
-              <Route path="/classroom" element={<ProtectedRoute element={<ClassRoom />} />} />
-              <Route path="/classroom/detail" element={<ProtectedRoute element={<ClassRoomDetail />} />} />
+              <Route path="/coursegroup" element={<ProtectedRoute element={<CourseGroup />} />} />
+              <Route path="/coursegroup/detail/:course_group" element={<ProtectedRoute element={<CourseGroupDetail />} />} />
               <Route path="/admin/userManagement" element={<ProtectedRoute element={<UserManagement />} />} />
               <Route path="/admin/teacherManagement" element={<ProtectedRoute element={<TeacherManagement />} />} />
 

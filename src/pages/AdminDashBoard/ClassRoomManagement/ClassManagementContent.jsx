@@ -68,6 +68,7 @@ function ClassManagementContent() {
             if (response.status === 201) {
                 console.log(response)
                 Swal.fire('Thêm thành công', `Đã thêm các phòng: ${response.created}, và không thêm được các phòng: ${response.skipped}`, 'info');
+                window.location.reload();
             } else {
                 Swal.fire('Có lỗi xảy ra', 'Vui lòng thử lại', 'error');
             }

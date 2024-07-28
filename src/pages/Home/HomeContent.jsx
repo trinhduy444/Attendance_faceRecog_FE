@@ -221,7 +221,7 @@ function HomeContent() {
                             </div>
                         </div>
                         <div className="col-xl-3 col-sm-6 col-12">
-                            <div className="card shadow border-0" onClick={() => handleCardClick('classroom')} style={{ cursor: 'pointer' }}>
+                            <div className="card shadow border-0" onClick={() => handleCardClick('coursegroup')} style={{ cursor: 'pointer' }}>
                                 <div className="card-body">
                                     <div className="row">
                                         <div className="col">
