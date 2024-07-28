@@ -17,12 +17,59 @@ export const adminService = {
             throw err;
         }
     },
+    getAllUsersDetail: async (requestBody) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/admin/getUsersDetail', JSON.stringify(requestBody), {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    getCourseFilter: async (requestBody) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/admin/getUsersDetail', JSON.stringify(requestBody), {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
     getAllTeachers: async () => {
         try {
             const accessToken = localStorage.getItem('accessToken');
             const response = await axiosConfig.post('/admin/getTeachers', {}, {
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    getAllTeachersByFaculty: async (faculty_id) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post(`/admin/getAllTeachersByFaculty?faculty_id=${faculty_id}`, {}, {
+                headers: {
                     'Authorization': 'Bearer ' + accessToken,
                 },
                 withCredentials: true

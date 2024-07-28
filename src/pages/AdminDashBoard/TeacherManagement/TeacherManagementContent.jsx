@@ -2,8 +2,19 @@ import React, { useEffect, useState } from "react"
 import * as XLSX from "xlsx"
 import Swal from "sweetalert2"
 import { adminService } from "../../../services/adminService";
+import { sortArray } from "../../../utils/sortArray"
+
 function TeacherManagementContent() {
     const [showTeacher, setShowTeacher] = useState([]);
+
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const [currentUsers, setCurrentUsers] = useState([]);
+    const [lastSortedColumn, setLastSortedColumn] = useState({ key: '', ascending: true });
+    const usersPerPage = 10;
+
+    // View Teacher
+    const [viewTeacher, setViewTeacher] = useState(null);
     useEffect(() => {
         fetchTeachers();
     }, [])
@@ -14,6 +25,30 @@ function TeacherManagementContent() {
         }
 
     }
+    useEffect(() => {
+        const indexOfLastUser = currentPage * usersPerPage;
+        const indexOfFirstUser = indexOfLastUser - usersPerPage;
+        setCurrentUsers(showTeacher.slice(indexOfFirstUser, indexOfLastUser));
+    }, [showTeacher, currentPage]);
+
+    const totalPages = Math.ceil(showTeacher.length / usersPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+    // Sort
+    const handleSortUser = function (key) {
+        const ascending = lastSortedColumn.key === key ? !lastSortedColumn.ascending : true;
+        const sortedUsers = sortArray([...showTeacher], key, ascending);
+        setShowTeacher(sortedUsers);
+        setCurrentPage(1);
+        setLastSortedColumn({ key, ascending });
+    }
+
+    const getSortIcon = (key) => {
+        if (lastSortedColumn.key !== key) return null;
+        return lastSortedColumn.ascending ? '▲' : '▼';
+    };
     const handleFileUploadTeacher = async (e) => {
         const reader = new FileReader();
         const file = e.target.files[0];
@@ -115,6 +150,59 @@ function TeacherManagementContent() {
     };
 
 
+    const handleExportToExcel = () => {
+        // Dữ liệu
+        const data = showTeacher.map(user => ({
+            'Email Giảng Viên': user.email,
+            'MSGV': user.username,
+            'Họ Và Tên': user.nickname,
+            'Đường dẫn khuôn mặt': user.avatar_path,
+            'Khóa nhập học': user.course_year,
+            'Giới tính': user.gender ? 'Nam' : 'Nữ',
+            'Khoa': user.faculty_name
+        }));
+
+        // Define headers
+        const headers = [
+            'Email Giảng Viên',
+            'MSSV',
+            'Họ Và Tên',
+            'Đường dẫn khuôn mặt',
+            'Khóa nhập học',
+            'Giới tính',
+            'Khoa'
+        ];
+
+        const ws = XLSX.utils.aoa_to_sheet([]);
+        XLSX.utils.sheet_add_aoa(ws, [[`Danh Sách Giảng Viên xuất file ngày ${new Date().toLocaleDateString()}`]], { origin: 'A1' });
+        XLSX.utils.sheet_add_aoa(ws, [headers], { origin: 'A2' });
+        XLSX.utils.sheet_add_json(ws, data, { origin: 'A3', skipHeader: true });
+
+        const columnWidths = [
+            { wch: 30 }, // Email
+            { wch: 15 }, // MSSV
+            { wch: 30 }, // Họ Và Tên
+            { wch: 50 }, // Đường dẫn khuôn mặt
+            { wch: 15 }, // Khóa nhập học
+            { wch: 10 }, // Giới tính
+            { wch: 30 }  // Khoa
+        ];
+        ws['!cols'] = columnWidths;
+
+        // Merge cells for title
+        ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 6 } }];
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Danh Sách Giảng viên');
+
+        const fileName = `DanhSachGiangVien_${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+        XLSX.writeFile(wb, fileName);
+    };
+    //view teacher
+    const handleViewTeacher = (teaher) => {
+        setViewTeacher(teaher);
+    }
     return (
 
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
@@ -160,54 +248,69 @@ function TeacherManagementContent() {
                 <div className="container">
                     <div className="card shadow border-1 mb-7">
                         <div className="card-header">
-                            <h5 className="mb-0">DANH SÁCH SINH VIÊN</h5>
+                            <h5 className="mb-0">DANH SÁCH Giảng Viên</h5>
                         </div>
                         <div className="table-responsive">
                             <table className="table table-hover table-nowrap">
                                 <thead className="thead-light">
                                     <tr>
-                                        <th scope="col">Ảnh</th>
-                                        <th scope="col">MSSV</th>
+                                        <th scope="col">MSGV</th>
                                         <th scope="col">Họ Và Tên</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Số điện thoại</th>
-                                        <th scope="col">Khoa</th>
-                                        <th scope="col">Khóa</th>
-                                        <th scope="col">Giới tính</th>
+                                        <th scope="col" onClick={() => handleSortUser('faculty_name')}>Khoa {getSortIcon('faculty_name')}</th>
+                                        <th scope="col" onClick={() => handleSortUser('course_year')}>
+                                            Khóa {getSortIcon('course_year')}
+                                        </th>
+                                        <th scope="col" onClick={() => handleSortUser('gender')}>
+                                            Giới tính {getSortIcon('gender')}</th>
                                         <th scope="col">Thao tác</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {showTeacher.map((item, index) => (
+                                    {currentUsers.map((item, index) => (
                                         <tr key={index}>
-                                            <td>
-                                                <img src={item.avatar_path} alt="Ảnh SV" className="rounded-circle" width="50" />
-                                            </td>
-                                            <td><b>{item.Teachername}</b></td>
+                                            <td><b>{item.username}</b></td>
                                             <td>{item.nickname}</td>
                                             <td>{item.email}</td>
                                             <td>+{item.phone}</td>
                                             <td>{item.faculty_name}</td>
                                             <td>{item.course_year}</td>
                                             {item.gender ? <td>Nam</td> : <td>Nữ</td>}
-                                            <td><button>View</button></td>
-                                        </tr>
+                                            <td><button type="button" className="btn btn-warning" onClick={() => handleViewTeacher(item)} data-bs-toggle="modal"
+                                                data-bs-target="#viewTeacherModel">Xem</button></td>                                        </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
                         <div className="card-footer border-0 py-5">
-                            <span className="text-muted text-sm">Showing 10 items out of 250 results found</span>
-                            <nav aria-label="Page navigation example">
-                                <ul className="pagination">
-                                    <li className="page-item"><a className="page-link disabled" href="#">Previous</a></li>
-                                    <li className="page-item"><a className="page-link bg-info text-white" href="#">1</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">3</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">Next</a></li>
-                                </ul>
-                            </nav>
+                            <div className="row">
+                                <div className="col-9">
+                                    <span className="text-muted text-sm">
+                                        Hiển thị {currentUsers.length} Giảng Viên trong số <b className="text-danger">{showTeacher.length}</b> Giảng Viên
+                                    </span>
+                                    <nav aria-label="Page navigation example">
+                                        <ul className="pagination">
+                                            {Array.from({ length: totalPages }, (_, i) => (
+                                                <li key={i} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
+                                                    <button className="page-link" onClick={() => handlePageChange(i + 1)}>
+                                                        {i + 1}
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </nav>
+                                </div>
+                                <div className="col-3 d-flex justify-content-end">
+                                    <button
+                                        className="btn btn-outline-success"
+                                        onClick={handleExportToExcel}
+                                    >
+                                        <i className="bi bi-box-arrow-up-right"></i> Xuất file (excel)
+                                    </button>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -229,6 +332,52 @@ function TeacherManagementContent() {
                                 <label htmlFor="TeacherImages">Nhập ảnh người dùng(.png hoặc .jpg)</label>
                                 <input className="btn d-inline-flex btn-sm btn-warning mx-1" type="file" id="TeacherImages" accept=".png, .jpg" onChange={handleUploadImageTeachers} multiple />
                             </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="button" id="submitFileBtn" className="btn btn-warning">Nhập</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="modal fade bd-example-modal-lg" id="viewTeacherModel" tabIndex="-1" aria-labelledby="viewTeacherModel" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Thông tin Giảng viên: {viewTeacher?.nickname}</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="row p-2 border border-bottom-3 ">
+                                <div className="col-4">
+                                    <img src={viewTeacher?.avatar_path} className="rounded" alt="Ảnh Giảng viên.." />
+                                </div>
+                                <div className="col-8">
+                                    <div className="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded p-3">
+                                        <h3 className="h2 text-black mb-0">{viewTeacher?.nickname}</h3>
+                                        <span >Giảng viên khoa: <b className="text-danger">{viewTeacher?.faculty_name} | {viewTeacher?.course_year}</b></span>
+                                    </div>
+                                    <hr />
+                                    <h5 className="mb-2">Thông tin chi tiết:</h5>
+                                    <ul className="list-unstyled mb-1-9 ms-3">
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">MSSV:</span> {viewTeacher?.username}</li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Giới tính:</span>{viewTeacher?.gender ? 'Nam' : 'Nữ'}</li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Email:</span><a href={`mailto:${viewTeacher?.email}`}>{viewTeacher?.email}</a> </li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Số điện thoại:</span>+{viewTeacher?.phone}</li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Địa chỉ:</span> Phường Tân Phong, TP. Hồ Chí Minh, Việt Nam</li>
+
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="row p-2 border border-bottom-3 ">
+
+                                <label htmlFor="message" className="fw-bold">Gửi tin nhắn cho Giảng viên:</label>
+
+                                <textarea name="message" className="border border-black rounded p-2" id="messageText" rows="5" placeholder="Nhập tin nhắn..."></textarea>
+
+                            </div>
+
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>

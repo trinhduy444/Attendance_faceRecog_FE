@@ -16,19 +16,19 @@ const headerLinks = {
             { path: '/notification', label: 'Thông báo', icon: 'bi bi-bell' }
         ]
     },
-    '/classroom': {
-        title: 'Phòng học',
+    '/coursegroup': {
+        title: 'Nhóm học',
         links: [
             { path: '/', label: 'Trang chủ', icon: 'bi bi-house' },
-            { path: '/classroom', label: 'Phòng học', icon: 'bi bi-people' }
+            { path: '/coursegroup', label: 'Nhóm học', icon: 'bi bi-people' }
         ]
     },
-    '/classroom/detail': {
-        title: 'Chi tiết phòng học',
+    '/coursegroup/detail': {
+        title: 'Chi tiết Nhóm học',
         links: [
             { path: '/', label: 'Trang chủ', icon: 'bi bi-house' },
-            { path: '/classroom', label: 'Phòng học', icon: 'bi bi-people' },
-            { path: '/classroom/detail', label: 'Chi tiết phòng học', icon: 'bi bi-info' }
+            { path: '/coursegroup', label: 'Nhóm học', icon: 'bi bi-people' },
+            { path: '/coursegroup/detail', label: 'Chi tiết Nhóm học', icon: 'bi bi-info' }
         ]
     },
     '/schedule': {
