@@ -75,3 +75,12 @@
 .event-classroom{
     border: 1px solid #090909;
 }
+
+
+.btnEditPost:hover {
+    background-color: #ccc;
+}
+
+.btnDeletePost:hover {
+    background-color: #ccc;
+}
