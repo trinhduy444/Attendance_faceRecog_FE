@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 // Error page
 import MyErrorBoundary from './pages/Error/ErrorFallback';
+import ErrorPage from './pages/Error/ErrorPage';
 //Redux
 import { createStore } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
@@ -30,7 +31,7 @@ import { UserManagement } from './pages/AdminDashBoard/UserManagement/UserManage
 import { ClassRoomManagement } from './pages/AdminDashBoard/ClassRoomManagement/ClassRoomManagement';
 import { ScheduleManagement } from './pages/AdminDashBoard/ScheduleManagement/ScheduleManagement';
 import { TeacherManagement } from './pages/AdminDashBoard/TeacherManagement/TeacherManagement'
-import { CourseManagement } from './pages/AdminDashBoard/CourseManagemet/CourseManagement';
+import { CourseManagement } from './pages/AdminDashBoard/CourseManagement/CourseManagement';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import 'react-quill/dist/quill.snow.css';
 
@@ -56,7 +57,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <React.StrictMode>
+      {/* <React.StrictMode> */}
         <Router>
           <MyErrorBoundary>
             <Routes>
@@ -76,12 +77,12 @@ root.render(
               <Route path="/admin/classRoomManagement" element={<ProtectedRoute element={<ClassRoomManagement />} />} />
               <Route path="/admin/scheduleManagement" element={<ProtectedRoute element={<ScheduleManagement />} />} />
               <Route path="/admin/courseManagement" element={<ProtectedRoute element={<CourseManagement />} />} />
-
-              <Route path="*" element={<Navigate to="/" />} />
+              <Route path="/error" element={<ErrorPage />} />
+              {/* <Route path="*" element={<Navigate to="/" />} /> */}
             </Routes>
           </MyErrorBoundary>
         </Router>
-      </React.StrictMode>
+      {/* </React.StrictMode> */}
     </PersistGate>
   </Provider>
 );

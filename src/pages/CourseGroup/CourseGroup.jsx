@@ -9,15 +9,9 @@ import "../../assets/css/coursegroup.css"
 export const CourseGroup = () => {
     const [isNavBarVisible, setIsNavBarVisible] = useState(false);
     const user = useSelector(state => state.auth.user);
-    const [role, setRole] = useState(null);
+    const [role, setRole] = useState(user.role_id);
     useEffect(() => {
         document.title = "Phòng học"
-        if (user.role_id === 2) {
-            setRole(2)
-        }
-        else {
-            setRole(3)
-        }
     }, [])
     const toggleNavBar = () => {
         setIsNavBarVisible(!isNavBarVisible);

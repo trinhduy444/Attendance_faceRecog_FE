@@ -50,9 +50,11 @@ function CourseManagementContent() {
         setCourseSelect(course.course_code)
         setViewCourse(course);
     }
+    
     const handleShiftChange = (e) => {
         setSelectedShift(e.target.value);
     };
+    // Tìm kiếm
     const handleSearchRoom = async () => {
 
         setShiftEmpty([])
@@ -65,6 +67,7 @@ function CourseManagementContent() {
             setRooms(response.metadata);
         }
     }
+    // Chọn phòng học
     const handleChooseRoom = async (classroom_code) => {
         setClassroom_code(classroom_code);
         const response = await roomService.getShiftEmpty(classroom_code);
@@ -78,6 +81,7 @@ function CourseManagementContent() {
         setCourseSelect(undefined);
     }
 
+    // Upload các thành viên trong nhóm học
     const handleFileUploadUser = async (e) => {
         const reader = new FileReader();
         const file = e.target.files[0];
@@ -116,6 +120,7 @@ function CourseManagementContent() {
         }
     }
 
+    // Create Nhóm học
     const handleCreateCourseGroup = async (e) => {
         e.preventDefault();
         const selectTeacher = document.querySelector("#selectTeacher").value;

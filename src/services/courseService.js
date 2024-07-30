@@ -48,6 +48,45 @@ export const courseService = {
             console.error(err);
             throw err;
         }
-    }
-
+    },
+    getCourseGroupStudent: async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/courses/getCourseGroupByStudent',{}, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    
+    getInfoCourseGroup: async (course_group_id) => {
+        try {
+            const response = await axiosConfig.get(`/courses/getInfoCourseGroup/${course_group_id}`);
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    checkAccessCourseGroup: async (course_group_id) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post(`/courses/checkAccessCourseGroup/:${course_group_id}`,{}, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
 };
