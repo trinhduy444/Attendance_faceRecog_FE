@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import sclogo from "../assets/images/sclogo.jpg"
+import NavBarToggle from './NavBarToggle';
 
 const headerLinks = {
     '/': {
@@ -57,7 +58,7 @@ const headerLinks = {
 };
 
 
-function Header() {
+function Header({toggleNavBar}) {
     const location = useLocation();
 
     const currentHeader = headerLinks[location.pathname] || { title: '', links: [] };
@@ -71,7 +72,7 @@ function Header() {
                     <div className="row align-items-center">
                         <div className="col-sm-6 col-12 mb-4 mb-sm-0">
                             <h1 className="h2 mb-0 ls-tight">
-                                <img src={sclogo} width="40" className="rounded-circle" /> {title}
+                                <NavBarToggle toggleNavBar={toggleNavBar} /> {title}
                             </h1>
                         </div>
                     </div>

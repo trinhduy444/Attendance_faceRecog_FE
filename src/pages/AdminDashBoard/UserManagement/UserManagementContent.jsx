@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useMemo } from "react"
+import React, { useEffect, useState } from "react"
 import * as XLSX from "xlsx"
 import Swal from "sweetalert2"
 import { adminService } from "../../../services/adminService";
 import { sortArray } from "../../../utils/sortArray"
 import '../../../assets/css/adminDashboard.css'
-import MyErrorBoundary from "../../Error/ErrorFallback";
-function UserManagementContent() {
+// import MyErrorBoundary from "../../Error/ErrorFallback";
+import NavBarToggle from "../../../components/NavBarToggle";
+function UserManagementContent({toggleNavBar}) {
     // Declare array to show
     const [showUser, setShowUser] = useState([]);
     // Declare pagination and sort arrays
@@ -34,8 +35,8 @@ function UserManagementContent() {
     }, [])
 
     // Fetch all users have filters
-
     const handleFetchUserFilter = async () => {
+
         let type = isNaN(inputFilter.charAt(0)) ? 0 : 1;
         if (genderFilter !== undefined) {
             setGenderFilter(parseInt(genderFilter))
@@ -248,7 +249,8 @@ function UserManagementContent() {
                             <div className="col-sm-6 col-12 mb-4 mb-sm-0">
 
                                 <h1 className="h2 mb-0 ls-tight">
-                                    QUẢN LÝ SINH VIÊN - ADMIN DASHBOARD</h1>
+                                <NavBarToggle toggleNavBar={toggleNavBar} />
+                                QUẢN LÝ SINH VIÊN</h1>
                             </div>
                             <div className="col-sm-6 col-12 text-sm-end">
                                 <div className="mx-n1">

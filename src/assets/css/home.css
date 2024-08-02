@@ -36,7 +36,7 @@
     font-family: 'Helvetica', Courier, monospace;
 }
 
-.btnToggleNavBar {
+/* .btnToggleNavBar {
     position: relative;
     top: 200px;
     width: 40px;
@@ -47,4 +47,4 @@
 }
 .btnUsermanage{
     z-index: 9999;
-}
+} */

@@ -1,10 +1,10 @@
 import React, { useEffect,useState } from "react"
 import NavBar from "../../../components/NavBar"
-import UserManagementContent from "./UserManagementContent"
-export const UserManagement = () => {
+import NotifyManagementContent from "./NotifyManagementContent"
+export const NotifyManagement = () => {
     const [isNavBarVisible, setIsNavBarVisible] = useState(false);
     useEffect(() => {
-        document.title = "Quản lý người dùng"
+        document.title = "Quản lý thông báo"
     }, [])
     const toggleNavBar = () => {
         setIsNavBarVisible(!isNavBarVisible);
@@ -13,7 +13,7 @@ export const UserManagement = () => {
     return (
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
             <NavBar isNavBarVisible={isNavBarVisible} />
-            <UserManagementContent toggleNavBar={toggleNavBar} />
+            <NotifyManagementContent toggleNavBar={toggleNavBar}/>
         </div>
     )
 }

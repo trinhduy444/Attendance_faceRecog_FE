@@ -1,5 +1,10 @@
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 import '../../assets/css/errorpage.css'
+
 const ErrorPage = () => {
+    const location = useLocation();
+    const { status, message } = location.state || { status: 404, message: "Không tìm thấy nội dung hoặc bạn không thể truy cập nội dung này" };
     return (
         <div class="container">
             <div class="error-content">
@@ -7,7 +12,7 @@ const ErrorPage = () => {
                     <div class="row">
                         <div class="col-md-12 ">
                             <div class="error-text">
-                                <h3 class="error">404 Error!</h3>
+                                <h3 class="error">{status} Error!</h3>
                                 <div class="im-sheep">
                                     <div class="top">
                                         <div class="body"></div>
@@ -27,7 +32,7 @@ const ErrorPage = () => {
                                     </div>
                                 </div>
                                 <h4>KHÔNG TÌM THẤY NỘI DUNG!</h4>
-                                <p>Xin lỗi, có vẻ như bạn không có quyền truy cập hoặc đường dẫn không tồn tại.</p>
+                                <p>{message}</p>
                                 <a class="btn btn-primary btn-round" href="/">Trở về trang chủ</a>
                             </div>
                         </div>

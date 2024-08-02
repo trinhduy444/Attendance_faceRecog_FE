@@ -1,197 +1,127 @@
-import React from 'react';
+import React, { useEffect, useState } from "react"
+import { notifyService } from '../../services/notifyService';
+import { convertDay } from '../../utils/convertDay'
+import { displayContent } from '../../utils/displayContent'
+import Swal from "sweetalert2"
+import FilterNotification from './FilterNotification'
+function NotificationContent({ notifications }) {
+    const [notificationDetail, setNotificationDetail] = useState()
+    const [savedNotifications, setSavedNotifications] = useState([]);
 
-function NotificationContent() {
+    //pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const notificationsPerPage = 3;
+    useEffect(() => {
+        const saved = JSON.parse(localStorage.getItem('notificationSaved')) || [];
+        setSavedNotifications(saved);
+    }, [])
+
+    // Handle Pagination
+    const totalPages = Math.ceil(notifications.length / notificationsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+    // Set View Notifications
+    const viewedNotifications = async (notify_id, status) => {
+        if (status === true) return
+        else {
+            await notifyService.viewNotification(notify_id)
+            return
+        }
+    }
+    // Show detail
+    const showModalDetails = (notification) => {
+        viewedNotifications(notification.notify_id, notification.nu_status)
+        setNotificationDetail(notification)
+    }
+    // Save and unsave noti
+    const saveNotification = (notify_id) => {
+        const updatedSavedNotifications = [...savedNotifications, notify_id];
+        setSavedNotifications(updatedSavedNotifications);
+        localStorage.setItem('notificationSaved', JSON.stringify(updatedSavedNotifications));
+    };
+
+    const unsaveNotification = (notify_id) => {
+        const updatedSavedNotifications = savedNotifications.filter(id => id !== notify_id);
+        setSavedNotifications(updatedSavedNotifications);
+        localStorage.setItem('notificationSaved', JSON.stringify(updatedSavedNotifications));
+    };
+
+    // Check save
+    const isNotificationSaved = (notify_id) => {
+        return savedNotifications.includes(notify_id);
+    };
+    // pagination part 2
+    const indexOfLastNotification = currentPage * notificationsPerPage;
+    const indexOfFirstNotification = indexOfLastNotification - notificationsPerPage;
+    const currentNotifications = notifications.slice(indexOfFirstNotification, indexOfLastNotification);
     return (
-        <div> 
-            <main className="py-6 bg-surface-secondary">
-                <div className="container">
-                    <div className="row mb-2">
-                        <div className="col-6">
-                            <input type="search" className="form-control" id="datatable-search-input"
-                                placeholder="Tìm kiếm theo tiêu đề..." />
-                        </div>
-                        <div className="col-4">
-                            <input type="search" className="form-control" id="datatable-search-input"
-                                placeholder="Tìm kiếm theo tên người thông báo..." />
-                        </div>
-                        <div className="col-2">
-                            <button className="btn btn-outline-danger"> <i className="bi bi-x-lg"></i>
-                                Xóa</button>
-                        </div>
-                    </div>
-                    <div className="row mb-2">
-                        <div className="col-4">
-                            <select className="form-select" aria-label="Default select example">
-                                <option defaultValue={"none"}>Chọn loại thông báo</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </select>
-                        </div>
-                        <div className="col-3">
-                            <div className="d-flex justify-content-evenly">
-                                <label htmlFor="" className="mt-2">Từ: </label>
-                                <input className="form-control" type="date" placeholder="Đến ngày" />
-                            </div>
-                        </div>
 
-                        <div className="col-3">
-                            <div className="d-flex justify-content-evenly">
-                                <label htmlFor="" className="mt-2">Đến: </label>
-                                <input className="form-control" type="date" placeholder="Đến ngày" />
-                            </div>
-                        </div>
-
-                        <div className="col-2">
-                            <button className="btn btn-outline-primary"> <i className="bi bi-search"></i>
-                                Tìm kiếm</button>
-                        </div>
-                    </div>
-                    <div className="row ">
-                        <div className="col-3 mt-2 d-flex justify-content-center">
-                            <h5> Trang 1 trong 93 trang
-                            </h5>
-                        </div>
-                        <div className="col-9">
-                            <nav aria-label="page-notification">
-                                <ul className="pagination">
-                                    <li className="page-item">
-                                        <a className="page-link" href="#" aria-label="Previous">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
-                                    </li>
-                                    <li className="page-item"><a className="page-link" href="#">1</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">3</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">...</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">91</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">92</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">93</a></li>
-                                    <li className="page-item">
-                                        <a className="page-link" href="#" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-
-                    </div>
-                    <div className="div-notification">
-                        <div className="row mt-4">
-                            <div className="col-12">
-                                <div className="card">
-                                    <div className="card-body">
-                                        <h5 className="card-title text-primary" > <p
+        <div className="row">
+            <div className="col-3 mt-2 d-flex justify-content-center">
+                <h5> Trang {currentPage} trong <b className="text-danger">{totalPages}</b> trang </h5>
+            </div>
+            <div className="col-9">
+                <nav aria-label="page-notification">
+                    <ul className="pagination">
+                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                            <a className="page-link" type="button" aria-label="Previous" onClick={() => handlePageChange(currentPage - 1)}>
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {[...Array(totalPages)].map((_, index) => (
+                            <li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
+                                <a className="page-link" type="button" onClick={() => handlePageChange(index + 1)}>{index + 1}</a>
+                            </li>
+                        ))}
+                        <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                            <a className="page-link" type="button" aria-label="Next" onClick={() => handlePageChange(currentPage + 1)}>
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div className="div-notifications">
+                {currentNotifications.map((notification, index) => (
+                    <div className="row mb-1" key={index}>
+                        <div className="card">
+                            <div className="card-body">
+                                <h5 className="card-title text-primary">
+                                    {isNotificationSaved(notification.notify_id) ? (
+                                        <p
                                             className="badge badge-pill bg-soft-success text-success me-2">
                                             Đã lưu
-                                        </p>DANH SÁCH THI CUỐI KỲ HK 2/2023-2024 (BẮT ĐẦU THI TỪ
-                                            27/05/2024)</h5>
-                                        <h6 className="card-subtitle mb-2 text-muted">Ths.NCS Vu Dinh Hong | Ngày đăng:
-                                            25/05/2024</h6>
-                                        <p className="card-text">Sinh viên xem Danh sách thi cuối kỳ HK 2/2023-2024 trong
-                                            thông báo.</p>
-                                        <a className="card-link" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#detailNotificationModal">Xem chi tiết</a>
-                                        <button className="btn btn-outline-danger btnSaveNotification"><i
-                                            className="bi bi-save"></i>
-                                            Lưu</button>
-                                    </div>
+                                        </p>
 
+                                    ) : (
+                                        null
+                                    )}
+                                    {notification.nu_status ? (null) : (<p
+                                        className="badge badge-pill bg-soft-danger text-danger me-2">
+                                        Chưa xem
+                                    </p>)}
+                                    {notification.title}
+                                </h5>
+                                <h6 className="card-subtitle mb-2 text-muted">
+                                    {notification.nickname} | Ngày đăng: {convertDay(notification.create_time)}
+                                </h6>
+                                <div className="d-flex justify-content-between">
+                                    <a className="card-link" type="button" data-bs-toggle="modal" data-bs-target="#detailNotificationModal" onClick={() => showModalDetails(notification)}>
+                                        Xem chi tiết
+                                    </a>
+                                    {isNotificationSaved(notification.notify_id) ? (
+                                        <button type="button" className="btn btn-danger" onClick={() => unsaveNotification(notification.notify_id)}>Hủy lưu thông báo</button>
+                                    ) : (
+                                        <button type="button" className="btn btn-outline-success" onClick={() => saveNotification(notification.notify_id)}>Lưu thông báo</button>
+                                    )}
                                 </div>
                             </div>
-                        </div>
-
-                        <div className="row mt-4">
-                            <div className="col-12">
-                                <div className="card">
-                                    <div className="card-body">
-                                        <h5 className="card-title text-primary"><p
-                                            className="badge badge-pill bg-soft-danger text-danger me-2">
-                                            Chưa xem
-                                        </p>DANH SÁCH THI CUỐI KỲ HK 2/2023-2024 (BẮT ĐẦU THI TỪ
-                                            27/05/2024)</h5>
-                                        <h6 className="card-subtitle mb-2 text-muted">Ths.NCS Vu Dinh Hong | Ngày đăng:
-                                            25/05/2024</h6>
-                                        <p className="card-text">Sinh viên xem Danh sách thi cuối kỳ HK 2/2023-2024 trong
-                                            thông báo.</p>
-                                        <a className="card-link" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#detailNotificationModal">Xem chi tiết</a>
-                                        <button className="btn btn-outline-danger btnSaveNotification"><i
-                                            className="bi bi-save"></i>
-                                            Lưu</button>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row mt-4">
-                            <div className="col-12">
-                                <div className="card">
-                                    <div className="card-body">
-                                        <h5 className="card-title text-primary">DANH SÁCH THI CUỐI KỲ HK 2/2023-2024 (BẮT ĐẦU THI TỪ
-                                            27/05/2024)</h5>
-                                        <h6 className="card-subtitle mb-2 text-muted">Ths.NCS Vu Dinh Hong | Ngày đăng:
-                                            25/05/2024</h6>
-                                        <p className="card-text">Sinh viên xem Danh sách thi cuối kỳ HK 2/2023-2024 trong
-                                            thông báo.</p>
-                                        <a className="card-link" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#detailNotificationModal">Xem chi tiết</a>
-                                        <button className="btn btn-outline-danger btnSaveNotification"><i
-                                            className="bi bi-save"></i>
-                                            Lưu</button>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row mt-4">
-                            <div className="col-12">
-                                <div className="card">
-                                    <div className="card-body">
-                                        <h5 className="card-title text-primary">DANH SÁCH THI CUỐI KỲ HK 2/2023-2024 (BẮT ĐẦU THI TỪ
-                                            27/05/2024)</h5>
-                                        <h6 className="card-subtitle mb-2 text-muted">Ths.NCS Vu Dinh Hong | Ngày đăng:
-                                            25/05/2024</h6>
-                                        <p className="card-text">Sinh viên xem Danh sách thi cuối kỳ HK 2/2023-2024 trong
-                                            thông báo.</p>
-                                        <a className="card-link" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#detailNotificationModal">Xem chi tiết</a>
-                                        <button className="btn btn-outline-danger btnSaveNotification"><i
-                                            className="bi bi-save"></i>
-                                            Lưu</button>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row mt-2">
-                            <nav aria-label="page-notification" className="d-flex justify-content-center">
-                                <ul className="pagination">
-                                    <li className="page-item">
-                                        <a className="page-link" href="#" aria-label="Previous">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
-                                    </li>
-                                    <li className="page-item"><a className="page-link" href="#">1</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">3</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">...</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">91</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">92</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">93</a></li>
-                                    <li className="page-item">
-                                        <a className="page-link" href="#" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
                         </div>
                     </div>
-                </div>
-
-            </main>
+                ))}
+            </div>
             {/* <!-- Modal --> */}
             <div className="modal fade" id="detailNotificationModal" tabIndex="-1"
                 aria-labelledby="detailNotificationModalLabel" aria-hidden="true">
@@ -203,27 +133,16 @@ function NotificationContent() {
                         </div>
                         <div className="modal-body">
                             <h2 className="d-flex justify-content-center text-primary">
-                                DANH SÁCH THI CUỐI KỲ HK 2/2023-2024 (BẮT ĐẦU THI TỪ 27/05/2024)
+                                {notificationDetail?.title}
                             </h2>
                             <p className="d-flex justify-content-center">
-                                Ths.NCS Vu Dinh Hong | Ngày đăng: 25/05/2024
+                                {notificationDetail?.nickname} | Ngày đăng: {convertDay(notificationDetail?.create_time)}
                             </p>
                             <span className="d-flex justify-content-start">
-                                Sinh viên xem Danh sách thi cuối kỳ HK 2/2023-2024 trong thông báo.
+                                {displayContent({ content: notificationDetail?.content })}
                             </span>
-                            Lưu ý:
-
-                            - Danh sách sẽ được cập nhật trước ngày thi ít nhất 02 ngày.
-                            - Sinh viên phải có mặt tại phòng thi trước giờ thi ít nhất 30 phút
-                            - Sinh viên xem lịch thi/danh sách thi trong file đính kèm.
-                            - Sinh viên phải mang theo thẻ sinh viên hoặc CCCD khi vào phòng dự thi.
-
-                            - Các trường hợp thắc mắc về lịch thi vui lòng liên hệ phòng Đại học (A0005) hoặc email:
-                            phongdaihoc@tdtu.edu.vn
-
-                            - SV xem lịch thi cá nhân trong mục "Lịch thi" trên cổng thông tin sinh viên.
-
-                            - SV xem lịch thi tổng quát trong mục "Thông báo" trên cổng thông tin sinh viên
+                            {notificationDetail?.file_link ? (
+                                <><p className="mt-2 fw-bold">Đường dẫn đính kèm:</p><a href={notificationDetail?.file_link} target="_blank" rel="noopener noreferrer">{notificationDetail?.file_link}</a></>) : (null)}
 
                         </div>
                         <div className="modal-footer">
@@ -234,6 +153,9 @@ function NotificationContent() {
                 </div>
             </div>
         </div>
+
+
+
     );
 }
 export default React.memo(NotificationContent);

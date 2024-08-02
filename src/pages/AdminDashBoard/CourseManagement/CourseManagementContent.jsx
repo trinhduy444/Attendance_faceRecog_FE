@@ -4,7 +4,8 @@ import Swal from "sweetalert2"
 import { courseService } from "../../../services/courseService";
 import { roomService } from "../../../services/roomService";
 import { adminService } from "../../../services/adminService";
-function CourseManagementContent() {
+import NavBarToggle from "../../../components/NavBarToggle";
+function CourseManagementContent({toggleNavBar}) {
     const [courses, setCourses] = useState([])
     const [facultyId, setFacultyId] = useState("");
     const [inputFilter, setInputFilter] = useState("");
@@ -50,7 +51,7 @@ function CourseManagementContent() {
         setCourseSelect(course.course_code)
         setViewCourse(course);
     }
-    
+
     const handleShiftChange = (e) => {
         setSelectedShift(e.target.value);
     };
@@ -139,11 +140,11 @@ function CourseManagementContent() {
             students: dataSend
         }
         const res = await courseService.createCourseGroup(requestBody)
-        if(res.data.status === 201){
+        if (res.data.status === 201) {
             Swal.fire('Thêm thành công', `Đã thêm nhóm ${courseName}`, 'success');
             closeModel()
         }
-        else{
+        else {
             Swal.fire('Lỗi', `Không thể thêm!`, 'error');
         }
 
@@ -159,7 +160,8 @@ function CourseManagementContent() {
                             <div className="col-sm-6 col-12 mb-4 mb-sm-0">
 
                                 <h1 className="h2 mb-0 ls-tight">
-                                    QUẢN LÝ MÔN HỌC - ADMIN DASHBOARD</h1>
+                                    <NavBarToggle toggleNavBar={toggleNavBar} />
+                                    QUẢN LÝ MÔN HỌC</h1>
                             </div>
                             <div className="col-sm-6 col-12 text-sm-end">
 
@@ -394,7 +396,7 @@ function CourseManagementContent() {
                                         {shiftEmpty.map((shift) => (
                                             <div key={shift} style={{ display: 'inline-block', margin: '10px' }}>
                                                 <label htmlFor="shiftEmpt"><b>{shift} -&nbsp;</b></label>
-                                                <input type="radio" id={shift} name="shiftEmpt" value={shift} required onChange={handleShiftChange}/>
+                                                <input type="radio" id={shift} name="shiftEmpt" value={shift} required onChange={handleShiftChange} />
                                             </div>
                                         ))}
                                     </section>

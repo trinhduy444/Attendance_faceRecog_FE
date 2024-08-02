@@ -1,10 +1,10 @@
 import axiosConfig from "../utils/axiosConfig";
 
-export const courseService = {
-    getCourseFilter: async (requestBody) => {
+export const notifyService = {
+    createNotify: async (requestBody) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axiosConfig.post('/courses/getCourseFilter', JSON.stringify(requestBody), {
+            const response = await axiosConfig.post('/notify/createNotification', JSON.stringify(requestBody), {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + accessToken,
@@ -17,13 +17,11 @@ export const courseService = {
             throw err;
         }
     },
-    createCourseGroup: async (requestBody) => {
-        // console.log("haha",JSON.stringify(requestBody));
+    getAllNotifications: async () => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axiosConfig.post('/courses/createCourseGroup', JSON.stringify(requestBody), {
+            const response = await axiosConfig.post('/notify/getAllNotifications', {}, {
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + accessToken,
                 },
                 withCredentials: true
@@ -34,74 +32,64 @@ export const courseService = {
             throw err;
         }
     },
-    getCourseGroupTeacher: async () => {
+    getAllNotificationsActiveByUser: async () => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axiosConfig.post('/courses/getCourseGroupByTeacher', {}, {
+            const response = await axiosConfig.post('/notify/getAllNotificationsActiveByUser', {}, {
                 headers: {
                     'Authorization': 'Bearer ' + accessToken,
                 },
                 withCredentials: true
             });
-            return response.data;
+            return response;
         } catch (err) {
             console.error(err);
             throw err;
         }
     },
-    getCourseGroupStudent: async () => {
+    hideNotification: async (notify_id) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axiosConfig.post('/courses/getCourseGroupByStudent', {}, {
+            const response = await axiosConfig.put(`/notify/hideNotifications/${notify_id}`, {}, {
                 headers: {
                     'Authorization': 'Bearer ' + accessToken,
                 },
                 withCredentials: true
             });
-            return response.data;
+            return response;
         } catch (err) {
             console.error(err);
             throw err;
         }
     },
-
-    getInfoCourseGroup: async (course_group_id) => {
-        try {
-            const response = await axiosConfig.get(`/courses/getInfoCourseGroup/${course_group_id}`);
-            return response.data;
-        } catch (err) {
-            console.error(err);
-            throw err;
-        }
-    },
-    checkAccessCourseGroup: async (course_group_id) => {
+    showNotification: async (notify_id) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axiosConfig.post(`/courses/checkAccessCourseGroup/:${course_group_id}`, {}, {
+            const response = await axiosConfig.put(`/notify/showNotifications/${notify_id}`, {}, {
                 headers: {
                     'Authorization': 'Bearer ' + accessToken,
                 },
                 withCredentials: true
             });
-            return response.data;
+            return response;
         } catch (err) {
             console.error(err);
             throw err;
         }
     },
-    getAllCourseGroupActive: async () => {
+    viewNotification: async (notify_id) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axiosConfig.post(`/courses/getAllCourseGroupActive`, {}, {
+            const response = await axiosConfig.put(`/notify/viewNotification/${notify_id}`, {}, {
                 headers: {
                     'Authorization': 'Bearer ' + accessToken,
                 },
                 withCredentials: true
             });
-            return response.data;
+            return response;
         } catch (err) {
             console.error(err);
             throw err;
         }
-    },
-};
+    }
+}

@@ -107,13 +107,12 @@ function NavBar({ isNavBarVisible }) {
                                             khẩu</i></a></li>
                                     </ul>
                                 </li>
-                                <li className="nav-item dropdown">
-                                    <a className="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                        <i className="bi bi-activity"></i> Hoạt động
-                                    </a>
-
-                                    {user.role_id === 3 ? (
+                                {user.role_id === 3 ? (
+                                    <li className="nav-item dropdown">
+                                        <a className="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            <i className="bi bi-activity"></i> Hoạt động
+                                        </a>
                                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 
                                             <li><a className="dropdown-item" href="/notification"><i className="bi bi-bell"></i> Thông báo</a></li>
@@ -122,33 +121,35 @@ function NavBar({ isNavBarVisible }) {
                                             <li><a className="dropdown-item" href="/attendance"><i className="bi bi-clipboard-data"></i> Dữ liệu điểm danh</a></li>
                                             <li><a className="dropdown-item" href="/coursegroup"><i className="bi bi-people"></i> Nhóm học</a></li>
                                         </ul>
-                                    ) : user.role_id === 2 ? (
-                                        <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    </li>
+                                ): user.role_id === 2 ?(
+                                    <li className="nav-item dropdown">
+                                    <a className="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <i className="bi bi-activity"></i> Hoạt động
+                                    </a>
+                                    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                             <li><a className="dropdown-item" href="/notification"><i className="bi bi-bell"></i> Thông báo</a></li>
                                             <li><a className="dropdown-item" href="/coursegroup"><i className="bi bi-people"></i> Nhóm học</a></li>
                                             <li><a className="dropdown-item" href="/teacher/userManagement"><i className="bi bi-people"></i> Quản lý sinh viên</a></li>
                                         </ul>
-                                    ) : null}
-
-
                                 </li>
-                                {user.role_id === 1 && (<li className="nav-item dropdown">
+                                ): user.role_id === 1 ? (<li className="nav-item dropdown">
                                     <a className="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown"
                                         aria-expanded="false">
                                         <i className="bi bi-file-text"></i> Admin Dashboard
                                     </a>
                                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                        <li><a className="dropdown-item" href="#"><i className="bi bi-clipboard-data"> Quản lý dữ liệu điểm danh</i></a></li>
-
+                                        <li><a className="dropdown-item" href="/admin/notifyManagement"><i className="bi bi-bell"> Quản lý thông báo</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/userManagement"><i className="bi bi-people"> Quản lý sinh viên</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/teacherManagement"><i className="bi bi-people"> Quản lý giảng viên</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/classRoomManagement"><i className="bi bi-person"> Quản lý phòng học</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/courseManagement"><i className="bi bi-book-half"> Quản lý môn học</i></a></li>
+                                        <li><a className="dropdown-item" href="#"><i className="bi bi-clipboard-data"> Quản lý dữ liệu điểm danh</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/scheduleManagement"><i className="bi bi-calendar2-week"> Quản lý lịch học</i></a></li>
 
                                     </ul>
-                                </li>)}
-
+                                </li>) : null}
 
                             </ul>
                             <hr className="navbar-divider my-5 opacity-20" />

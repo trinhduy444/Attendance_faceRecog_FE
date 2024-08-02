@@ -9,7 +9,7 @@ import CommentComponent from './CommentComponent'
 function CourseGroupDetailContent({ role, course_group }) {
     const [content, setContent] = useState('');
     const [posts, setPosts] = useState([]);
-    const [info,setInfo] = useState(null);
+    const [info, setInfo] = useState(null);
     // post edit
     const [editPost, setEditPost] = useState();
     const [editContent, setEditContent] = useState('');
@@ -219,7 +219,7 @@ function CourseGroupDetailContent({ role, course_group }) {
                                             data-bs-target="#createPost" className='btn btn-success'>Tạo bài đăng</button>
                                     </div>
                                     <div className="col-6">
-                                        <button className='btn btn-success'>Tạo bài đăng</button>
+                                        <a href="/createNotify" className='btn btn-primary'>Tạo thông báo</a>
                                     </div>
                                 </div>
                             ) : (null)}

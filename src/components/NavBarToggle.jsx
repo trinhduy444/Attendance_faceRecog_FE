@@ -1,12 +1,11 @@
 import React from 'react';
+import sclogo from "../assets/images/sclogo.jpg";
 
 function NavBarToggle({ toggleNavBar }) {
     return (
-        <div className="btnToggleNavBar">
-            <button className="btn btn-light rounded border border-info" id="sidebarToggle" onClick={toggleNavBar}>
-                <i className="bi bi-list"></i>
-            </button>
-        </div>
+        <a className="btn btn-light rounded bg-white " id="sidebarToggle" type='button' onClick={toggleNavBar}>
+            <img src={sclogo} width="40" className="rounded-circle" />
+        </a>
     );
 }
 

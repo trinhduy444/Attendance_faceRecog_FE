@@ -41,7 +41,7 @@ export const authService = {
             headers: { 'Authorization': 'Bearer ' + accessToken }
         }).then(response => {
             if (response.data.status === 200) {
-                localStorage.removeItem('accessToken');
+                localStorage.clear()
                 return response.data;
             }
             return response.data;

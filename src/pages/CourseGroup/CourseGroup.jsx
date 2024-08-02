@@ -22,8 +22,7 @@ export const CourseGroup = () => {
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
             <NavBar isNavBarVisible={isNavBarVisible} />
             <div className="h-screen flex-grow-1">
-                <Header />
-                <NavBarToggle toggleNavBar={toggleNavBar} />
+                <Header toggleNavBar={toggleNavBar} />
                 <CourseGroupContent role={role} />
             </div>
         </div>
