@@ -46,7 +46,7 @@ export const CourseGroupDetail = () => {
                             <div className="row align-items-center">
                                 <div className="col-sm-6 col-12 mb-4 mb-sm-0">
                                     <h1 className="h2 mb-0 ls-tight">
-                                        <img src={sclogo} width="40" className="rounded-circle" /> Chi tiết nhóm học
+                                    <NavBarToggle toggleNavBar={toggleNavBar} />Chi tiết nhóm học
                                     </h1>
                                 </div>
                             </div>
@@ -70,7 +70,7 @@ export const CourseGroupDetail = () => {
                         </div>
                     </div>
                 </header>
-                <NavBarToggle toggleNavBar={toggleNavBar} />
+                
                 <CourseGroupDetailContent role={role} course_group={decodeURIComponent(decodeId(course_group))} />
             </div>
         </div>

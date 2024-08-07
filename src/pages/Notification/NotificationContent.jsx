@@ -56,6 +56,7 @@ function NotificationContent({ notifications }) {
     const indexOfLastNotification = currentPage * notificationsPerPage;
     const indexOfFirstNotification = indexOfLastNotification - notificationsPerPage;
     const currentNotifications = notifications.slice(indexOfFirstNotification, indexOfLastNotification);
+    
     return (
 
         <div className="row">

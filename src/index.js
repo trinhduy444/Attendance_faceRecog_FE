@@ -26,6 +26,8 @@ import { ChangePassword } from './pages/Profile/ChangePassword';
 import { Schedule } from './pages/Schedule/Schedule';
 import { CourseGroup } from './pages/CourseGroup/CourseGroup';
 import { CourseGroupDetail } from './pages/CourseGroup/CourseGroupDetail';
+//Teacher
+import { AttendanceManagement } from './pages/TeacherDashBoard/Attendance/AttendanceManagement';
 //Admin Pages
 import { UserManagement } from './pages/AdminDashBoard/UserManagement/UserManagement';
 import { ClassRoomManagement } from './pages/AdminDashBoard/ClassRoomManagement/ClassRoomManagement';
@@ -68,8 +70,10 @@ root.render(
             <Route path="/coursegroup" element={<ProtectedRoute element={<CourseGroup />} />} />
             <Route path="/coursegroup/detail/:course_group" element={<ProtectedRoute element={<CourseGroupDetail />} />} />
             <Route path="/createNotify" element={<ProtectedRoute type={4} element={<CreateNotify />} />} />
+            <Route path="/attendanceData" element={<ProtectedRoute type={2} element={<AttendanceManagement />} />} />
 
-
+            
+            <Route path="/admin/attendanceManagement" element={<ProtectedRoute type={1} element={<AttendanceManagement />} />} />
             <Route path="/admin/userManagement" element={<ProtectedRoute  type={1} element={<UserManagement />} />} />
             <Route path="/admin/teacherManagement" element={<ProtectedRoute type={1} element={<TeacherManagement />} />} />
             <Route path="/admin/classRoomManagement" element={<ProtectedRoute type={1} element={<ClassRoomManagement />} />} />

@@ -34,10 +34,16 @@ export const courseService = {
             throw err;
         }
     },
-    getCourseGroupTeacher: async () => {
+    getCourseGroupTeacher: async (semester_year_id) => {
+        let url = ``;
+        if (semester_year_id) {
+            url = `/courses/getCourseGroupByTeacher/?semester_year_id=${semester_year_id}`
+        } else {
+            url = `/courses/getCourseGroupByTeacher`
+        }
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axiosConfig.post('/courses/getCourseGroupByTeacher', {}, {
+            const response = await axiosConfig.post(url, {}, {
                 headers: {
                     'Authorization': 'Bearer ' + accessToken,
                 },
@@ -104,4 +110,40 @@ export const courseService = {
             throw err;
         }
     },
+    getAllCourseGroup: async (semester_year_id) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            let url = ``;
+            if (semester_year_id) {
+                url = `/courses/getAllCourseGroup/?semester_year_id=${semester_year_id}`
+            } else {
+                url = `/courses/getAllCourseGroup`
+            }
+            const response = await axiosConfig.post(url, {}, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    getAllSemester: async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/courses/getAllSemesters', {}, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    }
 };

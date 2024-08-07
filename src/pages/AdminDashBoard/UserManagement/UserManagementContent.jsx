@@ -6,7 +6,7 @@ import { sortArray } from "../../../utils/sortArray"
 import '../../../assets/css/adminDashboard.css'
 // import MyErrorBoundary from "../../Error/ErrorFallback";
 import NavBarToggle from "../../../components/NavBarToggle";
-function UserManagementContent({toggleNavBar}) {
+function UserManagementContent({ toggleNavBar }) {
     // Declare array to show
     const [showUser, setShowUser] = useState([]);
     // Declare pagination and sort arrays
@@ -92,7 +92,8 @@ function UserManagementContent({toggleNavBar}) {
             if (response.status === 201) {
                 Swal.fire('Thêm thành công', `Đã thêm ${data.length} users`, 'success');
 
-                window.location.reload();
+                fetchUsers();
+                return
             } else {
                 Swal.fire('Có lỗi xảy ra', 'Vui lòng thử lại', 'error');
             }
@@ -249,8 +250,8 @@ function UserManagementContent({toggleNavBar}) {
                             <div className="col-sm-6 col-12 mb-4 mb-sm-0">
 
                                 <h1 className="h2 mb-0 ls-tight">
-                                <NavBarToggle toggleNavBar={toggleNavBar} />
-                                QUẢN LÝ SINH VIÊN</h1>
+                                    <NavBarToggle toggleNavBar={toggleNavBar} />
+                                    QUẢN LÝ SINH VIÊN</h1>
                             </div>
                             <div className="col-sm-6 col-12 text-sm-end">
                                 <div className="mx-n1">
@@ -418,10 +419,10 @@ function UserManagementContent({toggleNavBar}) {
                                 <input className="btn d-inline-flex btn-sm btn-success mx-1" type="file" id="userFile" accept=".xlsx, .xls" onChange={handleFileUploadUser} />
                             </div>
 
-                                <div className="mb-3">
-                                    <label htmlFor="userImages">Nhập ảnh người dùng(.png hoặc .jpg)</label>
-                                    <input className="btn d-inline-flex btn-sm btn-warning mx-1" type="file" id="userImages" accept=".png, .jpg" onChange={handleUploadImageUsers} multiple />
-                                </div>
+                            <div className="mb-3">
+                                <label htmlFor="userImages">Nhập ảnh người dùng(.png hoặc .jpg)</label>
+                                <input className="btn d-inline-flex btn-sm btn-warning mx-1" type="file" id="userImages" accept=".png, .jpg" onChange={handleUploadImageUsers} multiple />
+                            </div>
 
                         </div>
                         <div className="modal-footer">

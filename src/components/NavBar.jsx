@@ -12,7 +12,6 @@ function NavBar({ isNavBarVisible }) {
     const isLoading = useSelector(state => state.auth.isLoading);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const accessToken = localStorage.getItem('accessToken');
 
     const handleLogout = async () => {
         const response = await authService.logout();
@@ -24,7 +23,7 @@ function NavBar({ isNavBarVisible }) {
                 icon: 'success',
                 title: response.message,
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1000
             });
         }
     }
@@ -131,6 +130,8 @@ function NavBar({ isNavBarVisible }) {
                                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                             <li><a className="dropdown-item" href="/notification"><i className="bi bi-bell"></i> Thông báo</a></li>
                                             <li><a className="dropdown-item" href="/coursegroup"><i className="bi bi-people"></i> Nhóm học</a></li>
+                                            <li><a className="dropdown-item" href="/attendanceData"><i className="bi bi-clipboard-data"></i> Quản lý dữ liệu điểm danh</a></li>
+
                                             <li><a className="dropdown-item" href="/teacher/userManagement"><i className="bi bi-people"></i> Quản lý sinh viên</a></li>
                                         </ul>
                                 </li>
@@ -145,7 +146,7 @@ function NavBar({ isNavBarVisible }) {
                                         <li><a className="dropdown-item" href="/admin/teacherManagement"><i className="bi bi-people"> Quản lý giảng viên</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/classRoomManagement"><i className="bi bi-person"> Quản lý phòng học</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/courseManagement"><i className="bi bi-book-half"> Quản lý môn học</i></a></li>
-                                        <li><a className="dropdown-item" href="#"><i className="bi bi-clipboard-data"> Quản lý dữ liệu điểm danh</i></a></li>
+                                        <li><a className="dropdown-item" href="/admin/attendanceManagement"><i className="bi bi-clipboard-data"> Quản lý dữ liệu điểm danh</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/scheduleManagement"><i className="bi bi-calendar2-week"> Quản lý lịch học</i></a></li>
 
                                     </ul>
