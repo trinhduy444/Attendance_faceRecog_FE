@@ -286,9 +286,6 @@ function CourseManagementContent({toggleNavBar}) {
                                                 <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Mã môn:</span><b className="text-danger"> {viewCourse?.course_code}</b></li>
                                                 <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Tên môn học:</span><i className="text-success">{viewCourse?.course_name}</i></li>
                                             </div>
-
-
-
                                         </ul>
                                     </div>
                                     <div className="col-6">
