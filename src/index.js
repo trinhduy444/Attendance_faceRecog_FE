@@ -21,6 +21,7 @@ import { Home } from './pages/Home/Home';
 import { Notification } from './pages/Notification/Notification';
 import { Attendance } from './pages/Attendance/Attendance';
 import { AttendanceDetail } from './pages/Attendance/AttendanceDetail';
+import { FaceRecognition } from './pages/Attendance/FaceRecognition';
 import { EditProfile } from './pages/Profile/EditProfile';
 import { ChangePassword } from './pages/Profile/ChangePassword';
 import { Schedule } from './pages/Schedule/Schedule';
@@ -41,13 +42,12 @@ import 'react-quill/dist/quill.snow.css';
 
 // import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-
 const persistConfig = {
   key: 'root',
   storage,
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-
+ 
 const store = createStore(persistedReducer);
 const persistor = persistStore(store);
 
@@ -64,6 +64,7 @@ root.render(
             <Route path="/notification" element={<ProtectedRoute element={<Notification />} />} />
             <Route path="/attendance" element={<ProtectedRoute element={<Attendance />} />} />
             <Route path="/attendance/detail" element={<ProtectedRoute element={<AttendanceDetail />} />} />
+            <Route path="/attendance/scan" element={<ProtectedRoute element={<FaceRecognition />} />} />
             <Route path="/editProfile" element={<ProtectedRoute element={<EditProfile />} />} />
             <Route path="/changePassword" element={<ProtectedRoute element={<ChangePassword />} />} />
             <Route path="/schedule" element={<ProtectedRoute element={<Schedule />} />} />
@@ -71,7 +72,6 @@ root.render(
             <Route path="/coursegroup/detail/:course_group" element={<ProtectedRoute element={<CourseGroupDetail />} />} />
             <Route path="/createNotify" element={<ProtectedRoute type={4} element={<CreateNotify />} />} />
             <Route path="/attendanceData" element={<ProtectedRoute type={2} element={<AttendanceManagement />} />} />
-
             
             <Route path="/admin/attendanceManagement" element={<ProtectedRoute type={1} element={<AttendanceManagement />} />} />
             <Route path="/admin/userManagement" element={<ProtectedRoute  type={1} element={<UserManagement />} />} />

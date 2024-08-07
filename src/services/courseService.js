@@ -17,6 +17,24 @@ export const courseService = {
             throw err;
         }
     },
+
+    getCourseGroupStudentListInfo: async (course_group_id) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.get(`/courses/groups/students/${course_group_id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+
     createCourseGroup: async (requestBody) => {
         // console.log("haha",JSON.stringify(requestBody));
         try {
