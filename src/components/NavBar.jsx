@@ -132,6 +132,8 @@ function NavBar({ isNavBarVisible }) {
                                             <li><a className="dropdown-item" href="/notification"><i className="bi bi-bell"></i> Thông báo</a></li>
                                             <li><a className="dropdown-item" href="/coursegroup"><i className="bi bi-people"></i> Nhóm học</a></li>
                                             <li><a className="dropdown-item" href="/teacher/userManagement"><i className="bi bi-people"></i> Quản lý sinh viên</a></li>
+                                            <li><a className="dropdown-item" href="#"><i className="bi bi-clipboard-data"> Quản lý dữ liệu điểm danh</i></a></li>
+                                            <li><a className="dropdown-item" href="/attendance/scan"><i className="bi bi-clipboard-data">Điểm danh nhận diện khuôn mặt</i></a></li>
                                         </ul>
                                 </li>
                                 ): user.role_id === 1 ? (<li className="nav-item dropdown">
@@ -145,9 +147,7 @@ function NavBar({ isNavBarVisible }) {
                                         <li><a className="dropdown-item" href="/admin/teacherManagement"><i className="bi bi-people"> Quản lý giảng viên</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/classRoomManagement"><i className="bi bi-person"> Quản lý phòng học</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/courseManagement"><i className="bi bi-book-half"> Quản lý môn học</i></a></li>
-                                        <li><a className="dropdown-item" href="#"><i className="bi bi-clipboard-data"> Quản lý dữ liệu điểm danh</i></a></li>
                                         <li><a className="dropdown-item" href="/admin/scheduleManagement"><i className="bi bi-calendar2-week"> Quản lý lịch học</i></a></li>
-
                                     </ul>
                                 </li>) : null}
 

@@ -55,15 +55,22 @@ const headerLinks = {
 
         ]
     },
-};
+    '/attendance/scan': {
+        title: 'Điểm danh',
+        links: [
+            { path: '/', label: 'Trang chủ', icon: 'bi bi-house' },
+            { path: '/attendance', label: 'Dữ liệu điểm danh', icon: 'bi bi-clipboard-data' },
+            { path: '/attendance/scan', label: 'Điểm danh', icon: 'bi bi-info' },
 
+        ]
+    },
+};
 
 function Header({toggleNavBar}) {
     const location = useLocation();
 
     const currentHeader = headerLinks[location.pathname] || { title: '', links: [] };
     const { title, links } = currentHeader;
-
 
     return (
         <header className="bg-surface-primary border-bottom pt-3">
@@ -92,4 +99,3 @@ function Header({toggleNavBar}) {
 }
 
 export default React.memo(Header);
-
