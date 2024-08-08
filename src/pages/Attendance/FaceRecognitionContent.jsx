@@ -91,6 +91,7 @@ function FaceRecognitionContent() {
                 currDatetime = new Date();
                 currDate = currDatetime.toISOString().split('T')[0] + 'T00:00';
                 currTime = dateUtils.getTimeString(currDatetime, 'hh:mm');
+
                 // Add attendance data to backend.
                 requestBody = {
                     studentId: studentInfo.get(result._label),
@@ -100,8 +101,7 @@ function FaceRecognitionContent() {
                     attendTime: currTime,
                     attendImagePath: ''
                 }
-                console.log(requestBody)
-                addAttendanceRawData(result._label, requestBody);
+                processAfterRecognition(dataCanvasRef.current, result._label, requestBody);
             }
         }
         // Draw face box with label
@@ -109,11 +109,38 @@ function FaceRecognitionContent() {
         setTimeout(sentFaceData, 200);
     }
 
+    // Process success face recognition
+    const processAfterRecognition = async(canvas, label, requestBody) => {
+        canvas.toBlob(async (blob) => {
+            const formData = new FormData();
+            formData.append('image', blob);
+            formData.append('user_id', requestBody.studentId);
+            formData.append('course_group_id', requestBody.courseGroupId);
+            formData.append('date', requestBody.attendDate);
+            formData.append('type', requestBody.attendType);
+
+            requestBody.attendImagePath = await uploadAttendImage(formData);
+            addAttendanceRawData(label, requestBody);
+        });
+    }
+
     // Add attend raw data
     const addAttendanceRawData = async (studentUsername, requestBody) => {
         const res = await attendanceService.addAttendanceRawData(requestBody);
         if (res.data.status === 201) {
             setAttendSuccess([...attendSuccess, studentUsername + ' - ' + requestBody.attendTime]);
+        }
+    }
+
+    // Upload attend image
+    const uploadAttendImage = async (formData) => {
+        try {
+            const res = await attendanceService.uploadImage(formData);
+            if (res.status === 201) {
+                return res.data.link_anh;
+            }
+        } catch (error) {
+            console.error('Error uploading images:', error);
         }
     }
 

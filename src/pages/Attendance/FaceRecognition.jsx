@@ -5,7 +5,6 @@ import Header from "../../components/Header"
 import FaceRecognitionContent from "./FaceRecognitionContent"
 import { useSelector } from 'react-redux';
 
-import "../../assets/css/facerecognition.css"
 export const FaceRecognition = () => {
     const [isNavBarVisible, setIsNavBarVisible] = useState(false);
     const user = useSelector(state => state.auth.user);
