@@ -4,8 +4,8 @@ import Swal from "sweetalert2"
 import { adminService } from "../../../services/adminService";
 import { sortArray } from "../../../utils/sortArray"
 import NavBarToggle from "../../../components/NavBarToggle";
-
-function TeacherManagementContent({toggleNavBar}) {
+import Pagination from "../UserManagement/Pagination";
+function TeacherManagementContent({ toggleNavBar }) {
     const [showTeacher, setShowTeacher] = useState([]);
 
     // Pagination
@@ -130,6 +130,7 @@ function TeacherManagementContent({toggleNavBar}) {
                             const response = await adminService.uploadImages(formData);
                             if (response.status === 201) {
                                 Swal.fire('Thành công', `Đã tải lên ${files.length} ảnh`, 'success');
+                                fetchTeachers()
                             } else {
                                 Swal.fire('Có lỗi xảy ra', 'Vui lòng thử lại', 'error');
                             }
@@ -214,8 +215,8 @@ function TeacherManagementContent({toggleNavBar}) {
                             <div className="col-sm-6 col-12 mb-4 mb-sm-0">
 
                                 <h1 className="h2 mb-0 ls-tight">
-                                <NavBarToggle toggleNavBar={toggleNavBar} />
-                                QUẢN LÝ GIẢNG VIÊN</h1>
+                                    <NavBarToggle toggleNavBar={toggleNavBar} />
+                                    QUẢN LÝ GIẢNG VIÊN</h1>
                             </div>
                             <div className="col-sm-6 col-12 text-sm-end">
                                 <div className="mx-n1">
@@ -292,17 +293,12 @@ function TeacherManagementContent({toggleNavBar}) {
                                     <span className="text-muted text-sm">
                                         Hiển thị {currentUsers.length} Giảng Viên trong số <b className="text-danger">{showTeacher.length}</b> Giảng Viên
                                     </span>
-                                    <nav aria-label="Page navigation example">
-                                        <ul className="pagination">
-                                            {Array.from({ length: totalPages }, (_, i) => (
-                                                <li key={i} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
-                                                    <button className="page-link" onClick={() => handlePageChange(i + 1)}>
-                                                        {i + 1}
-                                                    </button>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </nav>
+                                    <Pagination
+                                        totalItems={showTeacher.length}
+                                        itemsPerPage={usersPerPage}
+                                        currentPage={currentPage}
+                                        onPageChange={handlePageChange}
+                                    />
                                 </div>
                                 <div className="col-3 d-flex justify-content-end">
                                     <button

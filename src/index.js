@@ -37,6 +37,7 @@ import { TeacherManagement } from './pages/AdminDashBoard/TeacherManagement/Teac
 import { CourseManagement } from './pages/AdminDashBoard/CourseManagement/CourseManagement';
 import { NotifyManagement } from './pages/AdminDashBoard/NotifyManagement/NotifyManagement';
 import { CreateNotify } from './pages/AdminDashBoard/NotifyManagement/CreateNotify'
+import {CourseGroupManagement} from './pages/AdminDashBoard/CourseGroupManagement/CourseGroupManagement'
 import 'bootstrap/dist/js/bootstrap.min.js';
 import 'react-quill/dist/quill.snow.css';
 
@@ -80,6 +81,7 @@ root.render(
             <Route path="/admin/scheduleManagement" element={<ProtectedRoute type={1} element={<ScheduleManagement />} />} />
             <Route path="/admin/courseManagement" element={<ProtectedRoute type={1} element={<CourseManagement />} />} />
             <Route path="/admin/notifyManagement" element={<ProtectedRoute type={1} element={<NotifyManagement />} />} />
+            <Route path="/admin/coursegroupManagement" element={<ProtectedRoute type={1} element={<CourseGroupManagement />} />} />
 
             <Route path="/error" element={<ErrorPage />} />
             {/* <Route path="*" element={<Navigate to="/" />} /> */}

@@ -1,17 +1,38 @@
-import React from 'react';
-
+import React, { useEffect,useState } from 'react';
+import { courseService } from '../../services/courseService';
 function AttendanceContent() {
+    // Semester
+    const [allSemester, setAllSemester] = useState([]);
+    const [selectedSemester, setSelectedSemester] = useState(undefined);
+
+    const fetchSemeter = async () => {
+        const response = await courseService.getAllSemester();
+        if (response.status === 200) {
+            setAllSemester(response.metadata)
+        }
+    }
+    useEffect(() => { fetchSemeter() }, []);
+    function handleSelectSemester(e) {
+        setSelectedSemester(e.target.value);
+    }
+    
     return (
         <main className="py-6 bg-surface-secondary">
             <div className="container">
                 <div className="row">
                     <div className="col-7">
                         <div className="form-group">
-                            <select id="selectSemester" className="form-select" data-live-search="true">
-                                <option selected>--Chọn học kỳ | Choose semester--</option>
-                                <option value="2">Học kỳ 2/2023-2024 | 2nd Semester/2023-2024</option>
-                                <option value="3">Học kỳ 1/2023-2024 | 1st Semester/2023-2024</option>
-                                <option value="4">Học kỳ 3/2022-2023 | 3rd Semester/2022-2023</option>
+                            <select id="selectSemester" data-live-search="true"
+                                className="form-select border border-black"
+                                aria-label="Default select example"
+                                value={selectedSemester}
+                                onChange={handleSelectSemester}
+                            >
+                                <option value=''>--Chọn học kỳ | Choose semester--</option>
+
+                                {allSemester.length > 0 && allSemester.map((semester, index) => (
+                                    <option key={index} value={semester.semester_year_id}>--- {semester.semester_year_name} ---</option>
+                                ))}
                             </select>
                         </div>
                     </div>

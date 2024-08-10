@@ -3,6 +3,7 @@ import * as XLSX from "xlsx"
 import Swal from "sweetalert2"
 import { adminService } from "../../../services/adminService";
 import { sortArray } from "../../../utils/sortArray"
+import Pagination from './Pagination'
 import '../../../assets/css/adminDashboard.css'
 // import MyErrorBoundary from "../../Error/ErrorFallback";
 import NavBarToggle from "../../../components/NavBarToggle";
@@ -64,8 +65,6 @@ function UserManagementContent({ toggleNavBar }) {
         const indexOfFirstUser = indexOfLastUser - usersPerPage;
         setCurrentUsers(showUser.slice(indexOfFirstUser, indexOfLastUser));
     }, [showUser, currentPage]);
-
-    const totalPages = Math.ceil(showUser.length / usersPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -188,24 +187,24 @@ function UserManagementContent({ toggleNavBar }) {
     const handleExportToExcel = () => {
         // Dữ liệu
         const data = showUser.map(user => ({
-            'Email Sinh Viên': user.email,
             'MSSV': user.username,
             'Họ Và Tên': user.nickname,
             'Đường dẫn khuôn mặt': user.avatar_path,
             'Khóa nhập học': user.course_year,
             'Giới tính': user.gender ? 'Nam' : 'Nữ',
-            'Khoa': user.faculty_name
+            'Khoa': user.faculty_name,
+            'Email Sinh Viên': user.email
         }));
 
         // Define headers
         const headers = [
-            'Email Sinh Viên',
             'MSSV',
             'Họ Và Tên',
             'Đường dẫn khuôn mặt',
             'Khóa nhập học',
             'Giới tính',
-            'Khoa'
+            'Khoa',
+            'Email Sinh Viên'
         ];
 
         const ws = XLSX.utils.aoa_to_sheet([]);
@@ -214,13 +213,13 @@ function UserManagementContent({ toggleNavBar }) {
         XLSX.utils.sheet_add_json(ws, data, { origin: 'A3', skipHeader: true });
 
         const columnWidths = [
-            { wch: 30 }, // Email
             { wch: 15 }, // MSSV
             { wch: 30 }, // Họ Và Tên
             { wch: 50 }, // Đường dẫn khuôn mặt
             { wch: 15 }, // Khóa nhập học
             { wch: 10 }, // Giới tính
-            { wch: 30 }  // Khoa
+            { wch: 30 }, // Khoa
+            { wch: 30 } // Email
         ];
         ws['!cols'] = columnWidths;
 
@@ -380,17 +379,12 @@ function UserManagementContent({ toggleNavBar }) {
                                     <span className="text-muted text-sm">
                                         Hiển thị {currentUsers.length} sinh viên trong số <b className="text-danger">{showUser.length}</b> sinh viên
                                     </span>
-                                    <nav aria-label="Page navigation example">
-                                        <ul className="pagination">
-                                            {Array.from({ length: totalPages }, (_, i) => (
-                                                <li key={i} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
-                                                    <button className="page-link" onClick={() => handlePageChange(i + 1)}>
-                                                        {i + 1}
-                                                    </button>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </nav>
+                                    <Pagination
+                                        totalItems={showUser.length}
+                                        itemsPerPage={usersPerPage}
+                                        currentPage={currentPage}
+                                        onPageChange={handlePageChange}
+                                    />
                                 </div>
                                 <div className="col-3 d-flex justify-content-end">
                                     <button
@@ -433,7 +427,52 @@ function UserManagementContent({ toggleNavBar }) {
                 </div>
             </div>
 
+            <div className="modal fade bd-example-modal-lg" id="viewUserModel" tabIndex="-1" aria-labelledby="viewUserModel" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Thông tin sinh viên: {viewUser?.nickname}</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="row p-2 border border-bottom-3 ">
+                                <div className="col-4">
+                                    <img src={viewUser?.avatar_path} className="rounded" alt="Ảnh Sinh viên.." />
+                                </div>
+                                <div className="col-8">
+                                    <div className="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded p-3">
+                                        <h3 className="h2 text-black mb-0">{viewUser?.nickname}</h3>
+                                        <span >Sinh viên khoa: <b className="text-danger">{viewUser?.faculty_name} | {viewUser?.course_year}</b></span>
+                                    </div>
+                                    <hr />
+                                    <h5 className="mb-2">Thông tin chi tiết:</h5>
+                                    <ul className="list-unstyled mb-1-9 ms-3">
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">MSSV:</span> {viewUser?.username}</li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Giới tính:</span>{viewUser?.gender ? 'Nam' : 'Nữ'}</li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Email:</span><a href={`mailto:${viewUser?.email}`}>{viewUser?.email}</a> </li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Số điện thoại:</span>+{viewUser?.phone}</li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Địa chỉ:</span> Phường Tân Phong, TP. Hồ Chí Minh, Việt Nam</li>
 
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="row p-2 border border-bottom-3 ">
+
+                                <label htmlFor="message" className="fw-bold">Gửi tin nhắn cho sinh viên:</label>
+
+                                <textarea name="message" className="border border-black rounded p-2" id="messageText" rows="5" placeholder="Nhập tin nhắn..."></textarea>
+
+                            </div>
+
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="button" id="submitFileBtn" className="btn btn-warning">Nhập</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

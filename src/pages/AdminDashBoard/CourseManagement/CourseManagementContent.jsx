@@ -5,7 +5,7 @@ import { courseService } from "../../../services/courseService";
 import { roomService } from "../../../services/roomService";
 import { adminService } from "../../../services/adminService";
 import NavBarToggle from "../../../components/NavBarToggle";
-function CourseManagementContent({toggleNavBar}) {
+function CourseManagementContent({ toggleNavBar }) {
     const [courses, setCourses] = useState([])
     const [facultyId, setFacultyId] = useState("");
     const [inputFilter, setInputFilter] = useState("");
@@ -18,6 +18,7 @@ function CourseManagementContent({toggleNavBar}) {
     const [rooms, setRooms] = useState([]);
     const [shiftEmpty, setShiftEmpty] = useState([]);
     const [listTeachers, setListTeachers] = useState([]);
+    const [day,setDay] = useState("");
 
     // create Course Grop
     const [classroom_code, setClassroom_code] = useState("");
@@ -25,7 +26,19 @@ function CourseManagementContent({toggleNavBar}) {
     const [dataSend, setDataSend] = useState([]);
     const [courseSelect, setCourseSelect] = useState("");
 
+    // Semester
+    const [allSemester, setAllSemester] = useState([]);
+    const [selectedSemester, setSelectedSemester] = useState(undefined);
 
+    const fetchSemeter = async () => {
+        const response = await courseService.getAllSemester();
+        if (response.status === 200) {
+            setAllSemester(response.metadata)
+        }
+    }
+    function handleSelectSemester(e) {
+        setSelectedSemester(e.target.value);
+    }
     const handleFetchCourseFilter = async () => {
         let type = isNaN(inputFilter.charAt(0)) ? 0 : 1;
 
@@ -46,6 +59,7 @@ function CourseManagementContent({toggleNavBar}) {
         }
     };
     const handleViewCourse = async (course) => {
+        fetchSemeter()
         const res = await adminService.getAllTeachersByFaculty(course.faculty_id);
         setListTeachers(res.data.metadata)
         setCourseSelect(course.course_code)
@@ -80,6 +94,7 @@ function CourseManagementContent({toggleNavBar}) {
         setShiftEmpty([])
         setListTeachers([])
         setCourseSelect(undefined);
+        setSelectedSemester(undefined);
     }
 
     // Upload các thành viên trong nhóm học
@@ -126,23 +141,26 @@ function CourseManagementContent({toggleNavBar}) {
         e.preventDefault();
         const selectTeacher = document.querySelector("#selectTeacher").value;
         const courseName = document.querySelector("#courseName").value;
-        if (!selectTeacher) {
-            Swal.fire('Hãy thử lại!', 'Vui lòng chọn giảng viên', 'error')
+        if (!selectTeacher || !day) {
+            Swal.fire('Hãy thử lại!', 'Vui lòng chọn giảng viên và ngày học', 'error')
             return;
         }
+        console.log("Nhom da chon", selectedSemester)
         const requestBody = {
             course_code: courseSelect,
             group_code: courseName,
             teacher_id: parseInt(selectTeacher),
             total_student_qty: dataSend.length,
             shift_code: selectedShift,
-            classroom_code, classroom_code,
-            students: dataSend
+            classroom_code: classroom_code,
+            students: dataSend,
+            semester_year_id: parseInt(selectedSemester),
+            week_day: parseInt(day),
         }
         const res = await courseService.createCourseGroup(requestBody)
         if (res.data.status === 201) {
             Swal.fire('Thêm thành công', `Đã thêm nhóm ${courseName}`, 'success');
-            closeModel()
+            document.getElementById('btn-close').click();
         }
         else {
             Swal.fire('Lỗi', `Không thể thêm!`, 'error');
@@ -310,7 +328,7 @@ function CourseManagementContent({toggleNavBar}) {
                                             ))}
                                         </select>
                                     </div>
-                                    <div className="col-4">
+                                    <div className="col-2">
                                         <label htmlFor="courseName">Tên nhóm: </label>
                                         <select id="courseName"
                                             className="form-select border border-black"
@@ -323,14 +341,27 @@ function CourseManagementContent({toggleNavBar}) {
 
                                         </select>
                                     </div>
-                                    <div className="col-4">
-                                        <label htmlFor="userFile">Chọn file sinh viên học nhóm(.xlsx hoặc .xls)</label>
+                                    <div className="col-3">
+                                        <label htmlFor="semesterSelect">Học kỳ | Năm học: </label>
+                                        <select
+                                            className="form-select border border-black"
+                                            aria-label="Default select example"
+                                            value={selectedSemester}
+                                            onChange={handleSelectSemester}
+                                        >
+                                            {allSemester.length > 0 && allSemester.map((semester, index) => (
+                                                <option key={index} value={semester.semester_year_id}>{semester.semester_year_name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="col-3">
+                                        <label htmlFor="userFile">Chọn file sinh viên(.xlsx)</label>
                                         <input className="btn d-inline-flex btn-sm btn-success mx-1" type="file" id="userFile" onChange={handleFileUploadUser} accept=".xlsx, .xls" required />
                                     </div>
                                 </div>
                                 <div className="row">
                                     <label htmlFor="selectClassRoom" className="form-control">Chọn phòng theo tiêu chí: </label>
-                                    <div className="col-5">
+                                    <div className="col-3">
                                         <select
                                             className="form-select border border-black"
                                             aria-label="Select building"
@@ -344,7 +375,7 @@ function CourseManagementContent({toggleNavBar}) {
                                             <option value="E">Tòa E</option>
                                         </select>
                                     </div>
-                                    <div className="col-5">
+                                    <div className="col-4">
                                         <select
                                             className="form-select border border-black"
                                             aria-label="Select capacity" onChange={(e) => setCapacity(e.target.value)}
@@ -355,6 +386,21 @@ function CourseManagementContent({toggleNavBar}) {
                                             <option value="75">75 người</option>
                                             <option value="100">100 người</option>
                                             <option value="150">150 người</option>
+                                        </select>
+                                    </div>
+                                    <div className="col-3">
+                                        <select
+                                            className="form-select border border-black"
+                                            aria-label="Select capacity" onChange={(e) => setDay(e.target.value)}
+                                        >
+                                            <option value='2'>Chọn ngày học</option>
+                                            <option value="2">Thứ 2</option>
+                                            <option value="3">Thứ 3</option>
+                                            <option value="4">Thứ 4</option>
+                                            <option value="5">Thứ 5</option>
+                                            <option value="6">Thứ 6</option>
+                                            <option value="7">Thứ 7</option>
+                                            <option value="8">Chủ nhật</option>
                                         </select>
                                     </div>
                                     <button type='button' className="col-2 btn btn-info" onClick={handleSearchRoom}>Tìm phòng</button>
@@ -378,13 +424,15 @@ function CourseManagementContent({toggleNavBar}) {
                                                         <td>{room.floor}</td>
                                                         <td>{room.capacity}</td>
                                                         <td>{room.description}</td>
-                                                        <td><a href="#choseShift" type="button" className="bg-info text-black" onClick={() => handleChooseRoom(room.classroom_code)}
+                                                        <td><a href="#choseShift" type="button" className="bg-info text-black rounded btn" onClick={() => handleChooseRoom(room.classroom_code)}
                                                         >Chọn</a></td>
                                                     </tr>
                                                 ))}
                                             </tbody>
                                         </table>
                                     </div>
+
+
                                 ) : (null)}
                                 {shiftEmpty.length > 0 ? (
 
@@ -401,7 +449,7 @@ function CourseManagementContent({toggleNavBar}) {
                                 ) : null}
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={() => closeModel()} data-bs-dismiss="modal">Đóng</button>
+                                <button type="button" className="btn btn-secondary" id="btn-close" onClick={() => closeModel()} data-bs-dismiss="modal">Đóng</button>
                                 <button type="submit" id="submitCreateCourseGroup" className="btn btn-success">Tạo nhóm</button>
                             </div>
 

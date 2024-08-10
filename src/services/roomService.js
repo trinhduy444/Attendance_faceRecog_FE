@@ -45,7 +45,24 @@ export const roomService = {
     getRooms: async (limit, skip) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
+
             const response = await axiosConfig.post(`/classroom/getRooms?limit=${limit}&skip=${skip}`, {}, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                },
+                withCredentials: true
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    getAllRooms: async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+
+            const response = await axiosConfig.post(`/classroom/getAllRooms`, {}, {
                 headers: {
                     'Authorization': 'Bearer ' + accessToken
                 },

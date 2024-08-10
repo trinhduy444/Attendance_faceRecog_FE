@@ -93,3 +93,7 @@
 .btnDeletePost:hover {
     background-color: #ccc;
 }
+
+#userFile{
+    width: 250px;
+}

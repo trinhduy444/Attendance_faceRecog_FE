@@ -163,5 +163,35 @@ export const courseService = {
             console.error(err);
             throw err;
         }
-    }
+    },
+    createCourseGroups: async (data) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/courses/createCourseGroups', { courseGroups: data }, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    createstudentLists: async (data) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/courses/createStudentLists', { studentLists: data }, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
 };
