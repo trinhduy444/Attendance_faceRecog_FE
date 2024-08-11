@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js';
 
-const SECRET_KEY = process.env.REACT_APP_SECRET_KEY || 'your-default-secret-key';
+const SECRET_KEY = process.env.REACT_APP_SECRET_KEY || 'attendSystem';
 /**
  * Mã hóa ID bằng cách sử dụng AES encryption với secret key
  * @param {number|string} id - ID cần mã hóa

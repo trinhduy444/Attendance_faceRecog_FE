@@ -4,6 +4,7 @@ import { notifyService } from "../../../services/notifyService";
 import NavBarToggle from "../../../components/NavBarToggle";
 import { convertDay } from '../../../utils/convertDay'
 import { displayContent } from '../../../utils/displayContent'
+import Pagination from '../UserManagement/Pagination'
 function NotifyManagementContent({ toggleNavBar }) {
     const [notifications, setNotifications] = useState([])
     const [notificationDetail, setNotificationDetail] = useState()
@@ -92,7 +93,7 @@ function NotifyManagementContent({ toggleNavBar }) {
                             <h5> Trang {currentPage} trong {totalPages} trang </h5>
                         </div>
                         <div className="col-9">
-                            <nav aria-label="page-notification">
+                            {/* <nav aria-label="page-notification">
                                 <ul className="pagination">
                                     <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
                                         <a className="page-link" href="#" aria-label="Previous" onClick={() => handlePageChange(currentPage - 1)}>
@@ -110,7 +111,13 @@ function NotifyManagementContent({ toggleNavBar }) {
                                         </a>
                                     </li>
                                 </ul>
-                            </nav>
+                            </nav> */}
+                            <Pagination
+                                totalItems={notifications.length}
+                                itemsPerPage={notificationsPerPage}
+                                currentPage={currentPage}
+                                onPageChange={handlePageChange}
+                            />
                         </div>
                         <div className="div-notifications">
                             {currentNotifications.map((notification, index) => (
@@ -163,7 +170,8 @@ function NotifyManagementContent({ toggleNavBar }) {
                                     {displayContent({ content: notificationDetail?.content })}
                                 </span>
                                 {notificationDetail?.file_link ? (
-                                    <><p className="mt-2 fw-bold">Đường dẫn đính kèm:</p><a href={notificationDetail?.file_link} target="_blank" rel="noopener noreferrer">{notificationDetail?.file_link}</a></>) : (null)}
+                                    <><p className="mt-2 fw-bold">Đường dẫn đính kèm:</p><a href={notificationDetail?.file_link} target="_blank" rel="noopener noreferrer">                                                        <img src="https://i.pinimg.com/564x/13/88/5f/13885f590c6070c7f106b0f19a17ab9b.jpg" alt="Ảnh file link" width={105} height={70} />
+                                        {notificationDetail?.file_link}</a></>) : (null)}
 
                             </div>
                             <div className="modal-footer">

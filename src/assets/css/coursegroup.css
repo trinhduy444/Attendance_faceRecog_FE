@@ -97,3 +97,14 @@
 #userFile{
     width: 250px;
 }
+.courseGroupInfoAttend{
+    font-family: 'Times New Roman', Times, serif;
+    color: aliceblue;
+    font-size: x-large;
+    text-align: center;
+}
+.attendListSuccess{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: aliceblue;
+    font-size: medium;
+}

@@ -29,6 +29,7 @@ import { CourseGroup } from './pages/CourseGroup/CourseGroup';
 import { CourseGroupDetail } from './pages/CourseGroup/CourseGroupDetail';
 //Teacher
 import { AttendanceManagement } from './pages/TeacherDashBoard/Attendance/AttendanceManagement';
+import { RecogFace } from './pages/Attendance/RecogFace/RecogFace';
 //Admin Pages
 import { UserManagement } from './pages/AdminDashBoard/UserManagement/UserManagement';
 import { ClassRoomManagement } from './pages/AdminDashBoard/ClassRoomManagement/ClassRoomManagement';
@@ -73,7 +74,8 @@ root.render(
             <Route path="/coursegroup/detail/:course_group" element={<ProtectedRoute element={<CourseGroupDetail />} />} />
             <Route path="/createNotify" element={<ProtectedRoute type={4} element={<CreateNotify />} />} />
             <Route path="/attendanceData" element={<ProtectedRoute type={2} element={<AttendanceManagement />} />} />
-            
+            <Route path="/attendRecog/:course_group_id" element={<ProtectedRoute type={4} element={<RecogFace />} />} />
+
             <Route path="/admin/attendanceManagement" element={<ProtectedRoute type={1} element={<AttendanceManagement />} />} />
             <Route path="/admin/userManagement" element={<ProtectedRoute  type={1} element={<UserManagement />} />} />
             <Route path="/admin/teacherManagement" element={<ProtectedRoute type={1} element={<TeacherManagement />} />} />
