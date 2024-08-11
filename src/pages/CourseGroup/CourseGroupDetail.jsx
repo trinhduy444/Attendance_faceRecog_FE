@@ -9,18 +9,17 @@ import { decodeId } from "../../utils/secureEncoding";
 import { courseService } from "../../services/courseService";
 import sclogo from "../../assets/images/sclogo.jpg"
 export const CourseGroupDetail = () => {
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const { course_group } = useParams()
     const [isNavBarVisible, setIsNavBarVisible] = useState(false);
     const user = useSelector(state => state.auth.user);
-    const [role, setRole] = useState(user.role_id);
     useEffect(() => {
         document.title = "Chi tiết nhóm học"
         handleCheckAccess();
     }, [])
 
     const handleCheckAccess = async () => {
-        if (role === 3) {
+        if (user.role_id === 3) {
             const course_group_id = decodeURIComponent(decodeId(course_group));
             try {
                 const res = await courseService.checkAccessCourseGroup(course_group_id);
@@ -46,7 +45,7 @@ export const CourseGroupDetail = () => {
                             <div className="row align-items-center">
                                 <div className="col-sm-6 col-12 mb-4 mb-sm-0">
                                     <h1 className="h2 mb-0 ls-tight">
-                                    <NavBarToggle toggleNavBar={toggleNavBar} />Chi tiết nhóm học
+                                        <NavBarToggle toggleNavBar={toggleNavBar} />Chi tiết nhóm học
                                     </h1>
                                 </div>
                             </div>
@@ -70,8 +69,8 @@ export const CourseGroupDetail = () => {
                         </div>
                     </div>
                 </header>
-                
-                <CourseGroupDetailContent role={role} course_group={decodeURIComponent(decodeId(course_group))} />
+
+                <CourseGroupDetailContent role={user.role_id} course_group={decodeURIComponent(decodeId(course_group))} />
             </div>
         </div>
     )

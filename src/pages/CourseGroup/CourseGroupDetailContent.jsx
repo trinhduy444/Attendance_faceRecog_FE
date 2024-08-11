@@ -5,6 +5,8 @@ import { postService } from '../../services/postService';
 import { courseService } from '../../services/courseService';
 import { displayContent } from '../../utils/displayContent'
 import { convertDay } from '../../utils/convertDay'
+import { encodeId } from '../../utils/secureEncoding';
+
 import CommentComponent from './CommentComponent'
 function CourseGroupDetailContent({ role, course_group }) {
     const [content, setContent] = useState('');
@@ -129,6 +131,38 @@ function CourseGroupDetailContent({ role, course_group }) {
         return
     }
 
+    const handleOpenAttendance = (e) => {
+        e.preventDefault();
+
+        Swal.fire({
+            title: "Nhập số phút cho phép điểm danh",
+            input: "number",
+            inputAttributes: {
+                autocapitalize: "off",
+                min: 1,
+                max: 15,
+            },
+            showCancelButton: true,
+            confirmButtonText: "Mở đường dẫn",
+            showLoaderOnConfirm: true,
+            preConfirm: (minutes) => {
+                if (!minutes || minutes <= 0) {
+                    Swal.showValidationMessage("Vui lòng nhập số phút hợp lệ!");
+                    return false;
+                }
+                return minutes;
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const course_group_id_encode = encodeURIComponent(encodeId(course_group));
+                const minutes = result.value;
+                const url = `/attendRecog/${course_group_id_encode}?minutes=${minutes}`;
+                window.open(url, '_blank');
+            }
+        });
+    }
+
     return (
 
         <main className="py-6 bg-surface-secondary">
@@ -183,13 +217,12 @@ function CourseGroupDetailContent({ role, course_group }) {
                                                 </div>
                                                 {post.file_link ? (<div className="file-display">
                                                     <a href={post.file_link} target="_blank" className="file-link">
-                                                        <img src="https://lh3.googleusercontent.com/drive-storage/AJQWtBOPlCP5jv0j4AMwemI0MVMUnB_h2dfMVCj2T_6Rgs-tvE6iNhNArEfJPqUfTNVFPX458X6fuVH2OAU1VptuH6FIFjRJqwM5jm51tOOEOJj-u5k=w105-h70-c" alt="" width={105} height={70} />
-                                                        Ngân sách hàng năm.xlsx
+                                                        <img src="https://i.pinimg.com/564x/13/88/5f/13885f590c6070c7f106b0f19a17ab9b.jpg" alt="Ảnh file link" width={105} height={70} />
+                                                        Đường dẫn đính kèm
                                                     </a>
                                                 </div>) : (null)}
 
                                             </div>
-
                                             <CommentComponent post_id={post.post_id} />
                                         </div>
 
@@ -211,6 +244,19 @@ function CourseGroupDetailContent({ role, course_group }) {
 
                                     </ul>
                                 </div>
+                                {role === 2 ? (<div className='card-footer'>
+                                    <a
+                                        href="#"
+                                        target="_blank"
+                                        className='btn btn-info text-white'
+                                        rel="noopener noreferrer"
+                                        onClick={handleOpenAttendance}
+                                    >
+                                        Mở link điểm danh
+                                    </a>
+
+                                </div>) : null}
+
                             </div>
                             {role === 2 ? (
                                 <div className="row mt-2">
@@ -222,7 +268,9 @@ function CourseGroupDetailContent({ role, course_group }) {
                                         <a href="/createNotify" className='btn btn-primary'>Tạo thông báo</a>
                                     </div>
                                 </div>
+
                             ) : (null)}
+
                         </div>
 
                     </div>
