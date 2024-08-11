@@ -3,8 +3,9 @@ import * as XLSX from "xlsx"
 import Swal from "sweetalert2"
 import { adminService } from "../../../services/adminService";
 import { sortArray } from "../../../utils/sortArray"
-
-function TeacherManagementContent() {
+import NavBarToggle from "../../../components/NavBarToggle";
+import Pagination from "../UserManagement/Pagination";
+function TeacherManagementContent({ toggleNavBar }) {
     const [showTeacher, setShowTeacher] = useState([]);
 
     // Pagination
@@ -129,6 +130,7 @@ function TeacherManagementContent() {
                             const response = await adminService.uploadImages(formData);
                             if (response.status === 201) {
                                 Swal.fire('Thành công', `Đã tải lên ${files.length} ảnh`, 'success');
+                                fetchTeachers()
                             } else {
                                 Swal.fire('Có lỗi xảy ra', 'Vui lòng thử lại', 'error');
                             }
@@ -213,7 +215,8 @@ function TeacherManagementContent() {
                             <div className="col-sm-6 col-12 mb-4 mb-sm-0">
 
                                 <h1 className="h2 mb-0 ls-tight">
-                                    QUẢN LÝ GIẢNG VIÊN - ADMIN DASHBOARD</h1>
+                                    <NavBarToggle toggleNavBar={toggleNavBar} />
+                                    QUẢN LÝ GIẢNG VIÊN</h1>
                             </div>
                             <div className="col-sm-6 col-12 text-sm-end">
                                 <div className="mx-n1">
@@ -227,14 +230,14 @@ function TeacherManagementContent() {
                                         <span className=" pe-2">
                                             <i className="bi bi-plus"></i>
                                         </span>
-                                        <span>Create teacher</span>
+                                        <span>Tạo giảng viên</span>
                                     </a>
                                     <button type="button" data-bs-toggle="modal"
                                         data-bs-target="#importTeacherFile" className="btn d-inline-flex btn-sm btn-warning mx-1">
                                         <span className="pe-2">
                                             <i className="bi bi-plus"></i>
                                         </span>
-                                        <span>Create multiple teachers</span>
+                                        <span>Tạo nhiều giảng viên</span>
                                     </button>
 
 
@@ -290,17 +293,12 @@ function TeacherManagementContent() {
                                     <span className="text-muted text-sm">
                                         Hiển thị {currentUsers.length} Giảng Viên trong số <b className="text-danger">{showTeacher.length}</b> Giảng Viên
                                     </span>
-                                    <nav aria-label="Page navigation example">
-                                        <ul className="pagination">
-                                            {Array.from({ length: totalPages }, (_, i) => (
-                                                <li key={i} className={`page-item ${i + 1 === currentPage ? 'active' : ''}`}>
-                                                    <button className="page-link" onClick={() => handlePageChange(i + 1)}>
-                                                        {i + 1}
-                                                    </button>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </nav>
+                                    <Pagination
+                                        totalItems={showTeacher.length}
+                                        itemsPerPage={usersPerPage}
+                                        currentPage={currentPage}
+                                        onPageChange={handlePageChange}
+                                    />
                                 </div>
                                 <div className="col-3 d-flex justify-content-end">
                                     <button
@@ -360,7 +358,7 @@ function TeacherManagementContent() {
                                     <hr />
                                     <h5 className="mb-2">Thông tin chi tiết:</h5>
                                     <ul className="list-unstyled mb-1-9 ms-3">
-                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">MSSV:</span> {viewTeacher?.username}</li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">MSGV:</span> {viewTeacher?.username}</li>
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Giới tính:</span>{viewTeacher?.gender ? 'Nam' : 'Nữ'}</li>
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Email:</span><a href={`mailto:${viewTeacher?.email}`}>{viewTeacher?.email}</a> </li>
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Số điện thoại:</span>+{viewTeacher?.phone}</li>

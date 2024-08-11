@@ -28,14 +28,14 @@ export const Home = () => {
                             <div className="row align-items-center">
                                 <div className="col-sm-6 col-12 mb-4 mb-sm-0">
                                     <h1 className="h2 mb-0 ls-tight">
-                                        <img src={sclogo} width="40" className="rounded-circle" /> SCHOOL'S NAME UNIVERSITY
+                                        <NavBarToggle toggleNavBar={toggleNavBar} /> SCHOOL'S NAME UNIVERSITY
                                     </h1>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </header>
-                <NavBarToggle toggleNavBar={toggleNavBar} />
+
                 <HomeContent />
             </div>
         </div >

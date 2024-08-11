@@ -50,7 +50,14 @@
 .btnCommentPost {
     border: 2px solid #73eda0;
     width: 70px;
+    color: #0fe45d;
     border-radius: 15px;
+    background-color: white;
+}
+
+.btnCommentPost:hover {
+    background-color: #73eda0;
+    color: #090909;
 }
 
 .infoTeacherPost {
@@ -60,19 +67,21 @@
 .infoTeacherPost p {
     font-size: 13px;
 }
-.file-display a{
+
+.file-display a {
     color: black;
 }
 
-.file-display a:hover{
+.file-display a:hover {
     text-decoration: underline;
     color: #59a9ef;
 }
 
-.post-classroom{
+.post-classroom {
     border: 1px solid #090909;
 }
-.event-classroom{
+
+.event-classroom {
     border: 1px solid #090909;
 }
 
@@ -83,4 +92,19 @@
 
 .btnDeletePost:hover {
     background-color: #ccc;
+}
+
+#userFile{
+    width: 250px;
+}
+.courseGroupInfoAttend{
+    font-family: 'Times New Roman', Times, serif;
+    color: aliceblue;
+    font-size: x-large;
+    text-align: center;
+}
+.attendListSuccess{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: aliceblue;
+    font-size: medium;
 }

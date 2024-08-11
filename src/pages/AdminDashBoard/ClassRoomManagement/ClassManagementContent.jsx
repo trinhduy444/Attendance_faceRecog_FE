@@ -3,12 +3,18 @@ import Swal from "sweetalert2"
 import * as XLSX from "xlsx"
 
 import { roomService } from "../../../services/roomService";
-function ClassManagementContent() {
+import NavBarToggle from "../../../components/NavBarToggle";
+import Pagination from "../UserManagement/Pagination";
+function ClassManagementContent({ toggleNavBar }) {
     const [roomData, setRoomData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [currentrooms, setCurrentrooms] = useState([]);
+    const roomsPerPage = 10;
 
-    const handleFectchRooms = async (limit = 8, skip = 0) => {
+
+    const handleFectchRooms = async () => {
         try {
-            const response = await roomService.getRooms(limit, skip);
+            const response = await roomService.getAllRooms();
             if (response.status === 200) {
                 setRoomData(response.metadata)
                 return;
@@ -22,6 +28,18 @@ function ClassManagementContent() {
     useEffect(() => {
         handleFectchRooms();
     }, [])
+
+    useEffect(() => {
+        const indexOfLastroom = currentPage * roomsPerPage;
+        const indexOfFirstroom = indexOfLastroom - roomsPerPage;
+        setCurrentrooms(roomData.slice(indexOfFirstroom, indexOfLastroom));
+    }, [roomData, currentPage]);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+
     const handleCreateMutilRooms = async (e) => {
         const reader = new FileReader();
         const file = e.target.files[0];
@@ -119,7 +137,8 @@ function ClassManagementContent() {
                             <div className="col-sm-6 col-12 mb-4 mb-sm-0">
 
                                 <h1 className="h2 mb-0 ls-tight">
-                                    QUẢN LÝ PHÒNG HỌC - ADMIN DASHBOARD</h1>
+                                    <NavBarToggle toggleNavBar={toggleNavBar} />
+                                    QUẢN LÝ PHÒNG HỌC</h1>
                             </div>
                             <div className="col-sm-6 col-12 text-sm-end">
                                 <div className="mx-n1">
@@ -156,7 +175,7 @@ function ClassManagementContent() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {roomData.map((room, index) => (
+                                    {currentrooms.map((room, index) => (
                                         <tr key={index}>
                                             <td><b>{room.classroom_code}</b></td>
                                             <td>Tòa {room.classroom_code.substring(0, 1)}</td>
@@ -169,16 +188,15 @@ function ClassManagementContent() {
                             </table>
                         </div>
                         <div className="card-footer border-0 py-5">
-                            <span className="text-muted text-sm">Showing 10 items out of 250 results found</span>
-                            <nav aria-label="Page navigation example">
-                                <ul className="pagination">
-                                    <li className="page-item"><a className="page-link disabled" href="#">Previous</a></li>
-                                    <li className="page-item"><a className="page-link bg-info text-white" href="#">1</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">3</a></li>
-                                    <li className="page-item"><a className="page-link" href="#">Next</a></li>
-                                </ul>
-                            </nav>
+                            <span className="text-muted text-sm">
+                                Hiển thị {currentrooms.length} phòng học trong số <b className="text-danger">{roomData.length}</b> phòng học
+                            </span>
+                            <Pagination
+                                totalItems={roomData.length}
+                                itemsPerPage={roomsPerPage}
+                                currentPage={currentPage}
+                                onPageChange={handlePageChange}
+                            />
 
                         </div>
                     </div>

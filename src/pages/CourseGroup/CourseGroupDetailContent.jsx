@@ -2,26 +2,40 @@ import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import Swal from "sweetalert2"
 import { postService } from '../../services/postService';
+import { courseService } from '../../services/courseService';
 import { displayContent } from '../../utils/displayContent'
 import { convertDay } from '../../utils/convertDay'
+import { encodeId } from '../../utils/secureEncoding';
+
+import CommentComponent from './CommentComponent'
 function CourseGroupDetailContent({ role, course_group }) {
     const [content, setContent] = useState('');
     const [posts, setPosts] = useState([]);
+    const [info, setInfo] = useState(null);
     // post edit
     const [editPost, setEditPost] = useState();
     const [editContent, setEditContent] = useState('');
-
     const MAX_LENGTH = 1024;
     // Fectch Data
-    useEffect(() => {
-        handleFetchData()
-    }, [])
     const handleFetchData = async () => {
         const response = await postService.getAllPostValid(course_group)
         if (response.data.status === 200) {
             setPosts(response.data.metadata)
         }
     }
+    const handleGetInfoCourseGroup = async () => {
+        console.log("handleGetInfoCourseGroup")
+        const response = await courseService.getInfoCourseGroup(course_group)
+        console.log(response)
+        if (response.status === 200) {
+            setInfo(response.metadata)
+        }
+    }
+    useEffect(() => {
+        handleGetInfoCourseGroup()
+        handleFetchData()
+    }, [])
+
     // Check length title and content
     const checkLength = function (content, titlePost) {
         if (content.length > MAX_LENGTH) {
@@ -117,15 +131,46 @@ function CourseGroupDetailContent({ role, course_group }) {
         return
     }
 
+    const handleOpenAttendance = (e) => {
+        e.preventDefault();
+
+        Swal.fire({
+            title: "Nhập số phút cho phép điểm danh",
+            input: "number",
+            inputAttributes: {
+                autocapitalize: "off",
+                min: 1,
+                max: 15,
+            },
+            showCancelButton: true,
+            confirmButtonText: "Mở đường dẫn",
+            showLoaderOnConfirm: true,
+            preConfirm: (minutes) => {
+                if (!minutes || minutes <= 0) {
+                    Swal.showValidationMessage("Vui lòng nhập số phút hợp lệ!");
+                    return false;
+                }
+                return minutes;
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const course_group_id_encode = encodeURIComponent(encodeId(course_group));
+                const minutes = result.value;
+                const url = `/attendRecog/${course_group_id_encode}?minutes=${minutes}`;
+                window.open(url, '_blank');
+            }
+        });
+    }
+
     return (
 
         <main className="py-6 bg-surface-secondary">
             <div className="container ps-20 pe-20" >
                 <div className="row classroomDetailHeader">
                     <img src="https://i.pinimg.com/564x/17/f8/bd/17f8bdc442823c9943fd1681445cd5ef.jpg" alt="" style={{ width: '100%', height: '300px' }} />
-                    <h2 className="overlay-text">Môn Lập trình hướng đối tượng | N1-HK1-300401</h2>
-                    <h3 className="overlay-text2">GV: Vũ Đình Hồng</h3>
-
+                    <h2 className="overlay-text">Môn {info?.course_name} | {info?.group_code}-HK1-{info?.course_code}</h2>
+                    <h3 className="overlay-text2">GV: {info?.nickname}</h3>
                 </div>
                 <div className="main-classroom">
                     <div className="row mt-2">
@@ -136,53 +181,49 @@ function CourseGroupDetailContent({ role, course_group }) {
                                         <div className="card post-classroom">
                                             <div className="card-header d-flex justify-content-between">
                                                 <div className="d-flex align-items-center">
-                                                    <img src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="ảnh giảng viên..." className="rounded-circle" width="50" />
+                                                    {post.avatar_path ? (<img src={post.avatar_path} alt="ảnh giảng viên..." className="rounded-circle" width="50" />
+                                                    ) : (<img src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="ảnh giảng viên..." className="rounded-circle" width="50" />
+                                                    )}
                                                     <div className="infoTeacherPost ms-2">
                                                         <h5>{post.nickname}</h5>
                                                         <p>{convertDay(post.create_time)}</p>
                                                     </div>
                                                 </div>
+                                                {role === 2 && (
+                                                    <div className="dropdown">
+                                                        <a className="dropdown-toggle" type="button" id="dropdownPost" data-bs-toggle="dropdown" >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                                                            >
+                                                                <circle cx="12" cy="12" r="1"></circle>
+                                                                <circle cx="19" cy="12" r="1"></circle>
+                                                                <circle cx="5" cy="12" r="1"></circle>
+                                                            </svg>
+                                                        </a>
+                                                        <ul className="dropdown-menu border border-dark " aria-labelledby="dropdownPost">
+                                                            <li><a className="dropdown-item btnEditPost" type='button' data-bs-toggle="modal"
+                                                                data-bs-target="#editPost" onClick={() => clickModelEdit(post)}><i className="bi bi-pencil-square"></i> Chỉnh sửa</a></li>
+                                                            <li><a className="dropdown-item btnDeletePost" type='button' onClick={() => handleDeletePost(post.post_id)}><i className="bi bi-trash"></i> Xóa bài</a></li>
+                                                        </ul>
+                                                    </div>
+                                                )}
 
-
-
-                                                <div className="dropdown">
-                                                    <button className="dropdown-toggle" type="button" id="dropdownPost" data-bs-toggle="dropdown" >
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                                                        >
-                                                            <circle cx="12" cy="12" r="1"></circle>
-                                                            <circle cx="19" cy="12" r="1"></circle>
-                                                            <circle cx="5" cy="12" r="1"></circle>
-                                                        </svg>
-                                                    </button>
-                                                    <ul className="dropdown-menu border border-dark " aria-labelledby="dropdownPost">
-                                                        <li><a className="dropdown-item btnEditPost" type='button' data-bs-toggle="modal"
-                                                            data-bs-target="#editPost" onClick={() => clickModelEdit(post)}><i className="bi bi-pencil-square"></i> Chỉnh sửa</a></li>
-                                                        <li><a className="dropdown-item btnDeletePost" type='button' onClick={() => handleDeletePost(post.post_id)}><i className="bi bi-trash"></i> Xóa bài</a></li>
-                                                    </ul>
-                                                </div>
                                             </div>
                                             <div className="card-body">
-                                                <h3 className='text-center'>{post.title}</h3>
+                                                <h2 className='text-center'>{post.title}</h2>
                                                 <div>
                                                     {displayContent({ content: post.content })}
                                                 </div>
                                                 {post.file_link ? (<div className="file-display">
                                                     <a href={post.file_link} target="_blank" className="file-link">
-                                                        <img src="https://lh3.googleusercontent.com/drive-storage/AJQWtBOPlCP5jv0j4AMwemI0MVMUnB_h2dfMVCj2T_6Rgs-tvE6iNhNArEfJPqUfTNVFPX458X6fuVH2OAU1VptuH6FIFjRJqwM5jm51tOOEOJj-u5k=w105-h70-c" alt="" width={105} height={70} />
-                                                        Ngân sách hàng năm.xlsx
+                                                        <img src="https://i.pinimg.com/564x/13/88/5f/13885f590c6070c7f106b0f19a17ab9b.jpg" alt="Ảnh file link" width={105} height={70} />
+                                                        Đường dẫn đính kèm
                                                     </a>
                                                 </div>) : (null)}
 
                                             </div>
-                                            <div className="card-footer d-flex justify-content-between">
-                                                <img src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="ảnh giảng viên..."
-                                                    className="rounded-circle" width="40" />
-                                                <input className="commentPost" type="text" placeholder="Nhập bình luận..." />
-
-                                                <button className="btnCommentPost bg-soft-success text-success"><i className="bi bi-send"></i> Gửi</button>
-                                            </div>
+                                            <CommentComponent post_id={post.post_id} />
                                         </div>
 
                                     </div>
@@ -190,7 +231,7 @@ function CourseGroupDetailContent({ role, course_group }) {
                             </div>
                         </div>
 
-                        <div className="col-3">
+                        <div className="col-3 mt-2">
                             <div className="card event-classroom">
                                 <div className="card-header">
                                     <h3>Sự kiện</h3>
@@ -203,6 +244,19 @@ function CourseGroupDetailContent({ role, course_group }) {
 
                                     </ul>
                                 </div>
+                                {role === 2 ? (<div className='card-footer'>
+                                    <a
+                                        href="#"
+                                        target="_blank"
+                                        className='btn btn-info text-white'
+                                        rel="noopener noreferrer"
+                                        onClick={handleOpenAttendance}
+                                    >
+                                        Mở link điểm danh
+                                    </a>
+
+                                </div>) : null}
+
                             </div>
                             {role === 2 ? (
                                 <div className="row mt-2">
@@ -211,10 +265,12 @@ function CourseGroupDetailContent({ role, course_group }) {
                                             data-bs-target="#createPost" className='btn btn-success'>Tạo bài đăng</button>
                                     </div>
                                     <div className="col-6">
-                                        <button className='btn btn-success'>Tạo bài đăng</button>
+                                        <a href="/createNotify" className='btn btn-primary'>Tạo thông báo</a>
                                     </div>
                                 </div>
+
                             ) : (null)}
+
                         </div>
 
                     </div>
@@ -270,7 +326,7 @@ function CourseGroupDetailContent({ role, course_group }) {
 
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"  id='btnCloseCreate'>Đóng</button>
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id='btnCloseCreate'>Đóng</button>
                                 <button type="submit" id="submitFileBtn" className="btn btn-success">Tạo bài viết</button>
                             </div>
                         </form>

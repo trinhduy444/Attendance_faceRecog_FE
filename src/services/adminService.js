@@ -68,7 +68,7 @@ export const adminService = {
     getAllTeachersByFaculty: async (faculty_id) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axiosConfig.post(`/admin/getAllTeachersByFaculty?faculty_id=${faculty_id}`, {}, {
+            const response = await axiosConfig.post(`/admin/getAllTeachersByFaculty/${faculty_id}`, {}, {
                 headers: {
                     'Authorization': 'Bearer ' + accessToken,
                 },
