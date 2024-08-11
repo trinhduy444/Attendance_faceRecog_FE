@@ -62,7 +62,7 @@ const headerLinks = {
             { path: '/attendance', label: 'Dữ liệu điểm danh', icon: 'bi bi-clipboard-data' },
             { path: '/attendance/scan', label: 'Điểm danh', icon: 'bi bi-info' },
         ]
-     },
+    },
     '/attendanceData': {
         title: 'Chi tiết dữ liệu điểm danh',
         links: [
@@ -70,16 +70,23 @@ const headerLinks = {
             { path: '/attendanceData', label: 'Dữ liệu điểm danh', icon: 'bi bi-clipboard-data' },
         ]
     },
+    '/chat': {
+        title: 'Nhắn tin',
+        links: [
+            { path: '/', label: 'Trang chủ', icon: 'bi bi-house' },
+            { path: '/chat', label: 'Nhắn tin', icon: "bi bi-chat-dots" },
+        ]
+    },
 };
 
-function Header({toggleNavBar}) {
+function Header({ toggleNavBar }) {
     const location = useLocation();
 
     const currentHeader = headerLinks[location.pathname] || { title: '', links: [] };
     const { title, links } = currentHeader;
 
     return (
-        <header className="bg-surface-primary border-bottom pt-3">
+        <header className="bg-surface-primary border-bottom pt-1">
             <div className="container">
                 <div className="mb-npx">
                     <div className="row align-items-center">

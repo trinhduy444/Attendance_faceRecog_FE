@@ -13,7 +13,7 @@
     "crypto-js": "^4.2.0",
     "dompurify": "^3.1.6",
     "dotenv": "^16.4.5",
-    "firebase": "^10.12.3",
+    "firebase": "^10.12.5",
     "jquery": "^3.7.1",
     "js-base64": "^3.7.7",
     "js-cookie": "^3.0.5",
