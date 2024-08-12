@@ -12,9 +12,10 @@ function RecogFaceContent({ course_group_id, minutes }) {
     const webcamCanvasRef = useRef(null);
     const dataCanvasRef =  useRef(null);
     const faceMatcher = useRef(null);
+    const attendedList = useRef(['unknown']);
     const [studentInfo, setStudentInfo] = useState(new Map());
     const [courseGroupInfo, setCourseGroupInfo] = useState(null);
-    const [attendListSuccess, setAttendListSuccess] = useState(['unknown']);
+    const [attendListSuccess, setAttendListSuccess] = useState([]);
     const [timeLeft, setTimeLeft] = useState(minutes * 60);
     const [isUploading, setIsUploading] = useState(0);
 
@@ -61,14 +62,13 @@ function RecogFaceContent({ course_group_id, minutes }) {
 
             // Countdown timer logic
             timer = setInterval(() => {
-                if (timeLeft >= 0) setTimeLeft((prev) => prev - 1);
-                else if (isUploading === 0) window.close();
+                setTimeLeft((prev) => prev - 1);
             }, 1000);
     
             timeout = setTimeout(() => {
                 Swal.fire("Hết thời gian", "Thời gian điểm danh đã hết!", "warning")
-                if (isUploading === 0) window.close();
-            }, minutes* 60 * 1000);
+                window.close();
+            }, minutes * 60 * 1000);
 
             // Initial call for webcam
             webcamRef.current.video.onplay = () => {
@@ -114,8 +114,8 @@ function RecogFaceContent({ course_group_id, minutes }) {
             // Face recognition
             const result = faceMatcher.current.findBestMatch(detections[i].descriptor);
             detections[i].detection._className = result._label;
-            if (!attendListSuccess.includes(result._label)) {
-                setAttendListSuccess([...attendListSuccess, result._label]);
+            if (!attendedList.current.includes(result._label)) {
+                attendedList.current.push(result._label);
                 // Get current date and time string
                 currDatetime = new Date();
                 currDate = currDatetime.toISOString().split('T')[0] + 'T00:00';
@@ -160,7 +160,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
         const res = await attendanceService.addAttendanceRawData(requestBody);
         setIsUploading(isUploading - 1);
         if (res.data.status === 201) {
-            return;
+            setAttendListSuccess([...attendListSuccess, studentUsername + ' - ' + requestBody.attendTime]);
         }
     }
 
@@ -213,8 +213,8 @@ function RecogFaceContent({ course_group_id, minutes }) {
                             <p className='fst-italic'>Danh sách sinh viên điểm danh thành công: </p>
                             <div className='overflow-auto mt-2 border border-info' style={{ height: '500px' }}>
                                 <ul className='m-1'>
-                                    {attendListSuccess.map((mssv, index) => {
-                                        return mssv !== 'unknown' ? (<li key={index}>{mssv}</li>) : ('')
+                                    {attendListSuccess.map((data, index) => {
+                                        return (<li key={index}>{data}</li>)
                                     })}
                                 </ul>
                             </div>
