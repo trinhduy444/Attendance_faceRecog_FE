@@ -1,21 +1,73 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import sclogo from "../assets/images/sclogo.jpg";
 import { authService } from '../services/authService';
 import Swal from 'sweetalert2';
-
+import { collection, getDocs } from "firebase/firestore";
+import { db } from '../configs/firebaseConfig'
 function NavBar({ isNavBarVisible }) {
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
     const user = useSelector(state => state.auth.user);
-    const isLoading = useSelector(state => state.auth.isLoading);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [receivedArray, setReceivedArray] = useState([]);
+    const fetchUserIdsFromChats = async (userId) => {
+        try {
+            const chatsCollection = collection(db, 'Chats');
+            const querySnapshot = await getDocs(chatsCollection);
+            // console.log('length', querySnapshot.size)
+            const arr = [];
+            querySnapshot.forEach(doc => {
+                // console.log('doc',doc.id)
+                const ids = doc.id.split('_');
+                if (ids.includes(userId)) {
+                    let tmpId = ids.find(id => id !== userId);
+                    arr.push(tmpId)
+                }
+            });
+            return arr;
+        } catch (error) {
+            console.error("Error fetching chat documents: ", error);
+            return [];
+        }
+    };
 
+
+    const fetchUsersInfo = async (userIds) => {
+        try {
+            const usersCollection = collection(db, 'Users');
+            const querySnapshot = await getDocs(usersCollection);
+            // console.log('length2', querySnapshot.size)
+
+            let arr = []
+            querySnapshot.forEach((doc) => {
+                if (userIds.includes(doc.id)) {
+                    arr.push({ id: doc.id, ...doc.data() });
+
+                }
+            });
+            return arr;
+        } catch (error) {
+            console.error("Error fetching user documents: ", error);
+            return [];
+        }
+    };
+    useEffect(() => {
+        const fetchChatUsers = async () => {
+
+            const otherUserIds = await fetchUserIdsFromChats(user?.username);
+            // console.log(otherUserIds)
+            const usersInfo = await fetchUsersInfo(otherUserIds);
+            // console.log("users", usersInfo)
+            setReceivedArray(usersInfo);
+
+        };
+        fetchChatUsers();
+    }, [user]);
     const handleLogout = async () => {
         const response = await authService.logout();
-        // console.log(response);
         if (response.status === 200) {
             dispatch({ type: 'LOGOUT' })
             navigate('/login');
@@ -41,9 +93,13 @@ function NavBar({ isNavBarVisible }) {
 
     // }, [accessToken])
 
-    console.log("navBar");
+    // console.log("navBar");
     if (!isNavBarVisible) {
         return null;
+    }
+
+    if (receivedArray) {
+        console.log("received", receivedArray);
     }
 
     return (
@@ -155,84 +211,43 @@ function NavBar({ isNavBarVisible }) {
 
                             </ul>
                             <hr className="navbar-divider my-5 opacity-20" />
-                            <ul className="navbar-nav mb-md-4">
-                                <li>
-                                    <a className="nav-link text-xs font-semibold text-uppercase text-muted ls-wide" href="/chat">
-                                        Tin nhắn
-                                        <span
-                                            className="badge bg-soft-primary text-primary rounded-pill d-inline-flex align-items-center ms-4">3</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" className="nav-link d-flex align-items-center">
-                                        <div className="me-4">
-                                            <div className="position-relative d-inline-block text-white">
-                                                <img alt="Image Placeholder"
-                                                    src="https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80"
-                                                    className="avatar rounded-circle" />
-                                                <span
-                                                    className="position-absolute bottom-2 end-2 transform translate-x-1/2 translate-y-1/2 border-2 border-solid border-current w-3 h-3 bg-success rounded-circle"></span>
+                            <div className='mb-md-4 '>
+                                <a className="nav-link text-xs font-semibold text-uppercase text-muted ls-wide" href="/chat">
+                                    Tin nhắn
+                                    <span
+                                        className="badge bg-soft-primary text-primary rounded-pill d-inline-flex align-items-center ms-4">3</span>
+                                </a>
+                            </div>
+                            <ul className="navbar-nav chatinfo">
+
+                                {receivedArray.map((user, index) => (
+                                    <li>
+                                        <a href="/chat" className="nav-link d-flex align-items-center">
+                                            <div className="me-4">
+                                                <div className="position-relative d-inline-block text-white">
+                                                    {/* <img alt="Image Placeholder"
+                                                        src={user.image_path}
+                                                        className="avatar rounded-circle" /> */}
+                                                    <span
+                                                        className="position-absolute bottom-2 end-2 transform translate-x-1/2 translate-y-1/2 border-2 border-solid border-current w-3 h-3 bg-success rounded-circle"></span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div>
-                                            <span className="d-block text-sm font-semibold">
-                                                Daisy johnson
-                                            </span>
-                                            <span className="d-block text-xs text-muted font-regular">
-                                                Paris, FR
-                                            </span>
-                                        </div>
-                                        <div className="ms-auto">
-                                            <i className="bi bi-chat"></i>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" className="nav-link d-flex align-items-center">
-                                        <div className="me-4">
-                                            <div className="position-relative d-inline-block text-white">
-                                                <span className="avatar bg-soft-warning text-warning rounded-circle">JW</span>
-                                                <span
-                                                    className="position-absolute bottom-2 end-2 transform translate-x-1/2 translate-y-1/2 border-2 border-solid border-current w-3 h-3 bg-success rounded-circle"></span>
+                                            <div>
+                                                <span className="d-block text-sm font-semibold">
+                                                    {user.nickname}
+                                                </span>
+                                                <span className="d-block text-xs text-muted font-regular">
+                                                    {user.username}
+                                                </span>
                                             </div>
-                                        </div>
-                                        <div>
-                                            <span className="d-block text-sm font-semibold">
-                                                Michael Jordan
-                                            </span>
-                                            <span className="d-block text-xs text-muted font-regular">
-                                                Bucharest, RO
-                                            </span>
-                                        </div>
-                                        <div className="ms-auto">
-                                            <i className="bi bi-chat"></i>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" className="nav-link d-flex align-items-center">
-                                        <div className="me-4">
-                                            <div className="position-relative d-inline-block text-white">
-                                                <img alt="..."
-                                                    src="https://images.unsplash.com/photo-1610899922902-c471ae684eff?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=256&h=256&q=80"
-                                                    className="avatar rounded-circle" />
-                                                <span
-                                                    className="position-absolute bottom-2 end-2 transform translate-x-1/2 translate-y-1/2 border-2 border-solid border-current w-3 h-3 bg-danger rounded-circle"></span>
+                                            <div className="ms-auto">
+                                                <i className="bi bi-chat"></i>
                                             </div>
-                                        </div>
-                                        <div>
-                                            <span className="d-block text-sm font-semibold">
-                                                Heather Wright
-                                            </span>
-                                            <span className="d-block text-xs text-muted font-regular">
-                                                London, UK
-                                            </span>
-                                        </div>
-                                        <div className="ms-auto">
-                                            <i className="bi bi-chat"></i>
-                                        </div>
-                                    </a>
-                                </li>
+                                        </a>
+                                    </li>
+                                ))}
+
+
                             </ul>
                             <div className="mt-auto"></div>
                             <ul className="navbar-nav">

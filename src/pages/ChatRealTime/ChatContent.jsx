@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from '../../configs/firebaseConfig'
 import ChatBox from "./ChatBox";
 import Swal from "sweetalert2";
@@ -12,7 +12,9 @@ function ChatContent({ userId }) {
     useEffect(() => {
         const fetchChatUsers = async () => {
             const otherUserIds = await fetchUserIdsFromChats(userId);
+            // console.log(otherUserIds)
             const usersInfo = await fetchUsersInfo(otherUserIds);
+            // console.log("users", usersInfo)
             setReceivedArray(usersInfo);
 
         };
@@ -23,18 +25,16 @@ function ChatContent({ userId }) {
         try {
             const chatsCollection = collection(db, 'Chats');
             const querySnapshot = await getDocs(chatsCollection);
+            // console.log('length', querySnapshot.size)
             const arr = [];
-
             querySnapshot.forEach(doc => {
-                console.log(doc.id)
-                if (doc.id.includes(userId)) {
-                    const otherUserId = doc.id.split('_').find(id => id !== userId);
-                    if (otherUserId) {
-                        arr.push(otherUserId);
-                    }
+                // console.log('doc',doc.id)
+                const ids = doc.id.split('_');
+                if (ids.includes(userId)) {
+                    let tmpId = ids.find(id => id !== userId);
+                    arr.push(tmpId)
                 }
             });
-            // console.log("ar", arr)
             return arr;
         } catch (error) {
             console.error("Error fetching chat documents: ", error);
@@ -46,22 +46,23 @@ function ChatContent({ userId }) {
     const fetchUsersInfo = async (userIds) => {
         try {
             const usersCollection = collection(db, 'Users');
-            const userDocs = await Promise.all(
-                userIds.map(async (id) => {
-                    const userDocRef = doc(usersCollection, id);
-                    const userDocSnap = await getDoc(userDocRef);
-                    return userDocSnap.exists() ? userDocSnap.data() : null;
-                })
-            );
-            return userDocs.filter(user => user !== null);
+            const querySnapshot = await getDocs(usersCollection);
+            // console.log('length2', querySnapshot.size)
+
+            let arr = []
+            querySnapshot.forEach((doc) => {
+                if (userIds.includes(doc.id)) {
+                    arr.push({ id: doc.id, ...doc.data() });
+
+                }
+            });
+            return arr;
         } catch (error) {
             console.error("Error fetching user documents: ", error);
             return [];
         }
     };
-    // if (receivedArray) {
-    //     console.log("Got received array", receivedArray, arrayId)
-    // }
+
     const handleSearch = (e) => {
         const input = e.target.value.toLowerCase();
         setSearchReceived(input);
@@ -84,14 +85,11 @@ function ChatContent({ userId }) {
             Swal.fire("Lỗi thực thi", "Vui lòng nhập thông tin người dùng để gửi tin nhắn!", "warning");
         }
         const res = await userService.checkExistUser(searchReceived)
-        if(res.status === 200 && res.metadata === true){
-            setSelectedUserId(searchReceived.toUpperCase()); 
-        }else{
-            Swal.fire("Không tồn tại","Người dùng không tồn tại trên hệ thống","error")
+        if (res.status === 200 && res.metadata === true) {
+            setSelectedUserId(searchReceived.toUpperCase());
+        } else {
+            Swal.fire("Không tồn tại", "Người dùng không tồn tại trên hệ thống", "error")
         }
-    }
-    if(selectedUserId){
-        console.log(selectedUserId)
     }
 
     return (
@@ -128,25 +126,7 @@ function ChatContent({ userId }) {
                                         </div>
                                     </li>
                                 ))}
-
-                                <li className="clearfix">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar" />
-                                    <div className="about">
-                                        <div className="name" data-username="5213">Vincent Porter</div>
-                                        <div className="status"> <i className="bi bi-circle-fill offline"></i> left 7 mins ago </div>
-                                    </div>
-                                </li>
-                       
-                                <li className="clearfix">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar" />
-                                    <div className="about">
-                                        <div className="name" data-username="6213">Do biet la ai luon</div>
-                                        <div className="status"> <i className="bi bi-circle-fill offline"></i> left 7 mins ago </div>
-                                    </div>
-                                </li>
-                       
-
-                            </ul>
+                                </ul>
                         </div>
                         {selectedUserId ? <ChatBox userId={userId} receivedId={selectedUserId} /> : (null)}
                     </div>

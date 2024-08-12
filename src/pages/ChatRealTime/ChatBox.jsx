@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { collection, addDoc, onSnapshot, query, orderBy, doc, getDoc, setDoc } from 'firebase/firestore';
 import Swal from "sweetalert2";
 import { db } from '../../configs/firebaseConfig'
@@ -93,6 +93,15 @@ function ChatBox({ userId, receivedId }) {
         try {
             const chatId = [userId, receivedId].sort().join('_');
             const chatDocRef = doc(db, 'Chats', chatId);
+
+            // Kiểm tra nếu tài liệu Chats không tồn tại, thêm trường vào tài liệu chính
+            const chatDocSnap = await getDoc(chatDocRef);
+            if (!chatDocSnap.exists()) {
+                await setDoc(chatDocRef, {
+                    createdAt: new Date()
+                });
+            }
+
             const messagesCollectionRef = collection(chatDocRef, 'messages');
 
             await addDoc(messagesCollectionRef, {
@@ -104,12 +113,11 @@ function ChatBox({ userId, receivedId }) {
 
             setInputMessage('');
         } catch (error) {
-            Swal.fire("Lỗi", "Không thể gửi tin nhắn!", "error")
-
+            Swal.fire("Lỗi", "Không thể gửi tin nhắn!", "error");
             console.error('Lỗi khi gửi tin nhắn:', error);
         }
     };
- 
+
 
     return (
         <div className="chat">

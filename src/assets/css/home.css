@@ -58,3 +58,8 @@
     height: 60px;
     border-radius: 5px;
 }
+
+.navbar-nav .chatinfo{
+    max-height: 300px; 
+    overflow-y: auto; 
+}
