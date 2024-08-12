@@ -15,5 +15,21 @@ export const userService = {
             console.error(err);
             throw err;
         }
+    },
+
+    getUserFaces: async (user_id) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.get(`/users/faces/${user_id}`, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
     }
 };
