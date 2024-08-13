@@ -27,6 +27,7 @@ import { ChangePassword } from './pages/Profile/ChangePassword';
 import { Schedule } from './pages/Schedule/Schedule';
 import { CourseGroup } from './pages/CourseGroup/CourseGroup';
 import { CourseGroupDetail } from './pages/CourseGroup/CourseGroupDetail';
+import { ChatRealTime } from './pages/ChatRealTime/ChatRealTime';
 //Teacher
 import { AttendanceManagement } from './pages/TeacherDashBoard/Attendance/AttendanceManagement';
 import { RecogFace } from './pages/Attendance/RecogFace/RecogFace';
@@ -72,6 +73,9 @@ root.render(
             <Route path="/schedule" element={<ProtectedRoute element={<Schedule />} />} />
             <Route path="/coursegroup" element={<ProtectedRoute element={<CourseGroup />} />} />
             <Route path="/coursegroup/detail/:course_group" element={<ProtectedRoute element={<CourseGroupDetail />} />} />
+            <Route path="/chat" element={<ProtectedRoute element={<ChatRealTime />} />} />
+
+
             <Route path="/createNotify" element={<ProtectedRoute type={4} element={<CreateNotify />} />} />
             <Route path="/attendanceData" element={<ProtectedRoute type={2} element={<AttendanceManagement />} />} />
             <Route path="/attendRecog/:course_group_id" element={<ProtectedRoute type={4} element={<RecogFace />} />} />

@@ -48,3 +48,18 @@
 .btnUsermanage{
     z-index: 9999;
 } */
+.chatBg {
+    min-height: 100vh;
+    background: linear-gradient(#596AFF, #383699);
+}
+
+.imgUserChat{
+    width: 80px;
+    height: 60px;
+    border-radius: 5px;
+}
+
+.navbar-nav .chatinfo{
+    max-height: 300px; 
+    overflow-y: auto; 
+}
