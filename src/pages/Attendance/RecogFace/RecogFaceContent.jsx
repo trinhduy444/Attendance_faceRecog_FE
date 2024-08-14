@@ -125,7 +125,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
                 attendedList.current.push(result._label);
                 // Get current date and time string
                 currDatetime = new Date();
-                currDate = currDatetime.toISOString().split('T')[0] + 'T00:00';
+                currDate = currDatetime.toISOString().split('T')[0] + 'T00:00Z';
                 currTime = dateUtils.getTimeString(currDatetime, 'hh:mm');
 
                 // Add attendance data to backend.

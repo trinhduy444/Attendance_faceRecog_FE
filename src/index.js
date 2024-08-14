@@ -30,6 +30,7 @@ import { CourseGroupDetail } from './pages/CourseGroup/CourseGroupDetail';
 import { ChatRealTime } from './pages/ChatRealTime/ChatRealTime';
 //Teacher
 import { AttendanceManagement } from './pages/TeacherDashBoard/Attendance/AttendanceManagement';
+import { AttendanceAdjustment } from './pages/TeacherDashBoard/AttendanceAdjustment/AttendanceAdjustment';
 import { RecogFace } from './pages/Attendance/RecogFace/RecogFace';
 //Admin Pages
 import { UserManagement } from './pages/AdminDashBoard/UserManagement/UserManagement';
@@ -75,9 +76,9 @@ root.render(
             <Route path="/coursegroup/detail/:course_group" element={<ProtectedRoute element={<CourseGroupDetail />} />} />
             <Route path="/chat" element={<ProtectedRoute element={<ChatRealTime />} />} />
 
-
             <Route path="/createNotify" element={<ProtectedRoute type={4} element={<CreateNotify />} />} />
             <Route path="/attendanceData" element={<ProtectedRoute type={2} element={<AttendanceManagement />} />} />
+            <Route path="/attendance/adjustment" element={<ProtectedRoute type={2} element={<AttendanceAdjustment />} />} />
             <Route path="/attendRecog/:course_group_id" element={<ProtectedRoute type={4} element={<RecogFace />} />} />
 
             <Route path="/admin/attendanceManagement" element={<ProtectedRoute type={1} element={<AttendanceManagement />} />} />
