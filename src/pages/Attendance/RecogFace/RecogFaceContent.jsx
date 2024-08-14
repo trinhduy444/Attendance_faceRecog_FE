@@ -6,6 +6,7 @@ import { userService } from '../../../services/userService';
 import { courseService } from '../../../services/courseService';
 import { attendanceService } from '../../../services/attendanceService';
 import Swal from 'sweetalert2';
+import AttendanceList from './AttendanceList';
 
 function RecogFaceContent({ course_group_id, minutes }) {
     const webcamRef = useRef(null);
@@ -18,6 +19,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
     const [attendListSuccess, setAttendListSuccess] = useState([]);
     const [timeLeft, setTimeLeft] = useState(minutes * 60);
     const [isUploading, setIsUploading] = useState(0);
+    var faceRecog;
 
     // Load student face with descriptors
     const loadStudentFaceList = async (course_group_id) => {
@@ -62,14 +64,15 @@ function RecogFaceContent({ course_group_id, minutes }) {
 
             // Countdown timer logic
             timer = setInterval(() => {
-                setTimeLeft((prev) => prev - 1);
+                handleUpdateTimeLeft();
             }, 1000);
     
+            // Timeout if timer not stopping correctly
             timeout = setTimeout(() => {
-                Swal.fire("Hết thời gian", "Thời gian điểm danh đã hết!", "warning")
+                Swal.fire("Hết thời gian", "Thời gian điểm danh đã hết!", "warning");
                 window.close();
-            }, minutes * 60 * 1000);
-
+            }, (minutes) * 60 * 1000);
+            
             // Initial call for webcam
             webcamRef.current.video.onplay = () => {
                 setTimeout(sentFaceData, 100);
@@ -79,19 +82,23 @@ function RecogFaceContent({ course_group_id, minutes }) {
         return () => {
             clearInterval(timer);
             clearTimeout(timeout);
+            clearTimeout(faceRecog);
         };
     }, []);
 
+    // Set course group info
     const handleFetchCourseGroupInfo = async (course_group_id) => {
         const response = await courseService.getInfoCourseGroup(course_group_id);
         setCourseGroupInfo(response.metadata);
     };
 
+    // Get user faces
     const fetchUserFaces = async (user_id) => {
         const res = await userService.getUserFaces(user_id);
         return res.data.faces;
     }
 
+    // Format time
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
         const secs = seconds % 60;
@@ -105,7 +112,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
         dataCanvasRef.current.height = webcamRef.current.video.offsetHeight;
     
         ctx.drawImage(webcamRef.current.video, 0, 0, dataCanvasRef.current.width, dataCanvasRef.current.height);
-    
+
         // Face detection
         var detections = await faceapi.detectAllFaces(dataCanvasRef.current).withFaceLandmarks().withFaceDescriptors();
 
@@ -136,38 +143,54 @@ function RecogFaceContent({ course_group_id, minutes }) {
 
         // Draw face box with label
         drawFaceBox(detections);
-        setTimeout(sentFaceData, 200);
+        faceRecog = setTimeout(sentFaceData, 200);
     }
 
     // Process success face recognition
     const processAfterRecognition = async(canvas, label, requestBody) => {
-        setIsUploading(isUploading + 1);
-        canvas.toBlob(async (blob) => {
+        handleUpdateUploading(isUploading + 1);
+        addAttendanceRawData(label, requestBody);
+        
+        canvas.toBlob((blob) => {
             const formData = new FormData();
             formData.append('image', blob);
             formData.append('user_id', requestBody.studentId);
             formData.append('course_group_id', requestBody.courseGroupId);
-            formData.append('date', requestBody.attendDate);
+            formData.append('date', requestBody.attendDate); 
             formData.append('type', requestBody.attendType);
 
-            requestBody.attendImagePath = await uploadAttendImage(formData);
-            addAttendanceRawData(label, requestBody);
+            uploadAttendImage(formData);
         });
     }
 
     // Add attend raw data
     const addAttendanceRawData = async (studentUsername, requestBody) => {
         const res = await attendanceService.addAttendanceRawData(requestBody);
-        setIsUploading(isUploading - 1);
         if (res.data.status === 201) {
-            setAttendListSuccess([...attendListSuccess, studentUsername + ' - ' + requestBody.attendTime]);
+            handleAddAttendListSuccess(studentUsername + ' - ' + requestBody.attendTime);
         }
+    }
+
+    // Handle attend list success
+    const handleAddAttendListSuccess = (attend) => {
+        setAttendListSuccess((prevArray) => [...prevArray, attend]);
+    }
+
+    // Handle timer
+    const handleUpdateTimeLeft = () => {
+        setTimeLeft((prev) => prev - 1);
+    }
+
+    // Handle update number of running uploading
+    const handleUpdateUploading = (amount) => {
+        setIsUploading(amount);
     }
 
     // Upload attend image
     const uploadAttendImage = async (formData) => {
         try {
             const res = await attendanceService.uploadImage(formData);
+            handleUpdateUploading(isUploading - 1);
             if (res.status === 201) {
                 return res.data.link_anh;
             }
@@ -212,16 +235,11 @@ function RecogFaceContent({ course_group_id, minutes }) {
                         <div className="row attendListSuccess">
                             <p className='fst-italic'>Danh sách sinh viên điểm danh thành công: </p>
                             <div className='overflow-auto mt-2 border border-info' style={{ height: '500px' }}>
-                                <ul className='m-1'>
-                                    {attendListSuccess.map((data, index) => {
-                                        return (<li key={index}>{data}</li>)
-                                    })}
-                                </ul>
+                               <AttendanceList attendListSuccess = {attendListSuccess}/>
                             </div>
                         </div>
                         <div className="row">
                             <p className="text-danger">Thời gian còn lại: {formatTime(timeLeft)}</p>
-
                         </div>
                     </div>
                 </div>
