@@ -29,10 +29,9 @@ export const Notification = () => {
             return;
         }
     }
-    const handleFilter = (filtered) => {
-        setFilteredNotifications(filtered);
+    const handleFilter = (filteredData) => {
+        setFilteredNotifications(filteredData);
     };
-
     // console.log("render notifi");
 
     return (
@@ -43,7 +42,7 @@ export const Notification = () => {
                 <main className="py-6 bg-surface-secondary">
                     <div className="container">
                         <FilterNotification notifications={notifications} onFilter={handleFilter} />
-                        <NotificationContent notifications={filteredNotifications} />
+                        <NotificationContent notifications={filteredNotifications.length > 0 ? filteredNotifications : notifications} />
                     </div>
 
                 </main>

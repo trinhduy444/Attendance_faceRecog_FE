@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 import NavBar from "../../components/NavBar"
-import NavBarToggle from "../../components/NavBarToggle"
 import Header from "../../components/Header"
 import FaceRecognitionContent from "./FaceRecognitionContent"
 import { useSelector } from 'react-redux';
@@ -8,7 +7,6 @@ import { useSelector } from 'react-redux';
 export const FaceRecognition = () => {
     const [isNavBarVisible, setIsNavBarVisible] = useState(false);
     const user = useSelector(state => state.auth.user);
-    const [role, setRole] = useState(user.role_id);
     useEffect(() => {
         document.title = "Điểm danh"
     }, [])
@@ -21,7 +19,7 @@ export const FaceRecognition = () => {
             <NavBar isNavBarVisible={isNavBarVisible} />
             <div className="h-screen flex-grow-1">
                 <Header toggleNavBar={toggleNavBar} />
-                <FaceRecognitionContent role={role} />
+                <FaceRecognitionContent role={user.role_id} />
             </div>
         </div>
     )

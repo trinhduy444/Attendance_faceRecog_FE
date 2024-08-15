@@ -191,7 +191,6 @@ export function CreateNotify() {
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <form onSubmit={handleCreateNotification}>
-
                                 <div className="modal-body">
                                     <h4>Chọn nhóm người để gửi thông báo</h4>
                                     <div className="form-check mt-2">

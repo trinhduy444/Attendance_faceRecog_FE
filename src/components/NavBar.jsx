@@ -17,10 +17,8 @@ function NavBar({ isNavBarVisible }) {
         try {
             const chatsCollection = collection(db, 'Chats');
             const querySnapshot = await getDocs(chatsCollection);
-            // console.log('length', querySnapshot.size)
             const arr = [];
             querySnapshot.forEach(doc => {
-                // console.log('doc',doc.id)
                 const ids = doc.id.split('_');
                 if (ids.includes(userId)) {
                     let tmpId = ids.find(id => id !== userId);
@@ -39,7 +37,6 @@ function NavBar({ isNavBarVisible }) {
         try {
             const usersCollection = collection(db, 'Users');
             const querySnapshot = await getDocs(usersCollection);
-            // console.log('length2', querySnapshot.size)
 
             let arr = []
             querySnapshot.forEach((doc) => {
@@ -56,11 +53,8 @@ function NavBar({ isNavBarVisible }) {
     };
     useEffect(() => {
         const fetchChatUsers = async () => {
-
             const otherUserIds = await fetchUserIdsFromChats(user?.username);
-            // console.log(otherUserIds)
             const usersInfo = await fetchUsersInfo(otherUserIds);
-            // console.log("users", usersInfo)
             setReceivedArray(usersInfo);
 
         };
@@ -96,10 +90,6 @@ function NavBar({ isNavBarVisible }) {
     // console.log("navBar");
     if (!isNavBarVisible) {
         return null;
-    }
-
-    if (receivedArray) {
-        console.log("received", receivedArray);
     }
 
     return (
@@ -216,7 +206,7 @@ function NavBar({ isNavBarVisible }) {
                                 <a className="nav-link text-xs font-semibold text-uppercase text-muted ls-wide" href="/chat">
                                     Tin nhắn
                                     <span
-                                        className="badge bg-soft-primary text-primary rounded-pill d-inline-flex align-items-center ms-4">3</span>
+                                        className="badge bg-soft-primary text-primary rounded-pill d-inline-flex align-items-center ms-4">{receivedArray.length}</span>
                                 </a>
                             </div>
                             <ul className="navbar-nav chatinfo">

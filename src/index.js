@@ -32,6 +32,7 @@ import { ChatRealTime } from './pages/ChatRealTime/ChatRealTime';
 import { AttendanceManagement } from './pages/TeacherDashBoard/Attendance/AttendanceManagement';
 import { AttendanceAdjustment } from './pages/TeacherDashBoard/AttendanceAdjustment/AttendanceAdjustment';
 import { RecogFace } from './pages/Attendance/RecogFace/RecogFace';
+import { AttendanceDetailManagement } from './pages/TeacherDashBoard/Attendance/AttendanceDetailManagement';
 //Admin Pages
 import { UserManagement } from './pages/AdminDashBoard/UserManagement/UserManagement';
 import { ClassRoomManagement } from './pages/AdminDashBoard/ClassRoomManagement/ClassRoomManagement';
@@ -40,7 +41,7 @@ import { TeacherManagement } from './pages/AdminDashBoard/TeacherManagement/Teac
 import { CourseManagement } from './pages/AdminDashBoard/CourseManagement/CourseManagement';
 import { NotifyManagement } from './pages/AdminDashBoard/NotifyManagement/NotifyManagement';
 import { CreateNotify } from './pages/AdminDashBoard/NotifyManagement/CreateNotify'
-import {CourseGroupManagement} from './pages/AdminDashBoard/CourseGroupManagement/CourseGroupManagement'
+import { CourseGroupManagement } from './pages/AdminDashBoard/CourseGroupManagement/CourseGroupManagement'
 import 'bootstrap/dist/js/bootstrap.min.js';
 import 'react-quill/dist/quill.snow.css';
 
@@ -51,7 +52,7 @@ const persistConfig = {
   storage,
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
- 
+
 const store = createStore(persistedReducer);
 const persistor = persistStore(store);
 
@@ -67,7 +68,7 @@ root.render(
             <Route path="/login" element={<Login />} />
             <Route path="/notification" element={<ProtectedRoute element={<Notification />} />} />
             <Route path="/attendance" element={<ProtectedRoute element={<Attendance />} />} />
-            <Route path="/attendance/detail" element={<ProtectedRoute element={<AttendanceDetail />} />} />
+            <Route path="/attendance/detail/:course_group_id/:ban_yn" element={<ProtectedRoute element={<AttendanceDetail />} />} />
             <Route path="/attendance/scan" element={<ProtectedRoute element={<FaceRecognition />} />} />
             <Route path="/editProfile" element={<ProtectedRoute element={<EditProfile />} />} />
             <Route path="/changePassword" element={<ProtectedRoute element={<ChangePassword />} />} />
@@ -79,10 +80,11 @@ root.render(
             <Route path="/createNotify" element={<ProtectedRoute type={4} element={<CreateNotify />} />} />
             <Route path="/attendanceData" element={<ProtectedRoute type={2} element={<AttendanceManagement />} />} />
             <Route path="/attendance/adjustment" element={<ProtectedRoute type={2} element={<AttendanceAdjustment />} />} />
+            <Route path="/attendanceData/detail/:student_id/:course_group_id" element={<ProtectedRoute type={2} element={<AttendanceDetailManagement />} />} />
             <Route path="/attendRecog/:course_group_id" element={<ProtectedRoute type={4} element={<RecogFace />} />} />
 
             <Route path="/admin/attendanceManagement" element={<ProtectedRoute type={1} element={<AttendanceManagement />} />} />
-            <Route path="/admin/userManagement" element={<ProtectedRoute  type={1} element={<UserManagement />} />} />
+            <Route path="/admin/userManagement" element={<ProtectedRoute type={1} element={<UserManagement />} />} />
             <Route path="/admin/teacherManagement" element={<ProtectedRoute type={1} element={<TeacherManagement />} />} />
             <Route path="/admin/classRoomManagement" element={<ProtectedRoute type={1} element={<ClassRoomManagement />} />} />
             <Route path="/admin/scheduleManagement" element={<ProtectedRoute type={1} element={<ScheduleManagement />} />} />
@@ -91,6 +93,8 @@ root.render(
             <Route path="/admin/coursegroupManagement" element={<ProtectedRoute type={1} element={<CourseGroupManagement />} />} />
 
             <Route path="/error" element={<ErrorPage />} />
+            <Route path="*" element={<ErrorPage />} />
+
             {/* <Route path="*" element={<Navigate to="/" />} /> */}
           </Routes>
         </MyErrorBoundary>

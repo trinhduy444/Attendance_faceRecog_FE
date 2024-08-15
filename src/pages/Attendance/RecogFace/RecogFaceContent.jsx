@@ -85,6 +85,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
             clearTimeout(faceRecog);
         };
     }, []);
+    
 
     // Set course group info
     const handleFetchCourseGroupInfo = async (course_group_id) => {

@@ -100,6 +100,7 @@ function TeacherManagementContent({ toggleNavBar }) {
             const response = await adminService.createTeachers(data);
             if (response.status === 201) {
                 Swal.fire('Thêm thành công', `Đã thêm ${data.length} giảng viên`, 'success');
+                fetchTeachers()
 
             } else {
                 Swal.fire('Có lỗi xảy ra', 'Vui lòng thử lại', 'error');

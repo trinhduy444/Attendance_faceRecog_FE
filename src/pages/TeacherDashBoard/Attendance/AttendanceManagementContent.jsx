@@ -28,7 +28,7 @@ function AttendanceManagementContent({ role }) {
     const fetchDataCG = async () => {
         if (role === 1) {
             const response = await courseService.getAllCourseGroup(selectedSemester);
-            console.log("Ad",response);
+            // console.log("Ad",response);
             if (response.status === 200) {
                 setCourseGroups(response.metadata)
             }

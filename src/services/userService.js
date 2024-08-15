@@ -48,6 +48,20 @@ export const userService = {
             throw err;
         }
     },
+    getSomeinfo: async() =>{
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/users/getSomeinfo', {}, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
     checkExistUser: async (username) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
