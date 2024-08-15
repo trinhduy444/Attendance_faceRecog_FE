@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { scheduleService } from '../../services/scheduleService';
-function ScheduleContent() {
+function ScheduleContent({ infoSemester }) {
     const [activitiesByDay, setActivitiesByDay] = useState([]);
-
+    const [currentWeek, setCurrentWeek] = useState(infoSemester?.week_from);
     const daysOfWeek = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"];
     // Ánh xạ shift_code với chỉ số ca học
     const shiftCodeMap = {
@@ -17,29 +17,30 @@ function ScheduleContent() {
         handleFetchSchedule();
     }, []);
 
-    const handleFetchSchedule = async () => {
+    const handleFetchSchedule = async (week) => {
         try {
             const response = await scheduleService.getSchedule();
             const { metadata } = response;
 
-            // Khởi tạo activitiesByDay với mảng rỗng cho mỗi ngày
             const activitiesByDay = daysOfWeek.map(day => ({
                 day: day,
-                activities: Array(5).fill(null) // Tạo mảng gồm 5 ca học (có thể là null)
+                activities: Array(5).fill(null)
             }));
 
             metadata.forEach(item => {
-                const dayIndex = parseInt(item.week_day) - 2; // Giả sử tuần từ 2 đến 7
-                const shiftIndex = shiftCodeMap[item.shift_code]; // Lấy chỉ số ca học từ shiftCodeMap
-
-                if (dayIndex >= 0 && dayIndex < daysOfWeek.length && shiftIndex !== undefined) {
-                    const activity = {
-                        name: item.course_name,
-                        time: `${item.start_time} - ${item.end_time}`,
-                        instructor: `GV: ${item.nickname} | Nhóm ${item.group_code}`,
-                        room: item.classroom_code
-                    };
-                    activitiesByDay[dayIndex].activities[shiftIndex] = activity; // Cập nhật đúng chỉ số ca học
+                const { week_from, week_to, exclude_week } = item;
+                if (week >= week_from && week <= week_to && !exclude_week.includes(week)) {
+                    const dayIndex = parseInt(item.week_day) - 2;
+                    const shiftIndex = shiftCodeMap[item.shift_code];
+                    if (dayIndex >= 0 && dayIndex < daysOfWeek.length && shiftIndex !== undefined) {
+                        const activity = {
+                            name: item.course_name,
+                            time: `${item.start_time} - ${item.end_time}`,
+                            instructor: `GV: ${item.nickname} | Nhóm ${item.group_code}`,
+                            room: item.classroom_code
+                        };
+                        activitiesByDay[dayIndex].activities[shiftIndex] = activity;
+                    }
                 }
             });
 
@@ -47,6 +48,18 @@ function ScheduleContent() {
         } catch (error) {
             console.error('Error fetching schedule:', error);
         }
+    };
+    useEffect(() => {
+        handleFetchSchedule(currentWeek);
+    }, [currentWeek]);
+    const handlePreviousWeek = () => {
+        if (currentWeek > 1) {
+            setCurrentWeek(prevWeek => prevWeek - 1);
+        }
+    };
+
+    const handleNextWeek = () => {
+        setCurrentWeek(prevWeek => prevWeek + 1);
     };
 
     const renderRows = () => {
@@ -57,7 +70,6 @@ function ScheduleContent() {
             const tds = [
                 <td key="day" className="day">{daysOfWeek[i]}</td>
             ];
-
             for (let j = 0; j < 5; j++) {
                 const activity = dayData.activities[j];
 
@@ -79,14 +91,12 @@ function ScheduleContent() {
                     tds.push(<td key={j}></td>);
                 }
             }
-
             rows.push(
                 <tr key={i}>
                     {tds}
                 </tr>
             );
         }
-
         return rows;
 
     };
@@ -94,12 +104,21 @@ function ScheduleContent() {
         <main className="py-6 bg-surface-secondary">
             <div className="container">
                 <div className="w-95 w-md-75 w-lg-60 w-xl-55 mx-auto mb-6 d-flex justify-content-around">
-                    <div className="subtitle alt-font"><i className="text-primary">Tuần 04</i><i className="title"> | Ngày 17 - 23 tháng 06</i></div>
+                    <div className="subtitle alt-font"
+                    >
+                        <i className="text-primary">Tuần {currentWeek.toString().padStart(2, '0')}</i>
+                    </div>
                     <nav aria-label="Page navigation example">
                         <ul className="pagination">
-                            <li className="page-item"><a className="page-link" href="#">Tuần trước</a></li>
-                            <li className="page-item"><a className="page-link" href="#">04</a></li>
-                            <li className="page-item"><a className="page-link" href="#">Tuần tiếp</a></li>
+                            <li className="page-item">
+                                <a className="page-link" href="#" onClick={handlePreviousWeek}>Tuần trước</a>
+                            </li>
+                            <li className="page-item">
+                                <a className="page-link" href="#">{currentWeek.toString().padStart(2, '0')}</a>
+                            </li>
+                            <li className="page-item">
+                                <a className="page-link" href="#" onClick={handleNextWeek}>Tuần tiếp</a>
+                            </li>
                         </ul>
                     </nav>
                 </div>

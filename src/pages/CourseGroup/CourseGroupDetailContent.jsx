@@ -86,7 +86,7 @@ function CourseGroupDetailContent({ role, course_group }) {
                 const response = await postService.setPostInvalid(post_id);
                 if (response.status === 200) {
                     Swal.fire("Đã xóa!", "", "success");
-                    return handleFetchData()
+                    return window.location.reload();    
                 }
                 Swal.fire("Có gì đó không ổn!", "", "warning");
                 return

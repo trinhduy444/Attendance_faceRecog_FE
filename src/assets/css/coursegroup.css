@@ -108,3 +108,22 @@
     color: aliceblue;
     font-size: medium;
 }
+.img-fluid-attend {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain; 
+}
+
+.img-attenđetail{
+    max-width: 300px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+section > .card{
+    box-sizing: border-box;
+}
+.bg-section{
+    background-color: #f1f0f0;
+}

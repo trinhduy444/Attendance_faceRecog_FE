@@ -73,10 +73,22 @@ export const courseService = {
             throw err;
         }
     },
-    getCourseGroupStudent: async () => {
+    getCourseGroupStudent: async (semester_year_id,course_group_id) => {
+        let url = ``;
+        if (semester_year_id) {
+            url = `/courses/getCourseGroupByStudent/?semester_year_id=${semester_year_id}`
+        } else {
+            url = `/courses/getCourseGroupByStudent`
+        }
+        let body;
+        if(course_group_id){
+            body = {
+                'course_group_id' : course_group_id
+            }
+        }
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axiosConfig.post('/courses/getCourseGroupByStudent', {}, {
+            const response = await axiosConfig.post(url, body, {
                 headers: {
                     'Authorization': 'Bearer ' + accessToken,
                 },
@@ -101,7 +113,7 @@ export const courseService = {
     checkAccessCourseGroup: async (course_group_id) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axiosConfig.post(`/courses/checkAccessCourseGroup/:${course_group_id}`, {}, {
+            const response = await axiosConfig.post(`/courses/checkAccessCourseGroup/${course_group_id}`, {}, {
                 headers: {
                     'Authorization': 'Bearer ' + accessToken,
                 },

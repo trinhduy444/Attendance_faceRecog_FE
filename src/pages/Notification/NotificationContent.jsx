@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react"
 import { notifyService } from '../../services/notifyService';
 import { convertDay } from '../../utils/convertDay'
 import { displayContent } from '../../utils/displayContent'
-import Swal from "sweetalert2"
-import FilterNotification from './FilterNotification'
+// import Swal from "sweetalert2"
+
 import Pagination from "../AdminDashBoard/UserManagement/Pagination"
 
 function NotificationContent({ notifications }) {
@@ -66,25 +66,6 @@ function NotificationContent({ notifications }) {
                 <h5> Trang {currentPage} trong <b className="text-danger">{totalPages}</b> trang </h5>
             </div>
             <div className="col-9">
-                {/* <nav aria-label="page-notification">
-                    <ul className="pagination">
-                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                            <a className="page-link" type="button" aria-label="Previous" onClick={() => handlePageChange(currentPage - 1)}>
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        {[...Array(totalPages)].map((_, index) => (
-                            <li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
-                                <a className="page-link" type="button" onClick={() => handlePageChange(index + 1)}>{index + 1}</a>
-                            </li>
-                        ))}
-                        <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                            <a className="page-link" type="button" aria-label="Next" onClick={() => handlePageChange(currentPage + 1)}>
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav> */}
                 <Pagination
                     totalItems={notifications.length}
                     itemsPerPage={notificationsPerPage}

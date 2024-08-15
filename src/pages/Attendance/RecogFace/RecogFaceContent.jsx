@@ -81,6 +81,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
             clearTimeout(timeout);
         };
     }, []);
+    
 
     const handleFetchCourseGroupInfo = async (course_group_id) => {
         const response = await courseService.getInfoCourseGroup(course_group_id);
@@ -159,8 +160,11 @@ function RecogFaceContent({ course_group_id, minutes }) {
     const addAttendanceRawData = async (studentUsername, requestBody) => {
         const res = await attendanceService.addAttendanceRawData(requestBody);
         setIsUploading(isUploading - 1);
+        console.log('before',attendListSuccess)
         if (res.data.status === 201) {
             setAttendListSuccess([...attendListSuccess, studentUsername + ' - ' + requestBody.attendTime]);
+            console.log('affter',attendListSuccess)
+
         }
     }
 
