@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Swal from "sweetalert2"
 import { courseService } from '../../../services/courseService';
 import { attendanceService } from '../../../services/attendanceService';
@@ -104,10 +104,9 @@ function AttendanceAdjustmentContent({ role }) {
             cancelButtonText: 'Cancel',
         }).then(async (result) => {
             if (result.isConfirmed) {
-                handleUpdateAttendanceFromRawData(true);
+                await handleUpdateAttendanceFromRawData(true);
                 const response = await attendanceService.getAttendance(selectedGroup, selectedDate);
                 setAttendanceData(response.data.data);
-                console.log(attendanceData)
             }
         });
     }

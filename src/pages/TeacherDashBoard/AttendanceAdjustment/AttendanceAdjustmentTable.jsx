@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { attendanceService } from '../../../services/attendanceService';
 
 const AttendanceAdjustmentTable = ({ attendanceData }) => {
-    const [data, setData] = useState([]);
+    const [tableData, setTableData] = useState([]);
+    const [inputIndex, setInputIndex] = useState(null);
+    const [inputTimer, setInputTimer] = useState(null);
 
     useEffect(() => {
-        setData(attendanceData);
+        setTableData(attendanceData);
     }, [attendanceData]);
 
     const handleInputChange = (student, index, e) => {
-        let o = e.target;
+        const o = e.target;
         let requestBody = {
             studentId: student.student_id,
             courseGroupId: student.course_group_id,
@@ -18,14 +20,30 @@ const AttendanceAdjustmentTable = ({ attendanceData }) => {
             enterTime: student.enter_time,
             note: student.note
         }
+
+        const data = [...tableData];
         if (o.name === 'note') {
+            // Pause sent data to server if user still inputing
+            if (inputIndex === index) clearTimeout(inputTimer);
+            setInputIndex(index);
+
             requestBody.note = o.value;
+            data[index].note = o.value;
+
+            const newTimer = setTimeout(() => {
+                setTableData(data);
+                handleUpdateAttendance(requestBody);
+            }, 500);
+            setInputTimer(newTimer);
         } else if (o.name === 'attend_yn') {
             requestBody.attendYn = o.checked;
+            data[index].attend_yn = o.checked;
+            setTableData(data);
+            handleUpdateAttendance(requestBody);
         }
-        handleUpdateAttendance(requestBody);
     }
 
+    // Handle update attendance adjustment to server
     const handleUpdateAttendance = async (requestBody) => {
         attendanceService.updateAttendance(requestBody);
     }
@@ -36,7 +54,7 @@ const AttendanceAdjustmentTable = ({ attendanceData }) => {
 
     return (
         <div>
-            {data.length > 0 ? (
+            {tableData.length > 0 ? (
                 <table className="table table-striped">
                     <thead>
                         <tr>
@@ -49,14 +67,14 @@ const AttendanceAdjustmentTable = ({ attendanceData }) => {
                         </tr>
                     </thead>
                     <tbody className='overflow-auto'>
-                        {data.map((student, index) => {
+                        {tableData.map((student, index) => {
                             return (
                                 <tr key={index}>
                                     <td>{student.username}</td>
                                     <td>{student.nickname}</td>
                                     <td>{student.enter_time}</td>
-                                    <td><input name='attend_yn' type="checkbox" defaultChecked={student.attend_yn} onChange={(e) => handleInputChange(student, index, e)}></input></td>
-                                    <td><input name='note' defaultValue={student.note} onChange={(e) => handleInputChange(student, index, e)}></input></td>
+                                    <td><input name='attend_yn' type="checkbox" checked={student.attend_yn} onChange={(e) => handleInputChange(student, index, e)}></input></td>
+                                    <td><input name='note' value={student.note} onChange={(e) => handleInputChange(student, index, e)}></input></td>
                                     {/* <td><a type='button' className="bi bi-view-stacked"  data-bs-toggle="modal" data-bs-target="#detailAttendance" onClick={() => onViewDetail(student.student_id, data[0].course_group_id)}> Xem</a></td> */}
                                 </tr>
                             )
@@ -77,7 +95,6 @@ const AttendanceAdjustmentTable = ({ attendanceData }) => {
                         </div>
                         <div className="modal-body">
                            
-
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
