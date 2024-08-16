@@ -182,23 +182,37 @@ function NavBar({ isNavBarVisible }) {
                                             <li><a className="dropdown-item" href="/attendance/scan"><i className="bi bi-clipboard-data">Điểm danh nhận diện khuôn mặt</i></a></li>
                                         </ul>
                                     </li>
-                                ) : user.role_id === 1 ? (<li className="nav-item dropdown">
-                                    <a className="nav-link dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                        <i className="bi bi-file-text"></i> Admin Dashboard
-                                    </a>
-                                    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                        <li><a className="dropdown-item" href="/admin/notifyManagement"><i className="bi bi-bell"> Quản lý thông báo</i></a></li>
-                                        <li><a className="dropdown-item" href="/admin/userManagement"><i className="bi bi-people"> Quản lý sinh viên</i></a></li>
-                                        <li><a className="dropdown-item" href="/admin/teacherManagement"><i className="bi bi-people"> Quản lý giảng viên</i></a></li>
-                                        <li><a className="dropdown-item" href="/admin/classRoomManagement"><i className="bi bi-person"> Quản lý phòng học</i></a></li>
-                                        <li><a className="dropdown-item" href="/admin/courseManagement"><i className="bi bi-book"> Quản lý môn học</i></a></li>
-                                        <li><a className="dropdown-item" href="/admin/coursegroupManagement"><i className="bi bi-collection"> Quản lý nhóm học</i></a></li>
-                                        <li><a className="dropdown-item" href="/admin/attendanceManagement"><i className="bi bi-clipboard-data"> Quản lý dữ liệu điểm danh</i></a></li>
-                                        <li><a className="dropdown-item" href="/admin/scheduleManagement"><i className="bi bi-calendar2-week"> Quản lý lịch học</i></a></li>
+                                ) : user.role_id === 1 ? (<>
+                                    <li className="nav-item dropdown">
+                                        <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            <i className="bi bi-file-text"></i> Admin Dashboard
+                                        </a>
+                                        <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                            <li><a className="dropdown-item" href="/admin/notifyManagement"><i className="bi bi-bell"></i> Quản lý thông báo</a></li>
+                                            <li><a className="dropdown-item" href="/admin/classRoomManagement"><i className="bi bi-person"></i> Quản lý phòng học</a></li>
+                                            <li><a className="dropdown-item" href="/admin/courseManagement"><i className="bi bi-book"></i> Quản lý môn học</a></li>
+                                            <li><a className="dropdown-item" href="/admin/coursegroupManagement"><i className="bi bi-collection"></i> Quản lý nhóm học</a></li>
+                                            <li><a className="dropdown-item" href="/admin/attendanceManagement"><i className="bi bi-clipboard-data"></i> Quản lý dữ liệu điểm danh</a></li>
+                                            <li><a className="dropdown-item" href="/admin/scheduleManagement"><i className="bi bi-calendar2-week"></i> Quản lý lịch học</a></li>
+                                        </ul>
+                                    </li>
+                                    <li className="nav-item dropdown">
+                                        <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            <i className="bi bi-people"></i> Quản lý người dùng
+                                        </a>
+                                        <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                            <li><a className="dropdown-item" href="/admin/userManagement"><i className="bi bi-person"></i> Quản lý sinh viên</a></li>
+                                            <li><a className="dropdown-item" href="/admin/teacherManagement"><i className="bi bi-person"></i> Quản lý giảng viên</a></li>
+                                            {
+                                                user.user_id === 1 ? (<li><a className="dropdown-item" href="/admin/managerManagement"><i className="bi bi-person-fill-gear"></i> Quản lý quản trị</a></li>
+                                                ) : (null)
+                                            }
 
-                                    </ul>
-                                </li>) : null}
+                                        </ul>
+                                    </li>
+                                </>) : null}
 
                             </ul>
                             <hr className="navbar-divider my-5 opacity-20" />
@@ -212,7 +226,7 @@ function NavBar({ isNavBarVisible }) {
                             <ul className="navbar-nav chatinfo">
 
                                 {receivedArray.map((user, index) => (
-                                    <li>
+                                    <li key={index}>
                                         <a href="/chat" className="nav-link d-flex align-items-center">
                                             <div className="me-4">
                                                 <div className="position-relative d-inline-block text-white">

@@ -238,6 +238,33 @@ function UserManagementContent({ toggleNavBar }) {
     const handleViewUser = (user) => {
         setViewUser(user)
     }
+
+    const handleLockAccount = async (userId) => {
+        const response = await adminService.lockUserAccount(userId,3)
+        // console.log("lock",response);
+
+        if (response.status === 200) {
+            Swal.fire("Thành công!", "Khóa tài khoản thành công.", "success")
+            fetchUsers()
+            return;
+        } else {
+            Swal.fire("Thất bại!", "Khóa tài khoản thất bại", "error")
+            return;
+        }
+    };
+    const handleUnLockAccount = async (userId) => {
+        const response = await adminService.unLockUserAccount(userId,3)
+
+        if (response.status === 200) {
+            Swal.fire("Thành công!", "Mở khóa tài khoản thành công.", "success")
+            fetchUsers()
+            return;
+        } else {
+            Swal.fire("Thất bại!", "Mở khóa tài khoản thất bại", "error")
+            return;
+        }
+    }
+
     return (
 
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
@@ -459,7 +486,7 @@ function UserManagementContent({ toggleNavBar }) {
 
                             <div className="row p-2 border border-bottom-3 ">
 
-                                <label htmlFor="message" className="fw-bold">Gửi tin nhắn cho sinh viên:</label>
+                                <label htmlFor="message" className="fw-bold">Gửi tin nhắn cho sinh viên: </label>
 
                                 <textarea name="message" className="border border-black rounded p-2" id="messageText" rows="5" placeholder="Nhập tin nhắn..."></textarea>
 
@@ -468,7 +495,10 @@ function UserManagementContent({ toggleNavBar }) {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                            <button type="button" id="submitFileBtn" className="btn btn-warning">Nhập</button>
+
+                            {viewUser?.status === true ? (<button type="button" id="submitFileBtn" className="btn btn-danger" onClick={() => handleLockAccount(viewUser.user_id)}>Khóa tài khoản</button>
+                            ) : (<button type="button" id="submitFileBtn" className="btn btn-success" onClick={() => handleUnLockAccount(viewUser.user_id)}>Mở tài khoản</button>
+                            )}
                         </div>
                     </div>
                 </div>

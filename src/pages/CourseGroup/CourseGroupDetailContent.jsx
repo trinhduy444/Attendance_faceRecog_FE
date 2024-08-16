@@ -24,7 +24,7 @@ function CourseGroupDetailContent({ role, course_group }) {
         }
     }
     const handleGetInfoCourseGroup = async () => {
-        console.log("handleGetInfoCourseGroup")
+        // console.log("handleGetInfoCourseGroup")
         const response = await courseService.getInfoCourseGroup(course_group)
         console.log(response)
         if (response.status === 200) {
@@ -86,7 +86,7 @@ function CourseGroupDetailContent({ role, course_group }) {
                 const response = await postService.setPostInvalid(post_id);
                 if (response.status === 200) {
                     Swal.fire("Đã xóa!", "", "success");
-                    return window.location.reload();    
+                    return window.location.reload();
                 }
                 Swal.fire("Có gì đó không ổn!", "", "warning");
                 return
@@ -189,7 +189,7 @@ function CourseGroupDetailContent({ role, course_group }) {
                                                         <p>{convertDay(post.create_time)}</p>
                                                     </div>
                                                 </div>
-                                                {role === 2 && (
+                                                {role === 2 || role === 1 ? (
                                                     <div className="dropdown">
                                                         <a className="dropdown-toggle" type="button" id="dropdownPost" data-bs-toggle="dropdown" >
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -207,7 +207,7 @@ function CourseGroupDetailContent({ role, course_group }) {
                                                             <li><a className="dropdown-item btnDeletePost" type='button' onClick={() => handleDeletePost(post.post_id)}><i className="bi bi-trash"></i> Xóa bài</a></li>
                                                         </ul>
                                                     </div>
-                                                )}
+                                                ) : (null)}
 
                                             </div>
                                             <div className="card-body">
@@ -244,7 +244,7 @@ function CourseGroupDetailContent({ role, course_group }) {
 
                                     </ul>
                                 </div>
-                                {role === 2 ? (<div className='card-footer'>
+                                {role === 2 || role === 1 ? (<div className='card-footer'>
                                     <a
                                         href="#"
                                         target="_blank"
@@ -258,7 +258,7 @@ function CourseGroupDetailContent({ role, course_group }) {
                                 </div>) : null}
 
                             </div>
-                            {role === 2 ? (
+                            {role === 2 || role === 1 ? (
                                 <div className="row mt-2">
                                     <div className="col-6">
                                         <button type="button" data-bs-toggle="modal"

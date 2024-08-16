@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // Error page
 import MyErrorBoundary from './pages/Error/ErrorFallback';
 import ErrorPage from './pages/Error/ErrorPage';
@@ -42,6 +42,7 @@ import { CourseManagement } from './pages/AdminDashBoard/CourseManagement/Course
 import { NotifyManagement } from './pages/AdminDashBoard/NotifyManagement/NotifyManagement';
 import { CreateNotify } from './pages/AdminDashBoard/NotifyManagement/CreateNotify'
 import { CourseGroupManagement } from './pages/AdminDashBoard/CourseGroupManagement/CourseGroupManagement'
+import { ManagerManagement } from './pages/AdminDashBoard/ManagerManagement/ManagerManagement';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import 'react-quill/dist/quill.snow.css';
 
@@ -80,7 +81,7 @@ root.render(
             <Route path="/createNotify" element={<ProtectedRoute type={4} element={<CreateNotify />} />} />
             <Route path="/attendanceData" element={<ProtectedRoute type={2} element={<AttendanceManagement />} />} />
             <Route path="/attendance/adjustment" element={<ProtectedRoute type={2} element={<AttendanceAdjustment />} />} />
-            <Route path="/attendanceData/detail/:student_id/:course_group_id" element={<ProtectedRoute type={2} element={<AttendanceDetailManagement />} />} />
+            <Route path="/attendanceData/detail/:student_id/:course_group_id" element={<ProtectedRoute type={4} element={<AttendanceDetailManagement />} />} />
             <Route path="/attendRecog/:course_group_id" element={<ProtectedRoute type={4} element={<RecogFace />} />} />
 
             <Route path="/admin/attendanceManagement" element={<ProtectedRoute type={1} element={<AttendanceManagement />} />} />
@@ -91,6 +92,7 @@ root.render(
             <Route path="/admin/courseManagement" element={<ProtectedRoute type={1} element={<CourseManagement />} />} />
             <Route path="/admin/notifyManagement" element={<ProtectedRoute type={1} element={<NotifyManagement />} />} />
             <Route path="/admin/coursegroupManagement" element={<ProtectedRoute type={1} element={<CourseGroupManagement />} />} />
+            <Route path="/admin/managerManagement" element={<ProtectedRoute type={1} element={<ManagerManagement />} />} />
 
             <Route path="/error" element={<ErrorPage />} />
             <Route path="*" element={<ErrorPage />} />

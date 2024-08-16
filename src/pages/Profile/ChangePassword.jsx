@@ -33,7 +33,7 @@ export const ChangePassword = () => {
                 });
             }
             const responeCheckPassword = await authService.checkPassword(currentPassword);
-            console.log(responeCheckPassword);
+            // console.log(responeCheckPassword);
             if (responeCheckPassword.status === 200) {
                 const responeChangePassword = await authService.changePassword(newPassword)
                 if (responeChangePassword.status === 201) {

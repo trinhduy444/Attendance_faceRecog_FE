@@ -127,3 +127,6 @@ section > .card{
 .bg-section{
     background-color: #f1f0f0;
 }
+.tr-data:hover{
+    background-color: #81bcf0;
+}

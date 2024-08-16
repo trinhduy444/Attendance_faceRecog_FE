@@ -206,6 +206,32 @@ function TeacherManagementContent({ toggleNavBar }) {
     const handleViewTeacher = (teaher) => {
         setViewTeacher(teaher);
     }
+
+    const handleLockAccount = async (userId) => {
+        const response = await adminService.lockUserAccount(userId,2)
+        // console.log("lock",response);
+        console.log(response);
+        if (response.status === 200) {
+            Swal.fire("Thành công!", "Khóa tài khoản thành công.", "success")
+            fetchTeachers()
+            return;
+        } else {
+            Swal.fire("Thất bại!", "Khóa tài khoản thất bại", "error")
+            return;
+        }
+    };
+    const handleUnLockAccount = async (userId) => {
+        const response = await adminService.unLockUserAccount(userId,2)
+
+        if (response.status === 200) {
+            Swal.fire("Thành công!", "Mở khóa tài khoản thành công.", "success")
+            fetchTeachers()
+            return;
+        } else {
+            Swal.fire("Thất bại!", "Mở khóa tài khoản thất bại", "error")
+            return;
+        }
+    }
     return (
 
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
@@ -380,7 +406,9 @@ function TeacherManagementContent({ toggleNavBar }) {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                            <button type="button" id="submitFileBtn" className="btn btn-warning">Nhập</button>
+                            {viewTeacher?.status === true ? (<button type="button" id="submitFileBtn" className="btn btn-danger" onClick={() => handleLockAccount(viewTeacher.user_id)}>Khóa tài khoản</button>
+                            ) : (<button type="button" id="submitFileBtn" className="btn btn-success" onClick={() => handleUnLockAccount(viewTeacher.user_id)}>Mở tài khoản</button>
+                            )}
                         </div>
                     </div>
                 </div>

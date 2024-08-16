@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react"
 import * as XLSX from "xlsx"
 import Swal from "sweetalert2"
 import { courseService } from "../../../services/courseService";
-import { adminService } from "../../../services/adminService";
 import { sortArray } from "../../../utils/sortArray";
 import Pagination from "../UserManagement/Pagination";
 import NavBarToggle from "../../../components/NavBarToggle";
+import { encodeId } from "../../../utils/secureEncoding";
 function CourseGroupManagementContent({ toggleNavBar }) {
     const [showCourseGroups, setShowCourseGroups] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -212,8 +212,9 @@ function CourseGroupManagementContent({ toggleNavBar }) {
                                                     <td className={item.status ? 'text-success' : 'text-danger'}>
                                                         {item.status ? 'Đang hoạt động' : 'Ngưng hoạt động'}
                                                     </td>
-                                                    <td><button type="button" className="btn btn-warning" data-bs-toggle="modal"
-                                                        data-bs-target="#viewCourseGroupModel">Xem</button></td>
+                                                    <td>
+                                                        <a href={`/coursegroup/detail/${encodeURIComponent(encodeId(item.course_group_id))}`} target="_blank" rel="noopener noreferrer">Tới nhóm học</a>
+                                                        </td>
                                                 </tr>
                                             ))}
                                         </tbody>

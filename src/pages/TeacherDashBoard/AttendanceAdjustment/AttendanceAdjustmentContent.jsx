@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Swal from "sweetalert2"
 import { courseService } from '../../../services/courseService';
 import { attendanceService } from '../../../services/attendanceService';
@@ -14,9 +14,13 @@ function AttendanceAdjustmentContent({ role }) {
     const [selectedDate, setSelectedDate] = useState('');
     // Table data State
     const [attendanceData, setAttendanceData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
 
     const [showButton, setShowButton] = useState(false);
     const [disableFilter, setDisableFilter] = useState(false);
+
+    // Input name 
+    const [inputFilter, setInputFilter] = useState("");
 
     useEffect(() => {
         fetchSemeter();
@@ -74,6 +78,7 @@ function AttendanceAdjustmentContent({ role }) {
         handleUpdateAttendanceFromRawData(false);
         const response = await attendanceService.getAttendance(selectedGroup, selectedDate);
         setAttendanceData(response.data.data);
+        setFilteredData(response.data.data);
         setShowButton(true);
         setDisableFilter(true);
     };
@@ -89,9 +94,10 @@ function AttendanceAdjustmentContent({ role }) {
     }
     // Handle finish update data
     const handleFinishUpdate = async () => {
-        setAttendanceData([]);
-        setShowButton(false);
-        setDisableFilter(false);
+        // setAttendanceData([]);
+        // setShowButton(false);
+        // setDisableFilter(false);
+        Swal.fire('Thành công!', 'Chỉnh sửa dữ liệu điểm danh thành công', 'success', 1500)
     };
 
     // Handle repull attendance data from raw data
@@ -107,6 +113,8 @@ function AttendanceAdjustmentContent({ role }) {
                 await handleUpdateAttendanceFromRawData(true);
                 const response = await attendanceService.getAttendance(selectedGroup, selectedDate);
                 setAttendanceData(response.data.data);
+                setFilteredData(response.data.data);
+
             }
         });
     }
@@ -128,14 +136,27 @@ function AttendanceAdjustmentContent({ role }) {
                 }
                 attendanceService.deleteAttendance(requestBody);
                 setAttendanceData([]);
+                setFilteredData([]);
                 setShowButton(false);
                 setDisableFilter(false);
             }
         });
     }
+    // Filter Name and MSSV 
+    const handleFilterChange = (e) => {
+        const filterValue = e.target.value.toLowerCase();
+        setInputFilter(filterValue);
+
+        const filtered = attendanceData.filter((item) =>
+            item.nickname.toLowerCase().includes(filterValue) ||
+            item.username.includes(filterValue)
+        );
+
+        setFilteredData(filtered);
+    };
 
     return (
-        <main className="py-2 bg-surface-secondary">
+        <main className="py-2 bg-surface-secondary" id='topAdjustment'>
             <div className="container">
                 <form className="row" onSubmit={handleFetchAttendanceInfo}>
                     <div className="col-4">
@@ -157,20 +178,38 @@ function AttendanceAdjustmentContent({ role }) {
                         </div>
 
                         <div className="col-2">
-                            <input type="date" className='form-control' disabled={disableFilter} value={selectedDate} onChange={handleDateChange}/>
+                            <input type="date" className='form-control' disabled={disableFilter} value={selectedDate} onChange={handleDateChange} />
                         </div>
                         <button className='btn btn-outline-primary col-2' disabled={disableFilter} type='submit'>Điều chỉnh</button>
                     </>) : (null)}
                 </form>
 
                 {showButton ? (<>
-                    <div className='row'>
-                        <button className='m-3 btn btn-outline-success col-2' onClick={handleRepullAttendance}>Kéo lại điểm danh</button>
-                        <button className='m-3 btn btn-outline-danger col-2' onClick={handleDeleteAttendance}>Xóa dữ liệu</button>
-                        <button className='m-3 btn btn-outline-primary col-2' onClick={handleFinishUpdate}>Hoàn tất chỉnh sửa</button>
+                    <div className='row m-2'>
+                        <div className="col-8 d-flex justify-content-evenly">
+                            <button className='btn btn-outline-success' onClick={handleRepullAttendance}>Kéo lại điểm danh</button>
+                            <button className='btn btn-outline-danger' onClick={handleDeleteAttendance}>Xóa dữ liệu</button>
+                            <button className='btn btn-outline-primary' onClick={handleFinishUpdate}>Hoàn tất chỉnh sửa</button>
+                        </div>
+                        <div className="col-4">
+                            <div className="input-group">
+                                <input
+                                    type="search"
+                                    className="form-control rounded border border-black"
+                                    placeholder="Nhập tên hoặc MSSV"
+                                    aria-label="Search"
+                                    aria-describedby="search-addon"
+                                    value={inputFilter}
+                                    onChange={handleFilterChange}
+                                />
+                            </div>
+                        </div>
+
                     </div>
                 </>) : (null)}
-                <AttendanceAdjustmentTable attendanceData = {attendanceData}/>
+                <AttendanceAdjustmentTable attendanceData={filteredData} />
+                {filteredData.length > 15 ? (<a href="#topAdjustment" className='mt-2 bi bi-align-top btn btn-outline-primary'>Lên đầu trang</a>
+                ) : (null)}
             </div>
         </main>
     );
