@@ -61,6 +61,13 @@ const headerLinks = {
             { path: '/attendanceData', label: 'Dữ liệu điểm danh', icon: 'bi bi-clipboard-data' },
         ]
     },
+    '/attendance/adjustment': {
+        title: 'Điều chỉnh dữ liệu điểm danh',
+        links: [
+            { path: '/', label: 'Trang chủ', icon: 'bi bi-house' },
+            { path: '/attendance/adjustment', label: 'Điều chỉnh dữ liệu điểm danh', icon: 'bi bi-clipboard-data' },
+        ]
+    },
     '/chat': {
         title: 'Nhắn tin',
         links: [
