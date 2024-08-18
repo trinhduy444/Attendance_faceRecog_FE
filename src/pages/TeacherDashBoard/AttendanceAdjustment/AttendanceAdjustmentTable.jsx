@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { attendanceService } from '../../../services/attendanceService';
 import { convertDay } from '../../../utils/convertDay';
-const AttendanceAdjustmentTable = ({ attendanceData }) => {
+const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
     const [tableData, setTableData] = useState([]);
+    const [attendDetail, setAttendDetail] = useState({});
+
     const [inputIndex, setInputIndex] = useState(null);
     const [inputTimer, setInputTimer] = useState(null);
-    const [attendDetail, setAttendDetail] = useState({});
+
+    const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
         setTableData(attendanceData);
     }, [attendanceData]);
 
+    useEffect(() => {
+        setDisabled(disabledTable);
+    }, [disabledTable])
 
     const handleInputChange = (student, index, e) => {
         const o = e.target;
@@ -85,8 +91,8 @@ const AttendanceAdjustmentTable = ({ attendanceData }) => {
                                     <td>{student.username}</td>
                                     <td>{student.nickname}</td>
                                     <td>{student.enter_time}</td>
-                                    <td><input name='attend_yn' type="checkbox" checked={student.attend_yn} onChange={(e) => handleInputChange(student, index, e)}></input></td>
-                                    <td><input name='note' value={student.note} onChange={(e) => handleInputChange(student, index, e)}></input></td>
+                                    <td><input name='attend_yn' type="checkbox" disabled={disabled} checked={student.attend_yn} onChange={(e) => handleInputChange(student, index, e)}></input></td>
+                                    <td><input name='note' disabled={disabled} value={student.note} onChange={(e) => handleInputChange(student, index, e)}></input></td>
                                     <td><a type='button' className="bi bi-view-stacked" data-bs-toggle="modal" data-bs-target="#detailAttendanceModal" onClick={() => onViewDetail(student.student_id, student.course_group_id, student.attend_date)}> Xem</a></td>
                                 </tr>
                             )
