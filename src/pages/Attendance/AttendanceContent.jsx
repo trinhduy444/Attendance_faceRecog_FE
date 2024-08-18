@@ -4,7 +4,6 @@ import { encodeId } from '../../utils/secureEncoding';
 function AttendanceContent() {
     // Semester
     const [allSemester, setAllSemester] = useState([]);
-    const [selectedSemester, setSelectedSemester] = useState(undefined);
     const [allCourseGroup, setAllCourseGroup] = useState([]);
     const fetchSemeter = async () => {
         const response = await courseService.getAllSemester();
@@ -14,8 +13,7 @@ function AttendanceContent() {
     }
     useEffect(() => { fetchSemeter() }, []);
     function handleSelectSemester(e) {
-        setSelectedSemester(e.target.value);
-        fetchCourseGroupInfo(selectedSemester);
+        fetchCourseGroupInfo(e.target.value);
     }
     const fetchCourseGroupInfo = async (semester_year_id) => {
         const response = await courseService.getCourseGroupStudent(semester_year_id);
@@ -34,7 +32,6 @@ function AttendanceContent() {
                             <select id="selectSemester" data-live-search="true"
                                 className="form-select border border-black"
                                 aria-label="Default select example"
-                                value={selectedSemester}
                                 onChange={handleSelectSemester}
                             >
                                 <option value=''>--Chọn học kỳ | Choose semester--</option>
@@ -90,27 +87,6 @@ function AttendanceContent() {
                                         <td><a href={`/attendance/detail/${encodeURIComponent(encodeId(courseGroup.course_group_id))}/${encodeURIComponent(courseGroup.ban_yn)}`}>Xem chi tiết</a></td>
                                     </tr>
                                 ))}
-                                {/* <tr>
-                                    <th scope="row">Lập trình hướng đối tượng (300201) | N01</th>
-                                    <td>Ca: 1 | Tuần: 6,7,8...10,11</td>
-                                    <td className="text-warning">Bình thường</td>
-                                    <td>0</td>
-                                    <td><a href="/attendance/detail">Xem chi tiết</a></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Mẫu thiết kế (400201) | N02</th>
-                                    <td>Ca: 2 | Tuần: 6,7,8...10,11</td>
-                                    <td className="text-danger">Cấm thi</td>
-                                    <td>4</td>
-                                    <td><a href="">Xem chi tiết</a></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Khóa luận tốt nghiệp (500686) | N01</th>
-                                    <td>None</td>
-                                    <td className="text-success">Đã hoàn thành</td>
-                                    <td>0</td>
-                                    <td><a href="">Xem chi tiết</a></td>
-                                </tr> */}
                             </tbody>
                         </table>
                     </div>

@@ -74,6 +74,7 @@ export const courseService = {
         }
     },
     getCourseGroupStudent: async (semester_year_id, course_group_id) => {
+        // console.log("fe",semester_year_id, course_group_id)
         let url = ``;
         if (semester_year_id) {
             url = `/courses/getCourseGroupByStudent/?semester_year_id=${semester_year_id}`

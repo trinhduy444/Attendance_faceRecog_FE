@@ -51,7 +51,7 @@ export const attendanceService = {
             throw err;
         }
     },
-  
+
     getAttendance: async (courseGroupId, attendDate) => {
         // console.log('getAttendance', courseGroupId, attendDate);
         try {
@@ -72,7 +72,7 @@ export const attendanceService = {
             throw err;
         }
     },
-    getAttendanceDetail: async (studentId,courseGroupId, attendDate) => {
+    getAttendanceDetail: async (studentId, courseGroupId, attendDate) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
             const response = await axiosConfig.get(`/attendances/detail`, {
@@ -146,4 +146,23 @@ export const attendanceService = {
             throw err;
         }
     },
+    updateTotalAbsentAllCourseGroup: async (courseGroupId, isSendMail) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/attendances/updateTotalAbsentAllCourseGroup',{
+                course_group_id: courseGroupId,
+                isSendMail: isSendMail
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    }
 };

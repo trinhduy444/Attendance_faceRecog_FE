@@ -101,7 +101,7 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
                     <tfoot>
                         <tr>
                             <tr className='table-primary'>
-                                <tf>Tổng: <b className='text-danger'>{tableData.length}</b></tf>
+                                <th>Tổng: <b className='text-danger'>{tableData.length}</b></th>
                             </tr>
                         </tr>
                     </tfoot>

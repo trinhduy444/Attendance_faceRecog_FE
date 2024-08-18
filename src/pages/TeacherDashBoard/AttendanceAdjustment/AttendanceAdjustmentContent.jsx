@@ -53,7 +53,7 @@ function AttendanceAdjustmentContent({ role }) {
             }
         }
     }
-
+    console.log(attendanceData)
     // Handle input
     const handleSelectChange = (event) => {
         setSelectedGroup(event.target.value);
@@ -95,11 +95,37 @@ function AttendanceAdjustmentContent({ role }) {
         await attendanceService.updateAttendanceFromRawData(requestBody);
     }
     // Handle finish update data
-    const handleFinishUpdate = async () => {
+    const handleFinishUpdate = () => {
         // setAttendanceData([]);
         // setShowButton(false);
         // setDisableFilter(false);
-        Swal.fire('Thành công!', 'Chỉnh sửa dữ liệu điểm danh thành công', 'success', 1500)
+        Swal.fire({
+            title: "Bạn có muốn gửi mail cảnh tới sinh viên?",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Gửi mail",
+            denyButtonText: `Không gửi!`
+        }).then(async (result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                const response = await attendanceService.updateTotalAbsentAllCourseGroup(selectedGroup, true)
+                if (response.status === 200) {
+
+                    Swal.fire('Thành công!', 'Điều chỉnh dữ liệu và gửi mail điểm danh thành công', 'success', 1500)
+                } else {
+                    Swal.fire('Thất bại!', 'Điều chỉnh dữ liệu và gửi mail thất bại, vui lòng thử lại', 'error', 1500)
+
+                }
+            } else if (result.isDenied) {
+                const response = await attendanceService.updateTotalAbsentAllCourseGroup(selectedGroup, false)
+                if (response.status === 200) {
+                    Swal.fire('Thành công!', 'Điều chỉnh dữ liệu điểm danh thành công', 'success', 1500)
+                } else {
+                    Swal.fire('Thất bại!', 'Điều chỉnh dữ liệu thất bại, vui lòng thử lại', 'error', 1500)
+
+                }
+            }
+        });
         setShowButton(false);
         setDisableFilter(false);
         setDisabledTable(true);
