@@ -15,9 +15,10 @@ function AttendanceAdjustmentContent({ role }) {
     // Table data State
     const [attendanceData, setAttendanceData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
-
+    // Input State
     const [showButton, setShowButton] = useState(false);
     const [disableFilter, setDisableFilter] = useState(false);
+    const [disabledTable, setDisabledTable] = useState(false);
 
     // Input name 
     const [inputFilter, setInputFilter] = useState("");
@@ -75,12 +76,13 @@ function AttendanceAdjustmentContent({ role }) {
             return;
         }
 
-        handleUpdateAttendanceFromRawData(false);
+        await handleUpdateAttendanceFromRawData(false);
         const response = await attendanceService.getAttendance(selectedGroup, selectedDate);
         setAttendanceData(response.data.data);
         setFilteredData(response.data.data);
         setShowButton(true);
         setDisableFilter(true);
+        setDisabledTable(false);
     };
 
     // Handle pull attendance data from raw data
@@ -94,10 +96,10 @@ function AttendanceAdjustmentContent({ role }) {
     }
     // Handle finish update data
     const handleFinishUpdate = async () => {
-        // setAttendanceData([]);
-        // setShowButton(false);
-        // setDisableFilter(false);
-        Swal.fire('Thành công!', 'Chỉnh sửa dữ liệu điểm danh thành công', 'success', 1500)
+        setShowButton(false);
+        setDisableFilter(false);
+        setDisabledTable(true);
+        // Swal.fire('Thành công!', 'Chỉnh sửa dữ liệu điểm danh thành công', 'success', 1500)
     };
 
     // Handle repull attendance data from raw data
@@ -114,7 +116,6 @@ function AttendanceAdjustmentContent({ role }) {
                 const response = await attendanceService.getAttendance(selectedGroup, selectedDate);
                 setAttendanceData(response.data.data);
                 setFilteredData(response.data.data);
-
             }
         });
     }
@@ -207,7 +208,7 @@ function AttendanceAdjustmentContent({ role }) {
 
                     </div>
                 </>) : (null)}
-                <AttendanceAdjustmentTable attendanceData={filteredData} />
+                <AttendanceAdjustmentTable attendanceData={filteredData} disabledTable={disabledTable}/>
                 {filteredData.length > 15 ? (<a href="#topAdjustment" className='mt-2 bi bi-align-top btn btn-outline-primary'>Lên đầu trang</a>
                 ) : (null)}
             </div>
