@@ -33,6 +33,7 @@ import { AttendanceManagement } from './pages/TeacherDashBoard/Attendance/Attend
 import { AttendanceAdjustment } from './pages/TeacherDashBoard/AttendanceAdjustment/AttendanceAdjustment';
 import { RecogFace } from './pages/Attendance/RecogFace/RecogFace';
 import { AttendanceDetailManagement } from './pages/TeacherDashBoard/Attendance/AttendanceDetailManagement';
+import { StudentManagement } from './pages/TeacherDashBoard/StudentManagement/StudentManagement';
 //Admin Pages
 import { UserManagement } from './pages/AdminDashBoard/UserManagement/UserManagement';
 import { ClassRoomManagement } from './pages/AdminDashBoard/ClassRoomManagement/ClassRoomManagement';
@@ -83,6 +84,8 @@ root.render(
             <Route path="/attendance/adjustment" element={<ProtectedRoute type={2} element={<AttendanceAdjustment />} />} />
             <Route path="/attendanceData/detail/:student_id/:course_group_id" element={<ProtectedRoute type={4} element={<AttendanceDetailManagement />} />} />
             <Route path="/attendRecog/:course_group_id" element={<ProtectedRoute type={4} element={<RecogFace />} />} />
+            <Route path="/teacher/userManagement" element={<ProtectedRoute type={4} element={<StudentManagement />} />} />
+
 
             <Route path="/admin/attendanceManagement" element={<ProtectedRoute type={1} element={<AttendanceManagement />} />} />
             <Route path="/admin/userManagement" element={<ProtectedRoute type={1} element={<UserManagement />} />} />

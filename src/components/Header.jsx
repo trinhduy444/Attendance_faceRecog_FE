@@ -68,7 +68,7 @@ const headerLinks = {
             { path: '/admin/attendanceManagement', label: 'Quản lý dữ liệu điểm danh', icon: 'bi bi-clipboard-data' },
         ]
     },
-    
+
     '/attendance/adjustment': {
         title: 'Điều chỉnh dữ liệu điểm danh',
         links: [
@@ -81,6 +81,13 @@ const headerLinks = {
         links: [
             { path: '/', label: 'Trang chủ', icon: 'bi bi-house' },
             { path: '/chat', label: 'Nhắn tin', icon: "bi bi-chat-dots" },
+        ]
+    },
+    '/teacher/userManagement': {
+        title: 'Quản lý sinh viên',
+        links: [
+            { path: '/', label: 'Trang chủ', icon: 'bi bi-house' },
+            { path: '/teacher/userManagement', label: 'Quản lý sinh viên', icon: 'bi bi-people' },
         ]
     },
 };

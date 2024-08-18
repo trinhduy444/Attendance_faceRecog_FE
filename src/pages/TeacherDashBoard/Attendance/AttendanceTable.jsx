@@ -52,14 +52,14 @@ const AttendanceTable = ({ data }) => {
                     </thead>
                     <tbody className='overflow-auto'>
                         {groupedData.map((student, index) => (
-                            <tr key={index}>
+                            <tr key={index} className='tr-data'>
                                 <td>{student.username}</td>
                                 <td>{student.nickname}</td>
                                 {dates.map((date, i) => (
                                     <td key={i} className={student.attendance[date] === 'Đã điểm danh' ? 'text-success' : 'text-danger'}>
                                         {student.attendance[date] || 'Không có dữ liệu'}
                                     </td>
-
+                                    
                                 ))}
                                 <td><a href={`/attendanceData/detail/${encodeURIComponent(encodeId(student.student_id))}/${encodeURIComponent(encodeId(data[0].course_group_id))}`} target="_blank" className="bi bi-view-stacked" rel="noopener noreferrer">Xem</a></td>
                             </tr>

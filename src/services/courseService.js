@@ -73,7 +73,7 @@ export const courseService = {
             throw err;
         }
     },
-    getCourseGroupStudent: async (semester_year_id,course_group_id) => {
+    getCourseGroupStudent: async (semester_year_id, course_group_id) => {
         let url = ``;
         if (semester_year_id) {
             url = `/courses/getCourseGroupByStudent/?semester_year_id=${semester_year_id}`
@@ -81,9 +81,9 @@ export const courseService = {
             url = `/courses/getCourseGroupByStudent`
         }
         let body;
-        if(course_group_id){
+        if (course_group_id) {
             body = {
-                'course_group_id' : course_group_id
+                'course_group_id': course_group_id
             }
         }
         try {
@@ -195,6 +195,45 @@ export const courseService = {
         try {
             const accessToken = localStorage.getItem('accessToken');
             const response = await axiosConfig.post('/courses/createStudentLists', { studentLists: data }, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    viewAllStudentCourseGroup: async (status, teacher_id, course_group_id) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.get('/courses/viewAllStudentCourseGroup', {
+                params: {
+                    status: status,
+                    teacher_id: teacher_id,
+                    course_group_id: course_group_id
+                },
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    viewAllStudentCourseGroupByTeacher: async (status, course_group_id) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.get('/courses/viewAllStudentCourseGroupByTeacher', {
+                params: {
+                    status: status,
+                    course_group_id: course_group_id
+                },
                 headers: {
                     'Authorization': 'Bearer ' + accessToken,
                 },
