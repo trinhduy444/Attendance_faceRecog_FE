@@ -96,6 +96,10 @@ function AttendanceAdjustmentContent({ role }) {
     }
     // Handle finish update data
     const handleFinishUpdate = async () => {
+        // setAttendanceData([]);
+        // setShowButton(false);
+        // setDisableFilter(false);
+        Swal.fire('Thành công!', 'Chỉnh sửa dữ liệu điểm danh thành công', 'success', 1500)
         setShowButton(false);
         setDisableFilter(false);
         setDisabledTable(true);
@@ -208,7 +212,7 @@ function AttendanceAdjustmentContent({ role }) {
 
                     </div>
                 </>) : (null)}
-                <AttendanceAdjustmentTable attendanceData={filteredData} disabledTable={disabledTable}/>
+                <AttendanceAdjustmentTable attendanceData={filteredData} disabledTable={disabledTable} />
                 {filteredData.length > 15 ? (<a href="#topAdjustment" className='mt-2 bi bi-align-top btn btn-outline-primary'>Lên đầu trang</a>
                 ) : (null)}
             </div>
