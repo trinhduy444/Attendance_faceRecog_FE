@@ -1,24 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Swal from 'sweetalert2';
+import ReactQuill from 'react-quill';
 import { courseService } from '../../services/courseService';
 import { userService } from '../../services/userService';
 import { attendanceService } from '../../services/attendanceService';
+import { requestService } from '../../services/requestService';
 import { convertDay } from '../../utils/convertDay';
 function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
+    const closeModalButtonRef = useRef();
     const [courseInfo, setCourseInfo] = useState('');
     const [userInfo, setUserInfo] = useState('');
     const [attendanceInfo, setAttendanceInfo] = useState([]);
     const [attendDetail, setAttendDetail] = useState({});
+    const [requestContent, setRequestContent] = useState({});
+    
     useEffect(() => {
         fetchUserInfo()
         fetchCourseGroupInfo(courseGroupId)
         fetchAttendanceInfo(userId, courseGroupId)
     }, [])
+
     const fetchAttendanceInfo = async (studentId, course_group_id) => {
         const response = await attendanceService.getAttendanceHaveUserId(studentId, course_group_id);
         if (response.status === 200) {
             setAttendanceInfo(response.data.data);
         }
-
     }
     const totalAbsentCount = attendanceInfo.reduce((total, attend) => {
         return attend.attend_yn === false ? total + 1 : total;
@@ -44,8 +50,39 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
             setAttendDetail(response.data.metadata)
         }
     }
+    
     const handleCloseModel = () => {
         setAttendDetail({})
+    }
+
+    const setContent = (content) => {
+        setRequestContent({...requestContent, content: content});
+    }
+
+    // Handle show attendance request modal
+    const handleViewCreateAttendanceRequest = async (attendDate) => {
+        setRequestContent({
+            student_id: userId,
+            course_group_id: courseGroupId,
+            attend_date: attendDate,
+            attend_type: 0,
+            proof_image_path: '',
+            file_link: '',
+            content: '',
+            response: '',
+            request_type: 0,
+            status: 1
+        })
+    }
+
+    // Create attendance request
+    const handleCreateAttendanceRequest = async () => {
+        const response = await requestService.createAttendanceRequest(requestContent);
+        if (response.status === 201) {
+            console.log(response);
+            closeModalButtonRef.current.click();
+            Swal.fire('Thành công!', 'Gửi yêu cầu thành công', 'success', 1500);
+        }
     }
 
     return (
@@ -135,10 +172,8 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
                                     <td className={attend.attend_yn === true ? 'text-success' : 'text-danger'}>
                                         {attend.attend_yn === true ? 'Có mặt' : 'Vắng'}
                                     </td>
-                                    <td><a className="card-link" type="button" data-bs-toggle="modal"
-                                        data-bs-target="#detailAttendanceModal" onClick={() => handleVieweDetails(attend.attend_date)}>Xem chi tiết</a></td>
-                                    <td><button type='button' className='btn btn-danger'><i className="bi bi-flag"></i> Khiếu nại</button></td>
-
+                                    <td><a className="card-link" type="button" data-bs-toggle="modal" data-bs-target="#detailAttendanceModal" onClick={() => handleVieweDetails(attend.attend_date)}>Xem chi tiết</a></td>
+                                    <td><button type="button" data-bs-toggle="modal" data-bs-target="#attendanceRequestModal" className='btn btn-danger' disabled={attend.attend_yn} onClick={() => handleViewCreateAttendanceRequest(attend.attend_date)}><i className="bi bi-flag"></i> Khiếu nại</button></td>
                                 </tr>
                             ))}
 
@@ -205,16 +240,63 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
                             </div>
                         </div>
                         <div className="modal-footer d-flex justify-content-between">
-                            <button type="button" className="btn btn-danger">Khiếu nại</button>
+                            {/* <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#attendanceRequestModal">Khiếu nại</button> */}
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseModel}>Đóng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            {/* Request Modal */}
+            <div className="modal fade" id="attendanceRequestModal" tabIndex="-1" aria-labelledby="attendanceRequestModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="attendanceRequestModalLabel">Gửi yêu cầu chỉnh sửa điểm danh</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <h2 className="d-flex justify-content-center text-primary">
+                                {courseInfo?.course_name} ({courseInfo?.course_code})
+                            </h2>
+                            <p className="d-flex justify-content-center">
+                                {courseInfo?.nickname} | Nhóm {courseInfo?.group_code}
+                            </p>
 
+                            <div className="row mt-3">
+                                <div className="row">
+                                    <div className="col-8">
+                                        <label htmlFor="contentPost" className='fw-bold contentLabel'>Nhập nội dung yêu cầu:</label>
+                                    </div>
+                                    {/* <div className="col-4"> <i>1/1 ký tự</i></div> */}
+                                </div>
+                                <div className="row">
+                                    <ReactQuill
+                                        value={requestContent.content}
+                                        onChange={setContent}
+                                        placeholder='Nhập nội dung...'
+                                        modules={{
+                                            toolbar: [
+                                                [{ 'font': [] }],
+                                                [{ 'header': [1, 2, 3, 4, false] }],
+                                                ['bold', 'italic', 'underline'],
+                                                [{ 'align': [] }],
+                                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                                ['clean']
+                                            ]
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="modal-footer d-flex justify-content-between">
+                            <button type="button" className="btn btn-primary" onClick={() => {handleCreateAttendanceRequest()}}>Gửi</button>
+                            <button type="button" className="btn btn-secondary" ref={closeModalButtonRef} data-bs-dismiss="modal">Đóng</button>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
-
     );
 }
 export default React.memo(AttendanceDetailContent);
