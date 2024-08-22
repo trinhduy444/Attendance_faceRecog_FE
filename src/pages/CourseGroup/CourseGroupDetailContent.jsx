@@ -26,7 +26,7 @@ function CourseGroupDetailContent({ role, course_group }) {
     const handleGetInfoCourseGroup = async () => {
         // console.log("handleGetInfoCourseGroup")
         const response = await courseService.getInfoCourseGroup(course_group)
-        console.log(response)
+        // console.log(response)
         if (response.status === 200) {
             setInfo(response.metadata)
         }
@@ -120,7 +120,7 @@ function CourseGroupDetailContent({ role, course_group }) {
 
         }
         else {
-            Swal.fire("Something wrong!", "Không thể chỉnh sửa bài viết!", 'error');
+            Swal.fire("Thất bại!", "Không thể chỉnh sửa bài viết!", 'error');
             return
         }
 

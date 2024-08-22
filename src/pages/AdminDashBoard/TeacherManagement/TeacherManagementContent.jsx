@@ -32,8 +32,7 @@ function TeacherManagementContent({ toggleNavBar }) {
         setCurrentUsers(showTeacher.slice(indexOfFirstUser, indexOfLastUser));
     }, [showTeacher, currentPage]);
 
-    const totalPages = Math.ceil(showTeacher.length / usersPerPage);
-
+    
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };

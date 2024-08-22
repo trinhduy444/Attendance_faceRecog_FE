@@ -36,6 +36,9 @@ export function CreateNotify() {
         const res = await courseService.getAllCourseGroupActive();
         if (res.status === 200) {
             setData(res.metadata);
+        }else {
+            Swal.fire("Thất bại!", "Vui lòng thử lại!", "error")
+            return
         }
     }
     const handleSubmit = (e) => {
@@ -68,6 +71,9 @@ export function CreateNotify() {
         if (response.status === 201) {
             Swal.fire("Thành công", "Tạo thông báo thành công", 'success')
             return hideModalChose();
+        }else {
+            Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
+            return
         }
 
     };

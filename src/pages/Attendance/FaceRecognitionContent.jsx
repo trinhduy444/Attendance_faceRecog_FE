@@ -3,16 +3,17 @@ import * as faceapi from '@vladmandic/face-api';
 import { dateUtils } from '../../utils/dateUtils';
 import { courseService } from '../../services/courseService';
 import { attendanceService } from '../../services/attendanceService';
+import Swal from 'sweetalert2';
 
 function FaceRecognitionContent() {
     const webcamRef = useRef(null);
     const webcamCanvasRef = useRef(null);
-    const dataCanvasRef =  useRef(null);
+    const dataCanvasRef = useRef(null);
     const faceMatcher = useRef(null);
     const attendedList = useRef(['unknown']);
     const [studentInfo, setStudentInfo] = useState(new Map());
     const [attendSuccess, setAttendSuccess] = useState([]);
-    
+
     // Load student face with descriptors
     const loadStudentFaceList = async (course_group_id) => {
         const response = await courseService.getCourseGroupStudentListInfo(course_group_id);
@@ -27,12 +28,15 @@ function FaceRecognitionContent() {
                     faceImg.src = student.student_avatar_path;
 
                     const faceDetection = await faceapi.detectSingleFace(faceImg).withFaceLandmarks().withFaceDescriptor();
-                
+
                     descriptors.push(faceDetection.descriptor);
-                
+
                     return new faceapi.LabeledFaceDescriptors(student.student_username, descriptors);
                 })
             );
+        } else {
+            Swal.fire("Thất bại!", "Có lỗi khi tải dữ liệu khuôn mặt, vui lòng thử lại!", "error")
+            return
         }
     }
 
@@ -45,7 +49,7 @@ function FaceRecognitionContent() {
         ]).then(async () => {
             const studentFaceList = await loadStudentFaceList(100);
             faceMatcher.current = new faceapi.FaceMatcher(studentFaceList, 0.5);
-           
+
             // Initial call for webcam
             requestWebcam();
         });
@@ -74,9 +78,9 @@ function FaceRecognitionContent() {
         var ctx = dataCanvasRef.current.getContext('2d');
         dataCanvasRef.current.width = webcamRef.current.offsetWidth;
         dataCanvasRef.current.height = webcamRef.current.offsetHeight;
-    
+
         ctx.drawImage(webcamRef.current, 0, 0, dataCanvasRef.current.width, dataCanvasRef.current.height);
-    
+
         // Face detection
         var detections = await faceapi.detectAllFaces(dataCanvasRef.current).withFaceLandmarks().withFaceDescriptors();
 
@@ -110,7 +114,7 @@ function FaceRecognitionContent() {
     }
 
     // Process success face recognition
-    const processAfterRecognition = async(canvas, label, requestBody) => {
+    const processAfterRecognition = async (canvas, label, requestBody) => {
         canvas.toBlob(async (blob) => {
             const formData = new FormData();
             formData.append('image', blob);
@@ -149,19 +153,19 @@ function FaceRecognitionContent() {
         var ctx = webcamCanvasRef.current.getContext('2d');
         webcamCanvasRef.current.width = webcamRef.current.offsetWidth;
         webcamCanvasRef.current.height = webcamRef.current.offsetHeight;
-    
+
         data.forEach((face) => {
             var { _x, _y, _width, _height } = face.detection._box;
             // Draw rectangle
             ctx.lineWidth = 3;
             ctx.strokeStyle = 'red';
             ctx.strokeRect(_x, _y, _width, _height);
-    
+
             // Draw face description
             ctx.font = "30px Arial";
             ctx.fillStyle = 'red';
             ctx.fillText(face.detection._className, _x, _y - 10);
-        }); 
+        });
     }
 
     return (
@@ -178,9 +182,9 @@ function FaceRecognitionContent() {
                         </div>
                         <div className="card-body">
                             <ul>
-                            {attendSuccess.length > 0 && attendSuccess.map((attend, index) => (
-                                <li key={index}>{attend}</li>
-                            ))}
+                                {attendSuccess.length > 0 && attendSuccess.map((attend, index) => (
+                                    <li key={index}>{attend}</li>
+                                ))}
                             </ul>
                         </div>
                     </div>

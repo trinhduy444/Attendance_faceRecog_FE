@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { courseService } from '../../services/courseService';
 import { encodeId } from '../../utils/secureEncoding';
+import Swal from 'sweetalert2';
+
 function AttendanceContent() {
     // Semester
     const [allSemester, setAllSemester] = useState([]);
@@ -9,6 +11,9 @@ function AttendanceContent() {
         const response = await courseService.getAllSemester();
         if (response.status === 200) {
             setAllSemester(response.metadata)
+        } else {
+            Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
+            return
         }
     }
     useEffect(() => { fetchSemeter() }, []);
@@ -19,6 +24,9 @@ function AttendanceContent() {
         const response = await courseService.getCourseGroupStudent(semester_year_id);
         if (response.status === 200) {
             setAllCourseGroup(response.metadata);
+        } else {
+            Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
+            return
         }
 
     }

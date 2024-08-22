@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { courseService } from '../../services/courseService';
 import { userService } from '../../services/userService';
 import { attendanceService } from '../../services/attendanceService';
+import Swal from 'sweetalert2';
 import { convertDay } from '../../utils/convertDay';
 function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
     const [courseInfo, setCourseInfo] = useState('');
@@ -17,6 +18,9 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
         const response = await attendanceService.getAttendanceHaveUserId(studentId, course_group_id);
         if (response.status === 200) {
             setAttendanceInfo(response.data.data);
+        }else {
+            Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
+            return
         }
 
     }
@@ -28,6 +32,9 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
         // console.log(response)
         if (response.status === 200) {
             setUserInfo(response.metadata)
+        }else {
+            Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
+            return
         }
     }
     const fetchCourseGroupInfo = async (course_group_id) => {
@@ -42,6 +49,9 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
         const response = await attendanceService.getAttendanceDetail(userId, courseGroupId, attenDate)
         if (response.status === 200) {
             setAttendDetail(response.data.metadata)
+        }else {
+            Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
+            return
         }
     }
     const handleCloseModel = () => {
