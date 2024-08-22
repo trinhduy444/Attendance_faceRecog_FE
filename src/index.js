@@ -15,6 +15,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import rootReducer from './reducer/rootReducer';
 import ProtectedRoute from './utils/checkAuthentication';
+import TokenManager from './components/TokenComponent';
 //Pages
 import { Login } from './pages/Authentication/Login';
 import { Home } from './pages/Home/Home';
@@ -65,6 +66,7 @@ root.render(
       {/* <React.StrictMode> */}
       <Router>
         <MyErrorBoundary>
+        <TokenManager />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />

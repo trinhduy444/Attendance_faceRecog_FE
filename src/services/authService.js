@@ -73,4 +73,16 @@ export const authService = {
             throw error;
         }
     },
+    refreshAccessToken: async () =>{
+        const accessToken = localStorage.getItem('accessToken');
+        try {
+            const response = await axiosConfig.post('/auth/refreshAccessToken', {}, {
+                headers: { 'Authorization': 'Bearer ' + accessToken }
+            });
+            return response;
+        } catch (error) {
+            console.error('Error during refreshAccessToken:', error);
+            throw error;
+        }
+    }
 }
