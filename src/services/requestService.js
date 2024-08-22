@@ -16,5 +16,22 @@ export const requestService = {
             console.error(err);
             throw err;
         }
+    },
+
+    getAllRequestsByActiveUser: async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.get('/requests/', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
     }
 };

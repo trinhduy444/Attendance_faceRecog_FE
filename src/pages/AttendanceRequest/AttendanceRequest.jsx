@@ -1,38 +1,38 @@
 import React, { useEffect, useState } from "react"
-import NavBar from "../../components/NavBar"
 import Swal from "sweetalert2"
+import NavBar from "../../components/NavBar"
 import Header from "../../components/Header"
-import NotificationContent from "./NotificationContent"
-import FilterNotification from "./FilterNotification"
-import { notifyService } from "../../services/notifyService"
-import "../../assets/css/notification.css"
-export const Notification = () => {
+import AttendanceRequestContent from "./AttendanceRequestContent"
+import FilterAttendanceRequest from "./FilterAttendanceRequest"
+import { attendanceService } from "../../services/attendanceService"
+import { requestService } from "../../services/requestService"
+
+export const AttendanceRequest = () => {
     const [isNavBarVisible, setIsNavBarVisible] = useState(false);
-    const [notifications, setNotifications] = useState([])
-    const [filteredNotifications, setFilteredNotifications] = useState([]);
+    const [attendanceRequests, setAttendanceRequests] = useState([])
+    const [filteredAttendanceRequests, setFilteredAttendanceRequests] = useState([]);
 
     useEffect(() => {
-        fetchNotifications()
-        document.title = "Thông báo"
+        document.title = "Yêu cầu điểm danh";
+        fetchAttendanceRequests();
     }, [])
 
     const toggleNavBar = () => {
         setIsNavBarVisible(!isNavBarVisible);
     };
-    const fetchNotifications = async () => {
-        const response = await notifyService.getAllNotificationsActiveByUser();
+    const fetchAttendanceRequests = async () => {
+        const response = await requestService.getAllRequestsByActiveUser();
         if (response.status === 200) {
-            setNotifications(response.data.metadata)
-            setFilteredNotifications(response.data.metadata)
+            setAttendanceRequests(response.data)
+            setFilteredAttendanceRequests(response.data)
         } else {
             Swal.fire("Lỗi!", "Không thể lấy dữ liệu các thông báo!", 'error')
             return;
         }
     }
     const handleFilter = (filteredData) => {
-        setFilteredNotifications(filteredData);
+        setFilteredAttendanceRequests(filteredData);
     };
-    // console.log("render notifi");
 
     return (
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
@@ -41,13 +41,11 @@ export const Notification = () => {
                 <Header toggleNavBar={toggleNavBar} />
                 <main className="py-6 bg-surface-secondary">
                     <div className="container">
-                        <FilterNotification notifications={notifications} onFilter={handleFilter} />
-                        <NotificationContent notifications={filteredNotifications.length > 0 ? filteredNotifications : notifications} />
+                        {/* <FilterAttendanceRequest attendanceRequests={attendanceRequests} onFilter={handleFilter} /> */}
+                        <AttendanceRequestContent attendanceRequests={filteredAttendanceRequests.length > 0 ? filteredAttendanceRequests : attendanceRequests} />
                     </div>
-
                 </main>
             </div>
-
         </div>
     )
 }

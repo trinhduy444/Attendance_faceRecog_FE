@@ -34,7 +34,6 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
     }, 0);
     const fetchUserInfo = async () => {
         const response = await userService.getSomeinfo();
-        // console.log(response)
         if (response.status === 200) {
             setUserInfo(response.metadata)
         }else {
@@ -185,7 +184,6 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
                                     <td><button type="button" data-bs-toggle="modal" data-bs-target="#attendanceRequestModal" className='btn btn-danger' disabled={attend.attend_yn} onClick={() => handleViewCreateAttendanceRequest(attend.attend_date)}><i className="bi bi-flag"></i> Khiếu nại</button></td>
                                 </tr>
                             ))}
-
                         </tbody>
                         <tfoot>
                             <tr className='table-primary'>
@@ -226,7 +224,7 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
                                 <span className="d-flex justify-content-evenly">
                                     <p><b>Ca học: </b> 01 (6:50 - 9:15)
                                     </p>
-                                    <p><b>Giờ điểm danh: </b> {attendDetail?.enter_time == '00:00' ? 'Không điểm danh' : attendDetail.enter_time}
+                                    <p><b>Giờ điểm danh: </b> {attendDetail?.enter_time === '00:00' ? 'Không điểm danh' : attendDetail.enter_time}
                                     </p>
                                 </span>
                             </div>

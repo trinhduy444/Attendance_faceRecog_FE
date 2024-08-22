@@ -1,6 +1,6 @@
 import React, {  useState } from "react"
 
-function FilterNotification({ notifications, onFilter }) {
+function FilterAttendanceRequest({ notifications, onFilter }) {
     const [searchTitle, setSearchTitle] = useState('');
     const [searchCreator, setSearchCreator] = useState('');
     const [filterOption, setFilterOption] = useState("none");
@@ -113,4 +113,4 @@ function FilterNotification({ notifications, onFilter }) {
     );
 }
 
-export default React.memo(FilterNotification)
+export default React.memo(FilterAttendanceRequest);

@@ -28,7 +28,6 @@ function AttendanceContent() {
             Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
             return
         }
-
     }
 
     return (
