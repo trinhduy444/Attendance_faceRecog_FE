@@ -29,6 +29,9 @@ function ManagerManagementContent({ toggleNavBar }) {
         const response = await adminService.getAllAdministrators();
         if (response.status === 200) {
             setShowUser(response.data.metadata);
+        }else {
+            Swal.fire("Thất bại!", "Vui lòng thử lại!", "error")
+            return
         }
 
     }

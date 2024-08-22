@@ -24,6 +24,9 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
         const response = await attendanceService.getAttendanceHaveUserId(studentId, course_group_id);
         if (response.status === 200) {
             setAttendanceInfo(response.data.data);
+        }else {
+            Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
+            return
         }
     }
     const totalAbsentCount = attendanceInfo.reduce((total, attend) => {
@@ -34,6 +37,9 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
         // console.log(response)
         if (response.status === 200) {
             setUserInfo(response.metadata)
+        }else {
+            Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
+            return
         }
     }
     const fetchCourseGroupInfo = async (course_group_id) => {
@@ -48,6 +54,9 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
         const response = await attendanceService.getAttendanceDetail(userId, courseGroupId, attenDate)
         if (response.status === 200) {
             setAttendDetail(response.data.metadata)
+        }else {
+            Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
+            return
         }
     }
     

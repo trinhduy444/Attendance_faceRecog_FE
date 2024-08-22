@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 const CountdownTimer = ({ minutes }) => {
     const [timeLeft, setTimeLeft] = useState(minutes * 60);
+    const [showAlert, setShowAlert] = useState(false);
 
     useEffect(() => {
         if (timeLeft <= 0) {
-            console.log("Time's up!");
             window.close();
             return;
+        }
+
+        if (timeLeft === 30 && !showAlert) {
+            setShowAlert(true);
+            Swal.fire({
+                title: 'Cảnh báo!',
+                text: 'Cửa sổ sẽ đóng sau 30 giây.',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+            }).then(() => {
+                setShowAlert(false); // Reset showAlert để có thể sử dụng lại nếu cần
+            });
         }
 
         const timer = setInterval(() => {
@@ -15,7 +29,7 @@ const CountdownTimer = ({ minutes }) => {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [timeLeft]);
+    }, [timeLeft, showAlert]);
 
     const formatTime = (seconds) => {
         const min = Math.floor(seconds / 60);
@@ -25,7 +39,7 @@ const CountdownTimer = ({ minutes }) => {
 
     return (
         <div className="row">
-            <p className="text-danger">Thời gian còn lại: {formatTime(timeLeft)}</p>
+            <p>Thời gian còn lại: <i className="text-danger">{formatTime(timeLeft)}</i></p>
         </div>
     );
 };

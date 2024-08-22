@@ -18,11 +18,13 @@ function ClassManagementContent({ toggleNavBar }) {
             if (response.status === 200) {
                 setRoomData(response.metadata)
                 return;
+            }else{
+                Swal.fire('Lỗi', 'Không thể thêm phòng học, vui lòng thử lại sau.', 'error');
+                return;
             }
-            return;
         } catch (error) {
             console.error('Error fecthing rooms:', error);
-            Swal.fire('Lỗi', 'Không thể thêm users. Vui lòng thử lại sau.', 'error');
+            Swal.fire('Lỗi', 'Không thể thêm phòng học. Vui lòng thử lại sau.', 'error');
         }
     }
     useEffect(() => {

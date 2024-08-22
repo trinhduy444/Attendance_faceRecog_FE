@@ -19,7 +19,7 @@ function EditProfileContent() {
         if (response.status !== 200) {
             return Swal.fire({
                 icon: 'error',
-                title: "Không tìm thấy người dùng",
+                title: "Không tìm thấy thông tin người dùng",
                 showConfirmButton: false,
                 timer: 1500
             });

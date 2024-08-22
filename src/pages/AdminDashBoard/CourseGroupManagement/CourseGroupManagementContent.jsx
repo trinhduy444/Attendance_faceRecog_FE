@@ -89,7 +89,6 @@ function CourseGroupManagementContent({ toggleNavBar }) {
             const response = await courseService.createCourseGroups(data);
             if (response.status === 201) {
                 Swal.fire('Thêm thành công', `Đã thêm ${data.length} nhóm học`, 'success');
-
                 fetchCourseGroup();
                 return
             } else {

@@ -9,7 +9,6 @@ import "../../assets/css/coursegroup.css"
 export const CourseGroup = () => {
     const [isNavBarVisible, setIsNavBarVisible] = useState(false);
     const user = useSelector(state => state.auth.user);
-    const [role, setRole] = useState(user.role_id);
     useEffect(() => {
         document.title = "Phòng học"
     }, [])
@@ -23,7 +22,7 @@ export const CourseGroup = () => {
             <NavBar isNavBarVisible={isNavBarVisible} />
             <div className="h-screen flex-grow-1">
                 <Header toggleNavBar={toggleNavBar} />
-                <CourseGroupContent role={role} />
+                <CourseGroupContent role={user.role_id} />
             </div>
         </div>
     )

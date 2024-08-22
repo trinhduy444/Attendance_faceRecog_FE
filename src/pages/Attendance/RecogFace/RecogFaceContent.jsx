@@ -7,7 +7,7 @@ import { courseService } from '../../../services/courseService';
 import { attendanceService } from '../../../services/attendanceService';
 import Swal from 'sweetalert2';
 import AttendanceList from './AttendanceList';
-
+import CountDownTimer from './CountDownTimer'
 function RecogFaceContent({ course_group_id, minutes }) {
     const webcamRef = useRef(null);
     const webcamCanvasRef = useRef(null);
@@ -17,7 +17,6 @@ function RecogFaceContent({ course_group_id, minutes }) {
     const [studentInfo, setStudentInfo] = useState(new Map());
     const [courseGroupInfo, setCourseGroupInfo] = useState(null);
     const [attendListSuccess, setAttendListSuccess] = useState([]);
-    const [timeLeft, setTimeLeft] = useState(minutes * 60);
     const [isUploading, setIsUploading] = useState(0);
     var faceRecog;
 
@@ -48,9 +47,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
         }
     }
 
-    useEffect(() => {
-        var timer, timeout;
-        
+    useEffect(() => {        
         // Load models weight
         Promise.all([
             faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
@@ -61,18 +58,6 @@ function RecogFaceContent({ course_group_id, minutes }) {
             faceMatcher.current = new faceapi.FaceMatcher(studentFaceList, 0.5);
            
             handleFetchCourseGroupInfo(course_group_id);
-
-            // Countdown timer logic
-            timer = setInterval(() => {
-                handleUpdateTimeLeft();
-            }, 1000);
-    
-            // Timeout if timer not stopping correctly
-            timeout = setTimeout(() => {
-                Swal.fire("Hết thời gian", "Thời gian điểm danh đã hết!", "warning");
-                window.close();
-            }, (minutes) * 60 * 1000);
-            
             // Initial call for webcam
             webcamRef.current.video.onplay = () => {
                 setTimeout(sentFaceData, 100);
@@ -80,8 +65,6 @@ function RecogFaceContent({ course_group_id, minutes }) {
         });
 
         return () => {
-            clearInterval(timer);
-            clearTimeout(timeout);
             clearTimeout(faceRecog);
         };
     }, []);
@@ -175,12 +158,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
     // Handle attend list success
     const handleAddAttendListSuccess = (attend) => {
         setAttendListSuccess((prevArray) => [...prevArray, attend]);
-    }
-
-    // Handle timer
-    const handleUpdateTimeLeft = () => {
-        setTimeLeft((prev) => prev - 1);
-    }
+    }    
 
     // Handle update number of running uploading
     const handleUpdateUploading = (amount) => {
@@ -221,7 +199,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
     }
 
     return (
-        <main className="py-6 bg-primary">
+        <main className="py-6 recogFace">
             <div className="container">
                 <div className="row">
                     <div className="col-8 position-relative" style={{ height: '90vh' }}>
@@ -239,9 +217,10 @@ function RecogFaceContent({ course_group_id, minutes }) {
                                <AttendanceList attendListSuccess = {attendListSuccess}/>
                             </div>
                         </div>
-                        <div className="row">
+                        {/* <div className="row">
                             <p className="text-danger">Thời gian còn lại: {formatTime(timeLeft)}</p>
-                        </div>
+                        </div> */}
+                        <CountDownTimer minutes={minutes} ></CountDownTimer>
                     </div>
                 </div>
             </div>

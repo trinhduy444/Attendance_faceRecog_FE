@@ -22,6 +22,7 @@ export const Schedule = () => {
         if (response.status === 200) {
             setAllSemester(response.metadata)
         }
+        
     }
 
     const handleFetchSemester = async (e) => {

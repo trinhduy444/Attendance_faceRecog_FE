@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { courseService } from '../../../services/courseService';
 import { attendanceService } from '../../../services/attendanceService';
 import AttendanceTable from './AttendanceTable'
+import Swal from 'sweetalert2';
 function AttendanceManagementContent({ role }) {
     const [courseGroups, setCourseGroups] = useState([]);
     const [selectedGroup, setSelectedGroup] = useState('none');
     const [selectedDate, setSelectedDate] = useState('');
     const [attendanceData, setAttendanceData] = useState([]);
-    const [allSemester,setAllSemester] = useState([]);
+    const [allSemester, setAllSemester] = useState([]);
     const [selectedSemester, setSelectedSemester] = useState(undefined);
 
     useEffect(() => {
@@ -32,11 +33,19 @@ function AttendanceManagementContent({ role }) {
             if (response.status === 200) {
                 setCourseGroups(response.metadata)
             }
+            else {
+                Swal.fire("Thất bại!", "Không thể lấy dữ liệu, vui lòng thử lại!", 'error');
+                return
+            }
         } else {
-            
+
             const response = await courseService.getCourseGroupTeacher(selectedSemester);
             if (response.status === 200) {
                 setCourseGroups(response.metadata)
+            }
+            else {
+                Swal.fire("Thất bại!", "Không thể lấy dữ liệu, vui lòng thử lại!", 'error');
+                return
             }
         }
     }

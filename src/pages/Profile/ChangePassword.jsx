@@ -37,7 +37,6 @@ export const ChangePassword = () => {
             if (responeCheckPassword.status === 200) {
                 const responeChangePassword = await authService.changePassword(newPassword)
                 if (responeChangePassword.status === 201) {
-                    window.location.reload();
                     return Swal.fire({
                         icon: 'success',
                         title: "Đổi mật khẩu thành công",

@@ -94,39 +94,49 @@
     background-color: #ccc;
 }
 
-#userFile{
+#userFile {
     width: 250px;
 }
-.courseGroupInfoAttend{
+
+.courseGroupInfoAttend {
     font-family: 'Times New Roman', Times, serif;
     color: aliceblue;
     font-size: x-large;
     text-align: center;
 }
-.attendListSuccess{
+
+.attendListSuccess {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color: aliceblue;
     font-size: medium;
 }
+
 .img-fluid-attend {
     max-width: 100%;
     height: auto;
-    object-fit: contain; 
+    object-fit: contain;
 }
 
-.img-attenđetail{
+.img-attenđetail {
     max-width: 300px;
     height: auto;
     object-fit: contain;
     border-radius: 10px;
 }
 
-section > .card{
+section>.card {
     box-sizing: border-box;
 }
-.bg-section{
+
+.bg-section {
     background-color: #f1f0f0;
 }
-.tr-data:hover{
+
+.tr-data:hover {
     background-color: #81bcf0;
+}
+
+.recogFace {
+    background: rgb(2, 0, 36);
+    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(120, 120, 245, 1) 41%, rgba(0, 212, 255, 1) 100%);
 }

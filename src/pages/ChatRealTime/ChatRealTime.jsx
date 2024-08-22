@@ -19,7 +19,7 @@ export const ChatRealTime = () => {
     return (
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
             <NavBar isNavBarVisible={isNavBarVisible} />
-            <div className="h-screen flex-grow-1 bg-black">
+            <div className="h-screen flex-grow-1 recogFace">
                 <Header toggleNavBar={toggleNavBar} />
                 <main className="py-3">
                     <ChatContent userId={user.username} />
