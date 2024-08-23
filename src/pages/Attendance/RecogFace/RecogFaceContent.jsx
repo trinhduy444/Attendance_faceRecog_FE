@@ -5,13 +5,15 @@ import { dateUtils } from '../../../utils/dateUtils';
 import { userService } from '../../../services/userService';
 import { courseService } from '../../../services/courseService';
 import { attendanceService } from '../../../services/attendanceService';
-import Swal from 'sweetalert2';
+import { useNavigate } from "react-router-dom"
 import AttendanceList from './AttendanceList';
 import CountDownTimer from './CountDownTimer'
 function RecogFaceContent({ course_group_id, minutes }) {
+    const navigate = useNavigate()
+
     const webcamRef = useRef(null);
     const webcamCanvasRef = useRef(null);
-    const dataCanvasRef =  useRef(null);
+    const dataCanvasRef = useRef(null);
     const faceMatcher = useRef(null);
     const attendedList = useRef(['unknown']);
     const [studentInfo, setStudentInfo] = useState(new Map());
@@ -22,32 +24,39 @@ function RecogFaceContent({ course_group_id, minutes }) {
 
     // Load student face with descriptors
     const loadStudentFaceList = async (course_group_id) => {
-        const response = await courseService.getCourseGroupStudentListInfo(course_group_id);
-        if (response.status === 200) {
-            return Promise.all(
-                response.data.students.map(async (student) => {
-                    setStudentInfo(studentInfo.set(student.student_username, student.student_id));
-                    
-                    const faces = await fetchUserFaces(student.student_id);
-                    faces.push({ face_image_path: student.student_avatar_path });
+        try {
+            const response = await courseService.getCourseGroupStudentListInfo(course_group_id);
+            if (response.status === 200) {
+                return Promise.all(
+                    response.data.students.map(async (student) => {
+                        setStudentInfo(studentInfo.set(student.student_username, student.student_id));
 
-                    const descriptors = [];
-                    const faceImg = new Image();
-                    faceImg.crossOrigin = 'Anonymous';
+                        const faces = await fetchUserFaces(student.student_id);
+                        faces.push({ face_image_path: student.student_avatar_path });
 
-                    faces.forEach(async (face) => {
-                        faceImg.src = face.face_image_path;
-                        const faceDetection = await faceapi.detectSingleFace(faceImg).withFaceLandmarks().withFaceDescriptor();
-                        descriptors.push(faceDetection.descriptor);
-                    });
+                        const descriptors = [];
+                        const faceImg = new Image();
+                        faceImg.crossOrigin = 'Anonymous';
 
-                    return new faceapi.LabeledFaceDescriptors(student.student_username, descriptors);
-                })
-            );
+                        faces.forEach(async (face) => {
+                            faceImg.src = face.face_image_path;
+                            const faceDetection = await faceapi.detectSingleFace(faceImg).withFaceLandmarks().withFaceDescriptor();
+                            descriptors.push(faceDetection.descriptor);
+                        });
+
+                        return new faceapi.LabeledFaceDescriptors(student.student_username, descriptors);
+                    })
+                );
+            }
+        } catch (err) {
+            navigate("/error", {
+                state: { status: err.reponse?.status || 500, message: err.message }
+            })
         }
+
     }
 
-    useEffect(() => {        
+    useEffect(() => {
         // Load models weight
         Promise.all([
             faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
@@ -56,7 +65,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
         ]).then(async () => {
             const studentFaceList = await loadStudentFaceList(course_group_id);
             faceMatcher.current = new faceapi.FaceMatcher(studentFaceList, 0.5);
-           
+
             handleFetchCourseGroupInfo(course_group_id);
             // Initial call for webcam
             webcamRef.current.video.onplay = () => {
@@ -68,7 +77,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
             clearTimeout(faceRecog);
         };
     }, []);
-    
+
 
     // Set course group info
     const handleFetchCourseGroupInfo = async (course_group_id) => {
@@ -94,7 +103,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
         var ctx = dataCanvasRef.current.getContext('2d');
         dataCanvasRef.current.width = webcamRef.current.video.offsetWidth;
         dataCanvasRef.current.height = webcamRef.current.video.offsetHeight;
-    
+
         ctx.drawImage(webcamRef.current.video, 0, 0, dataCanvasRef.current.width, dataCanvasRef.current.height);
 
         // Face detection
@@ -131,16 +140,16 @@ function RecogFaceContent({ course_group_id, minutes }) {
     }
 
     // Process success face recognition
-    const processAfterRecognition = async(canvas, label, requestBody) => {
+    const processAfterRecognition = async (canvas, label, requestBody) => {
         handleUpdateUploading(isUploading + 1);
         addAttendanceRawData(label, requestBody);
-        
+
         canvas.toBlob((blob) => {
             const formData = new FormData();
             formData.append('image', blob);
             formData.append('user_id', requestBody.studentId);
             formData.append('course_group_id', requestBody.courseGroupId);
-            formData.append('date', requestBody.attendDate); 
+            formData.append('date', requestBody.attendDate);
             formData.append('type', requestBody.attendType);
 
             uploadAttendImage(formData);
@@ -158,7 +167,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
     // Handle attend list success
     const handleAddAttendListSuccess = (attend) => {
         setAttendListSuccess((prevArray) => [...prevArray, attend]);
-    }    
+    }
 
     // Handle update number of running uploading
     const handleUpdateUploading = (amount) => {
@@ -183,14 +192,14 @@ function RecogFaceContent({ course_group_id, minutes }) {
         var ctx = webcamCanvasRef.current.getContext('2d');
         webcamCanvasRef.current.width = webcamRef.current.video.offsetWidth;
         webcamCanvasRef.current.height = webcamRef.current.video.offsetHeight;
-    
+
         data.forEach((face) => {
             var { _x, _y, _width, _height } = face.detection._box;
             // Draw rectangle
             ctx.lineWidth = 3;
             ctx.strokeStyle = 'red';
             ctx.strokeRect(_x, _y, _width, _height);
-    
+
             // Draw face description
             ctx.font = "30px Arial";
             ctx.fillStyle = 'red';
@@ -214,7 +223,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
                         <div className="row attendListSuccess">
                             <p className='fst-italic'>Danh sách sinh viên điểm danh thành công: </p>
                             <div className='overflow-auto mt-2 border border-info' style={{ height: '500px' }}>
-                               <AttendanceList attendListSuccess = {attendListSuccess}/>
+                                <AttendanceList attendListSuccess={attendListSuccess} />
                             </div>
                         </div>
                         {/* <div className="row">

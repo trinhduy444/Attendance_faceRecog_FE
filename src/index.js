@@ -18,7 +18,10 @@ import ProtectedRoute from './utils/checkAuthentication';
 import TokenManager from './components/TokenComponent';
 //Pages
 import { Login } from './pages/Authentication/Login';
+import { ForgotPassword } from './pages/Authentication/ForgotPassword';
+import { ResetPassword } from './pages/Authentication/ResetPassword';
 import { Home } from './pages/Home/Home';
+import {News} from './pages/News/News';
 import { Notification } from './pages/Notification/Notification';
 import { Attendance } from './pages/Attendance/Attendance';
 import { AttendanceDetail } from './pages/Attendance/AttendanceDetail';
@@ -29,6 +32,7 @@ import { Schedule } from './pages/Schedule/Schedule';
 import { CourseGroup } from './pages/CourseGroup/CourseGroup';
 import { CourseGroupDetail } from './pages/CourseGroup/CourseGroupDetail';
 import { ChatRealTime } from './pages/ChatRealTime/ChatRealTime';
+import { TeacherInfo } from './pages/TeacherInfo/TeacherInfo';
 //Teacher
 import { AttendanceManagement } from './pages/TeacherDashBoard/Attendance/AttendanceManagement';
 import { AttendanceAdjustment } from './pages/TeacherDashBoard/AttendanceAdjustment/AttendanceAdjustment';
@@ -70,6 +74,9 @@ root.render(
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgotPassword" element={<ForgotPassword />} />
+            <Route path="/resetPassword/*" element={<ResetPassword />} />
+
             <Route path="/notification" element={<ProtectedRoute element={<Notification />} />} />
             <Route path="/attendance" element={<ProtectedRoute element={<Attendance />} />} />
             <Route path="/attendance/detail/:course_group_id/:ban_yn" element={<ProtectedRoute element={<AttendanceDetail />} />} />
@@ -80,6 +87,9 @@ root.render(
             <Route path="/coursegroup" element={<ProtectedRoute element={<CourseGroup />} />} />
             <Route path="/coursegroup/detail/:course_group" element={<ProtectedRoute element={<CourseGroupDetail />} />} />
             <Route path="/chat" element={<ProtectedRoute element={<ChatRealTime />} />} />
+            <Route path="/news" element={<ProtectedRoute element={<News />} />} />
+            <Route path="/teacherInfo" element={<ProtectedRoute element={<TeacherInfo />} />} />
+
 
             <Route path="/createNotify" element={<ProtectedRoute type={4} element={<CreateNotify />} />} />
             <Route path="/attendanceData" element={<ProtectedRoute type={2} element={<AttendanceManagement />} />} />

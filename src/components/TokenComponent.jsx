@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { authService } from '../services/authService';
-
+import { useNavigate } from 'react-router-dom';
 const TokenManager = () => {
+    const navigate = useNavigate()
     useEffect(() => {
         const interval = setInterval(async () => {
             try {
@@ -11,8 +12,10 @@ const TokenManager = () => {
                     console.log('Token refreshed successfully');
                 }
             } catch (err) {
-                console.error('Failed to refresh token', err);
                 clearInterval(interval);
+                navigate("/error", {
+                    state: { status: err.response.status || 500, message: 'Failed to refresh token' }
+                })
             }
         }, 9 * 60 * 1000);
 

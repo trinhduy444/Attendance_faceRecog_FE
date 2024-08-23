@@ -90,6 +90,13 @@ const headerLinks = {
             { path: '/teacher/userManagement', label: 'Quản lý sinh viên', icon: 'bi bi-people' },
         ]
     },
+    '/teacherInfo': {
+        title: 'Thông tin giảng viên',
+        links: [
+            { path: '/', label: 'Trang chủ', icon: 'bi bi-house' },
+            { path: '/teacherInfo', label: 'Thông tin giảng viên', icon:'bi bi-people' },
+        ]
+    },
 };
 
 function Header({ toggleNavBar }) {

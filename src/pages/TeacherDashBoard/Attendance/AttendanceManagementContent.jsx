@@ -61,6 +61,10 @@ function AttendanceManagementContent({ role }) {
     };
     const handleFetchAttendanceInfo = async (event) => {
         event.preventDefault();
+        if (selectedGroup === 'none') {
+            Swal.fire("Cảnh báo!", "Bạn vui lòng chọn nhóm lớp!", "warning")
+            return
+        }
         const response = await attendanceService.getAttendance(selectedGroup, selectedDate);
         setAttendanceData(response.data.data)
     };
@@ -108,8 +112,9 @@ function AttendanceManagementContent({ role }) {
                         <button className='btn btn-outline-primary col-2' type='submit'>Tìm kiếm</button></>) : (null)}
 
                 </form>
+                <hr className='text-black' />
+               <AttendanceTable data={attendanceData} courseGroupId={selectedGroup} />
 
-                <AttendanceTable data={attendanceData} />
             </div>
         </main >
 

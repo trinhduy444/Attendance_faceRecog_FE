@@ -80,7 +80,7 @@ function AttendanceDetailContent({ student_id, course_group_id }) {
 
                 </div>
             </section>
-            <a href="#top" className='bi bi-align-top btn btn-primary mt-2'>Lên đầu trang</a>
+            <a href="#top" className='bi bi-align-top btn btn-outline-primary mt-2'>Lên đầu trang</a>
         </main >
 
     );

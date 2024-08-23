@@ -73,7 +73,7 @@ export const authService = {
             throw error;
         }
     },
-    refreshAccessToken: async () =>{
+    refreshAccessToken: async () => {
         const accessToken = localStorage.getItem('accessToken');
         try {
             const response = await axiosConfig.post('/auth/refreshAccessToken', {}, {
@@ -84,5 +84,35 @@ export const authService = {
             console.error('Error during refreshAccessToken:', error);
             throw error;
         }
+    },
+    forgotPassword: async (requestBody) => {
+        try {
+            const response = await axiosConfig.post('/auth/forgotPassword', requestBody, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            return response;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    resetPassword: async (token,newPassword) => {
+        try {
+            const response = await axiosConfig.put('/auth/resetPassword', {
+                token: token,
+                newPassword: newPassword
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            return response;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
     }
+
 }

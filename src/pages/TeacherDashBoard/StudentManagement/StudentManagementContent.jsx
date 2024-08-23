@@ -37,14 +37,15 @@ function StudentManagementContent() {
         }
     }
     const handleSelectChange = (event) => {
-        const selectedGroupId = parseInt(event.target.value);
-        const selectedGroupData = courseGroups.find(cg => cg.course_group_id === selectedGroupId);
+        const selectedGroupId = event.target.value;
+        
+        const selectedGroupData = courseGroups.find(cg => cg.course_group_id == selectedGroupId);
         setSelectedGroup(selectedGroupId);
         setCourseName({
             ...courseName,
-            name: selectedGroupData.course_name,
-            group: selectedGroupData.group_code,
-            course_group_id: selectedGroupData.course_group_id
+            name: selectedGroupData?.course_name,
+            group: selectedGroupData?.group_code,
+            course_group_id: selectedGroupData?.course_group_id
         });
     };
 
@@ -58,7 +59,7 @@ function StudentManagementContent() {
             Swal.fire("Cảnh báo!", "Bạn vui lòng chọn nhóm lớp!", "warning")
             return
         }
-        const response = await courseService.viewAllStudentCourseGroupByTeacher(1, selectedGroup)
+        const response = await courseService.viewAllStudentCourseGroupByTeacher(1, parseInt(selectedGroup))
         if (response.status === 200) {
             // console.log(response.metadata)
             setStudentsData(response.metadata)

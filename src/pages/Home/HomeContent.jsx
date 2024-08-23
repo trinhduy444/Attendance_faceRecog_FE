@@ -128,7 +128,7 @@ function HomeContent() {
                                         <div className="col">
                                             <span className="h3 font-bold mb-0">Thời khóa
                                                 biểu</span>
-                                            <span className="h6 font-semibold text-muted text-sm d-block mb-2">Week 1</span>
+                                            <span className="h6 font-semibold text-muted text-sm d-block mb-2">Tuần 43</span>
 
                                         </div>
                                         <div className="col-auto">
@@ -176,8 +176,7 @@ function HomeContent() {
                                     <div className="row">
                                         <div className="col">
                                             <span className="h3 font-bold mb-0">Viết đơn</span>
-                                            <span className="h6 font-semibold text-muted text-sm d-block mb-2">Work
-                                                load</span>
+                                            <span className="h6 font-semibold text-muted text-sm d-block mb-2">Quản lý đơn cá nhân</span>
 
                                         </div>
                                         <div className="col-auto">
@@ -203,7 +202,7 @@ function HomeContent() {
                                     <div className="row">
                                         <div className="col">
                                             <span className="h3 font-bold mb-0">Điểm danh</span>
-                                            <span className="h6 font-semibold text-muted text-sm d-block mb-2">3</span>
+                                            <span className="h6 font-semibold text-muted text-sm d-block mb-2">Dữ liệu điểm danh</span>
                                         </div>
                                         <div className="col-auto">
                                             <div className="icon icon-shape bg-tertiary text-white text-lg rounded-circle">
@@ -225,9 +224,8 @@ function HomeContent() {
                                 <div className="card-body">
                                     <div className="row">
                                         <div className="col">
-                                            <span className="h3 font-bold mb-0">Phòng học</span>
-                                            <span className="h6 font-semibold text-muted text-sm d-block mb-2">New
-                                                projects</span>
+                                            <span className="h3 font-bold mb-0">Nhóm học</span>
+                                            <span className="h6 font-semibold text-muted text-sm d-block mb-2">Nhóm học của bạn</span>
                                         </div>
                                         <div className="col-auto">
                                             <div className="icon icon-shape bg-primary text-white text-lg rounded-circle">
@@ -245,7 +243,7 @@ function HomeContent() {
                             </div>
                         </div>
                         <div className="col-xl-3 col-sm-6 col-12">
-                            <div className="card shadow border-0" onClick={() => handleCardClick('')} style={{ cursor: 'pointer' }}>
+                            <div className="card shadow border-0" onClick={() => handleCardClick('teacherInfo')} style={{ cursor: 'pointer' }}>
                                 <div className="card-body">
                                     <div className="row">
                                         <div className="col">

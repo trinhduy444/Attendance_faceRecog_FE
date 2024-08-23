@@ -63,11 +63,10 @@ export const Login = () => {
           <span className="schoolNameSpan"><p>Trường đại học Tôn Đức Thắng</p></span>
         </div>
         <div className="loginBody">
-          <a href="/haha" className="fw-light" id="loginAdmin">Đăng nhập admin --  </a>
           <form onSubmit={handleLogin}>
             <div className="form-group">
               <label htmlFor="username">Tên đăng nhập:</label>
-              <input type="text" className="form-control" onChange={(e) => setUserName(e.target.value)} id="username" aria-describedby="textStudentID" placeholder="Nhập Student ID..." />
+              <input type="text" className="form-control" onChange={(e) => setUserName(e.target.value)} id="username" aria-describedby="textStudentID" placeholder="Nhập tên đăng nhập..." />
             </div>
             <div className="form-group">
               <label htmlFor="password">Mật khẩu:</label>
@@ -75,7 +74,7 @@ export const Login = () => {
                 placeholder="Nhập mật khẩu..." />
             </div>
             <div className="form-group">
-              <a href="/hehe" className="fw-light">Quên mật khẩu?</a>
+              <a href="/forgotPassword" className="fw-light">Quên mật khẩu?</a>
               <button type="submit" id="loginSubmit" className="btn btn-primary">Đăng nhập</button>
               <button type="button" id="loginGoogleBtn" onClick={handleLoginGoogle} className='bg-danger'><i className="bi bi-google"></i> Đăng nhập với Google</button>
             </div>

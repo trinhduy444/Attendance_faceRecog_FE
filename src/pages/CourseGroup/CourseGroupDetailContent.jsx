@@ -169,7 +169,7 @@ function CourseGroupDetailContent({ role, course_group }) {
             <div className="container ps-20 pe-20" >
                 <div className="row classroomDetailHeader">
                     <img src="https://i.pinimg.com/564x/17/f8/bd/17f8bdc442823c9943fd1681445cd5ef.jpg" alt="" style={{ width: '100%', height: '300px' }} />
-                    <h2 className="overlay-text">Môn {info?.course_name} | {info?.group_code}-HK1-{info?.course_code}</h2>
+                    <h2 className="overlay-text">Môn: {info?.course_name} | {info?.group_code}-HK1-{info?.course_code}</h2>
                     <h3 className="overlay-text2">GV: {info?.nickname}</h3>
                 </div>
                 <div className="main-classroom">

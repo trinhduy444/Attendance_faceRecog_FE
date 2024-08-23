@@ -145,7 +145,7 @@ function CourseManagementContent({ toggleNavBar }) {
             Swal.fire('Hãy thử lại!', 'Vui lòng chọn giảng viên và ngày học', 'error')
             return;
         }
-        console.log("Nhom da chon", selectedSemester)
+        // console.log("Nhom da chon", selectedSemester)
         const requestBody = {
             course_code: courseSelect,
             group_code: courseName,
