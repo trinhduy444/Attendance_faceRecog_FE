@@ -64,11 +64,11 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
     }
 
     const setContent = (content) => {
-        setRequestContent({...requestContent, content: content});
+        setRequestContent((requestContent) => ({...requestContent, content: content}));
     }
 
     // Handle show attendance request modal
-    const handleViewCreateAttendanceRequest = async (attendDate) => {
+    const handleViewCreateAttendanceRequest = (attendDate) => {
         setRequestContent({
             student_id: userId,
             course_group_id: courseGroupId,
@@ -80,14 +80,13 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
             response: '',
             request_type: 0,
             status: 1
-        })
+        });
     }
 
     // Create attendance request
     const handleCreateAttendanceRequest = async () => {
         const response = await requestService.createAttendanceRequest(requestContent);
         if (response.status === 201) {
-            console.log(response);
             closeModalButtonRef.current.click();
             Swal.fire('Thành công!', 'Gửi yêu cầu thành công', 'success', 1500);
         }

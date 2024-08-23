@@ -33,6 +33,12 @@ export const AttendanceRequest = () => {
     const handleFilter = (filteredData) => {
         setFilteredAttendanceRequests(filteredData);
     };
+    const handleChange = async (index, status) => {
+        await fetchAttendanceRequests();
+        let changedDatas = [...filteredAttendanceRequests];
+        changedDatas[index].status = status;
+        setFilteredAttendanceRequests(changedDatas);
+    }
 
     return (
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
@@ -41,8 +47,8 @@ export const AttendanceRequest = () => {
                 <Header toggleNavBar={toggleNavBar} />
                 <main className="py-6 bg-surface-secondary">
                     <div className="container">
-                        {/* <FilterAttendanceRequest attendanceRequests={attendanceRequests} onFilter={handleFilter} /> */}
-                        <AttendanceRequestContent attendanceRequests={filteredAttendanceRequests.length > 0 ? filteredAttendanceRequests : attendanceRequests} />
+                        <FilterAttendanceRequest attendanceRequests={attendanceRequests} onFilter={handleFilter} />
+                        <AttendanceRequestContent attendanceRequests={filteredAttendanceRequests} onChange={handleChange} />
                     </div>
                 </main>
             </div>

@@ -1,21 +1,23 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
+import Swal from "sweetalert2"
 import { useSelector } from 'react-redux';
 import { requestService } from '../../services/requestService';
 import { convertDay } from '../../utils/convertDay'
 import { displayContent } from '../../utils/displayContent'
-// import Swal from "sweetalert2"
 
 import Pagination from "../AdminDashBoard/UserManagement/Pagination"
 
-function AttendanceRequestContent({ attendanceRequests }) {
+function AttendanceRequestContent({ attendanceRequests, onChange }) {
     const user = useSelector(state => state.auth.user);
+    const closeBtnRef = useRef();
     const [attendanceRequestDetail, setAttendanceRequestDetail] = useState();
+    const [index, setIndex] = useState(-1);
 
     //pagination
     const [currentPage, setCurrentPage] = useState(1);
     const attendanceRequestsPerPage = 3;
     useEffect(() => {
-
+        
     }, [])
 
     // Handle Pagination
@@ -25,18 +27,57 @@ function AttendanceRequestContent({ attendanceRequests }) {
     };
 
     // Show detail
-    const showModalDetails = (attendanceRequest) => {
+    const showModalDetails = (attendanceRequest, index) => {
         setAttendanceRequestDetail(attendanceRequest);
+        setIndex(index);
     }
 
     // Handle approve request
-    const handleApproveRequest = async () => {
-
+    const handleApproveRequest = async (request_id) => {
+        Swal.fire({
+            title: `Xác nhận duyệt yêu cầu điểm danh?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const response = await requestService.approveAttendanceRequest(request_id);
+                if (response.status === 200) {
+                    closeBtnRef.current.click();
+                    onChange(index, 2);
+                    Swal.fire('Thành công!', 'Duyệt yêu cầu thành công', 'success', 1500);
+                } else if (response.status === 403) {
+                    Swal.fire("Không có quyền!", "Người dùng không có quyền duyệt yêu cầu này!", 'warning')
+                } else {
+                    Swal.fire("Lỗi!", "Duyệt yêu cầu điểm danh thất bại!", 'error');
+                }
+            }
+        });
     }
 
     // Handle reject request
-    const handleRejectRequest = async () => {
-
+    const handleRejectRequest = async (request_id) => {
+        Swal.fire({
+            title: `Xác nhận hủy yêu cầu điểm danh?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const response = await requestService.rejectAttendanceRequest(request_id);
+                if (response.status === 200) {
+                    closeBtnRef.current.click();
+                    onChange(index, 9);
+                    Swal.fire('Thành công!', 'Hủy yêu cầu thành công', 'success', 1500);
+                } else if (response.status === 403) {
+                    Swal.fire("Không có quyền!", "Người dùng không có quyền hủy yêu cầu này!", 'warning')
+                } else {
+                    Swal.fire("Lỗi!", "Hủy yêu cầu điểm danh thất bại!", 'error');
+                }
+            }
+        });
     }
     
     // Render status
@@ -86,7 +127,7 @@ function AttendanceRequestContent({ attendanceRequests }) {
                                     {attendanceRequest.nickname0} | Ngày đăng: {convertDay(attendanceRequest.create_time)}
                                 </h6>
                                 <div className="d-flex justify-content-between">
-                                    <a className="card-link" type="button" data-bs-toggle="modal" data-bs-target="#detailAttendanceRequestModal" onClick={() => showModalDetails(attendanceRequest)}>
+                                    <a className="card-link" type="button" data-bs-toggle="modal" data-bs-target="#detailAttendanceRequestModal" onClick={() => showModalDetails(attendanceRequest, indexOfFirstAttendanceRequest + index)}>
                                         Xem chi tiết
                                     </a>
                                 </div>
@@ -126,7 +167,7 @@ function AttendanceRequestContent({ attendanceRequests }) {
                                     <button type="button" className="btn btn-danger" onClick={() => handleRejectRequest(attendanceRequestDetail?.request_id)}>Hủy</button>
                                 </>) : ''
                             }
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="button" ref={closeBtnRef} className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 import React, {  useState } from "react"
 
-function FilterAttendanceRequest({ notifications, onFilter }) {
+function FilterAttendanceRequest({ attendanceRequests, onFilter }) {
     const [searchTitle, setSearchTitle] = useState('');
     const [searchCreator, setSearchCreator] = useState('');
     const [filterOption, setFilterOption] = useState("none");
@@ -17,24 +17,18 @@ function FilterAttendanceRequest({ notifications, onFilter }) {
         setFilterOption("none");
         setFromDate('');
         setToDate('');
+
+        onFilter(attendanceRequests);
     };
 
     const handleFilter = (e) => {
         e.preventDefault();
-        const savedNotifications = JSON.parse(localStorage.getItem('notificationSaved')) || [];
-
-        const filteredData = notifications.filter(notification => {
-            const titleMatch = notification.title.toLowerCase().includes(searchTitle.toLowerCase());
-            const creatorMatch = searchCreator ? notification.nickname.toLowerCase().includes(searchCreator.toLowerCase()) : true;
-            const typeMatch = filterOption === "1"
-                ? notification.creater_id === 1
-                : filterOption === "2"
-                    ? notification.creater_id !== 1
-                    : filterOption === "3"
-                        ? savedNotifications.includes(notification.notify_id)
-                        : true;
-            const fromDateMatch = fromDate ? new Date(notification.create_time) >= new Date(fromDate) : true;
-            const toDateMatch = toDate ? new Date(notification.create_time) <= new Date(toDate) : true;
+        const filteredData = attendanceRequests.filter(attendanceRequest => {
+            const titleMatch = attendanceRequest.title.toLowerCase().includes(searchTitle.toLowerCase());
+            const creatorMatch = searchCreator ? attendanceRequest.nickname0.toLowerCase().includes(searchCreator.toLowerCase()) : true;
+            const typeMatch = filterOption !== "none" ? attendanceRequest.status === filterOption : true;
+            const fromDateMatch = fromDate ? new Date(attendanceRequest.create_time) >= new Date(fromDate) : true;
+            const toDateMatch = toDate ? new Date(attendanceRequest.create_time) <= new Date(toDate) : true;
 
             return titleMatch && creatorMatch && typeMatch && fromDateMatch && toDateMatch;
         });
@@ -58,24 +52,24 @@ function FilterAttendanceRequest({ notifications, onFilter }) {
                     <input
                         type="text"
                         className="form-control"
-                        placeholder="Tìm kiếm theo tên người thông báo..."
+                        placeholder="Tìm kiếm theo tên người yêu cầu..."
                         value={searchCreator}
                         onChange={(e) => setSearchCreator(e.target.value)}
                     />
                 </div>
                 <div className="col-2">
                     <button type="button" className="btn btn-outline-danger" onClick={handleClearFilters}>
-                        <i className="bi bi-x-lg"></i> Xóa
+                        <i className="bi bi-x-lg"></i> Bỏ lọc
                     </button>
                 </div>
             </div>
             <div className="row mb-2">
                 <div className="col-4">
                     <select className="form-select" aria-label="Default select example" value={filterOption} onChange={handleSelectChange}>
-                        <option value="none">Chọn loại thông báo</option>
-                        <option value="1">Thông báo từ quản trị</option>
-                        <option value="2">Thông báo từ giảng viên</option>
-                        <option value="3">Thông báo đã lưu</option>
+                        <option value="none">Chọn trạng thái yêu cầu</option>
+                        <option value="1">Chờ xử lý</option>
+                        <option value="2">Đã duyệt</option>
+                        <option value="9">Hủy</option>
 
                     </select>
                 </div>

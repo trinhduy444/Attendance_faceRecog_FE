@@ -32,7 +32,6 @@ export const Notification = () => {
     const handleFilter = (filteredData) => {
         setFilteredNotifications(filteredData);
     };
-    // console.log("render notifi");
 
     return (
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
