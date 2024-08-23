@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { scheduleService } from '../../services/scheduleService';
+import { useNavigate } from "react-router-dom"
+
 function ScheduleContent({ infoSemester }) {
+    const navigate = useNavigate()
     const [activitiesByDay, setActivitiesByDay] = useState([]);
     const [currentWeek, setCurrentWeek] = useState(infoSemester?.week_from);
     const daysOfWeek = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"];
@@ -46,7 +49,9 @@ function ScheduleContent({ infoSemester }) {
 
             setActivitiesByDay(activitiesByDay);
         } catch (error) {
-            console.error('Error fetching schedule:', error);
+            navigate("/error", {
+                state: { status: 500, message: 'Error fetching schedule:' }
+            })
         }
     };
     useEffect(() => {

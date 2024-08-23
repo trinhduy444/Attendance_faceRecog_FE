@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import * as XLSX from "xlsx"
 import Swal from "sweetalert2"
+import { useNavigate } from "react-router-dom"
 import { adminService } from "../../../services/adminService";
 import { sortArray } from "../../../utils/sortArray"
 import Pagination from './Pagination'
@@ -8,6 +9,8 @@ import '../../../assets/css/adminDashboard.css'
 // import MyErrorBoundary from "../../Error/ErrorFallback";
 import NavBarToggle from "../../../components/NavBarToggle";
 function UserManagementContent({ toggleNavBar }) {
+    const navigate = useNavigate()
+    
     // Declare array to show
     const [showUser, setShowUser] = useState([]);
     // Declare pagination and sort arrays
@@ -177,8 +180,9 @@ function UserManagementContent({ toggleNavBar }) {
                 });
 
             } catch (error) {
-                console.error('Error uploading images:', error);
-                // Swal.fire('Lỗi', 'Không thể tải ảnh lên. Vui lòng thử lại sau.', 'error');
+                navigate("/error",{
+                    state: { status: error.reponse?.status || 500, message: 'Error uploading image' }
+                })
             }
         }
     };
@@ -240,30 +244,55 @@ function UserManagementContent({ toggleNavBar }) {
     }
 
     const handleLockAccount = async (userId) => {
-        const response = await adminService.lockUserAccount(userId,3)
-        // console.log("lock",response);
+        const result = await Swal.fire({
+            title: 'Bạn có chắc chắn?',
+            text: "Bạn có muốn khóa tài khoản này không?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đồng ý, khóa!',
+            cancelButtonText: 'Hủy',
+        });
 
-        if (response.status === 200) {
-            Swal.fire("Thành công!", "Khóa tài khoản thành công.", "success")
-            fetchUsers()
-            return;
-        } else {
-            Swal.fire("Thất bại!", "Khóa tài khoản thất bại", "error")
-            return;
+        if (result.isConfirmed) {
+            const response = await adminService.lockUserAccount(userId, 3);
+            if (response.status === 200) {
+                Swal.fire("Thành công!", "Khóa tài khoản thành công.", "success");
+                setViewUser(prevUser => ({
+                    ...prevUser,
+                    status: false,
+                }));
+                fetchUsers();
+            } else {
+                Swal.fire("Thất bại!", "Khóa tài khoản thất bại", "error");
+            }
         }
     };
-    const handleUnLockAccount = async (userId) => {
-        const response = await adminService.unLockUserAccount(userId,3)
 
-        if (response.status === 200) {
-            Swal.fire("Thành công!", "Mở khóa tài khoản thành công.", "success")
-            fetchUsers()
-            return;
-        } else {
-            Swal.fire("Thất bại!", "Mở khóa tài khoản thất bại", "error")
-            return;
+    const handleUnLockAccount = async (userId) => {
+        const result = await Swal.fire({
+            title: 'Bạn có chắc chắn?',
+            text: "Bạn có muốn mở khóa tài khoản này không?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đồng ý, mở khóa!',
+            cancelButtonText: 'Hủy',
+        });
+
+        if (result.isConfirmed) {
+            const response = await adminService.unLockUserAccount(userId, 3);
+            if (response.status === 200) {
+                Swal.fire("Thành công!", "Mở khóa tài khoản thành công.", "success");
+                setViewUser(prevUser => ({
+                    ...prevUser,
+                    status: true,
+                }));
+                fetchUsers();
+            } else {
+                Swal.fire("Thất bại!", "Mở khóa tài khoản thất bại", "error");
+            }
         }
-    }
+    };
+
 
     return (
 
@@ -380,6 +409,10 @@ function UserManagementContent({ toggleNavBar }) {
                                         </th>
                                         <th scope="col" onClick={() => handleSortUser('gender')}>
                                             Giới tính {getSortIcon('gender')}</th>
+                                        <th scope="col" onClick={() => handleSortUser('status')}>
+                                            Trạng thái {getSortIcon('status')}</th>
+
+
                                         <th scope="col">Thao tác</th>
                                     </tr>
                                 </thead>
@@ -393,6 +426,8 @@ function UserManagementContent({ toggleNavBar }) {
                                             <td>{item.faculty_name}</td>
                                             <td>{item.course_year}</td>
                                             <td>{item.gender ? "Nam" : "Nữ"}</td>
+                                            <td className={item.status ? "text-success" : "text-danger"}>{item.status ? "Hoạt động" : "Đã Khóa"}</td>
+
                                             <td><button type="button" className="btn btn-warning" onClick={() => handleViewUser(item)} data-bs-toggle="modal"
                                                 data-bs-target="#viewUserModel">Xem</button></td>
                                         </tr>
@@ -476,20 +511,13 @@ function UserManagementContent({ toggleNavBar }) {
                                     <ul className="list-unstyled mb-1-9 ms-3">
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">MSSV:</span> {viewUser?.username}</li>
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Giới tính:</span>{viewUser?.gender ? 'Nam' : 'Nữ'}</li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Trạng thái tài khoản:</span>{viewUser?.status ? 'Bình thường' : 'Đã bị khóa'}</li>
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Email:</span><a href={`mailto:${viewUser?.email}`}>{viewUser?.email}</a> </li>
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Số điện thoại:</span>+{viewUser?.phone}</li>
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Địa chỉ:</span> Phường Tân Phong, TP. Hồ Chí Minh, Việt Nam</li>
 
                                     </ul>
                                 </div>
-                            </div>
-
-                            <div className="row p-2 border border-bottom-3 ">
-
-                                <label htmlFor="message" className="fw-bold">Gửi tin nhắn cho sinh viên: </label>
-
-                                <textarea name="message" className="border border-black rounded p-2" id="messageText" rows="5" placeholder="Nhập tin nhắn..."></textarea>
-
                             </div>
 
                         </div>

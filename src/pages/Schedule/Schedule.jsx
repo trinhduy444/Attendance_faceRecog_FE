@@ -22,12 +22,12 @@ export const Schedule = () => {
         if (response.status === 200) {
             setAllSemester(response.metadata)
         }
-        
+
     }
 
     const handleFetchSemester = async (e) => {
         const response = await scheduleService.getSemesterSomeInfo(e.target.value);
-        console.log(response)
+        // console.log(response)
         if (response.status === 200) {
             let tmp = {
                 semester_year_id: response.semester_year_id,
@@ -44,22 +44,27 @@ export const Schedule = () => {
             <NavBar isNavBarVisible={isNavBarVisible} />
             <div className="h-screen flex-grow-1 ">
                 <Header toggleNavBar={toggleNavBar} />
-                <select
-                    id="selectSemester"
-                    data-live-search="true"
-                    className="form-select border border-black mt-1"
-                    aria-label="Default select example"
-                    onChange={(e) => handleFetchSemester(e)}
-                    defaultValue={allSemester.length > 0 ? allSemester[allSemester.length - 1].semester_year_id : ''}
-                >
-                    <option value=''>--Chọn học kỳ | Choose semester--</option>
+                <div className="row d-flex justify-content-center">
 
-                    {allSemester.length > 0 && allSemester.map((semester, index) => (
-                        <option key={index} value={semester.semester_year_id}>
-                            --- {semester.semester_year_name} ---
-                        </option>
-                    ))}
-                </select>
+                    <div className="col-6">
+                        <select
+                            id="selectSemester"
+                            data-live-search="true"
+                            className="form-select border border-black mt-2"
+                            aria-label="Default select example"
+                            onChange={(e) => handleFetchSemester(e)}
+                            defaultValue={allSemester.length > 0 ? allSemester[allSemester.length - 1].semester_year_id : ''}
+                        >
+                            <option value=''>--Chọn học kỳ | Choose semester--</option>
+
+                            {allSemester.length > 0 && allSemester.map((semester, index) => (
+                                <option key={index} value={semester.semester_year_id}>
+                                    --- {semester.semester_year_name} ---
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
                 {infoSemester !== null ? (<ScheduleContent infoSemester={infoSemester} />
                 ) : (null)}
             </div>

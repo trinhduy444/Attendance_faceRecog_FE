@@ -19,4 +19,19 @@ export const teacherService = {
             throw err;
         }
     },
+    getAllTeachersByFacultyId: async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/teacher/getAllTeachersByFacultyId', {}, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+       
+            throw err;
+        }
+    },
 };

@@ -49,16 +49,9 @@ function AttendanceContent() {
                             </select>
                         </div>
                     </div>
-                    {/* <div className="col-5">
-                        <div className="form-group">
-                            <select id="selectSubject" className="form-select" data-live-search="true">
-                                <option defaultValue={'none'}>--Chọn môn học cần xem dữ liệu điểm danh--</option>
-                                <option value="2">Lập trình hướng đối tượng</option>
-                                <option value="3">Kiến trúc hướng dịch vụ</option>
-                                <option value="4">Mẫu thiết kế</option>
-                            </select>
-                        </div>
-                    </div> */}
+                    <div className="col-5">
+                       
+                    </div>
 
                 </div>
                 <div className="row mt-4">

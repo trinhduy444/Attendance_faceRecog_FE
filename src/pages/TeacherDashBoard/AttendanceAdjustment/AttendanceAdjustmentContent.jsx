@@ -239,7 +239,7 @@ function AttendanceAdjustmentContent({ role }) {
                     </div>
                 </>) : (null)}
                 <AttendanceAdjustmentTable attendanceData={filteredData} disabledTable={disabledTable} />
-                {filteredData.length > 15 ? (<a href="#topAdjustment" className='mt-2 bi bi-align-top btn btn-outline-primary'>Lên đầu trang</a>
+                {filteredData.length > 15 ? (<a href="#topAdjustment" className='mt-2 bi bi-align-top btn btn-outline-primary text-right'>Lên đầu trang</a>
                 ) : (null)}
             </div>
         </main>

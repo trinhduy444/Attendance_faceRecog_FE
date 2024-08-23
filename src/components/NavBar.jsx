@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from '../configs/firebaseConfig'
 function NavBar({ isNavBarVisible }) {
+    
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
     const user = useSelector(state => state.auth.user);
     const navigate = useNavigate();
@@ -47,8 +48,10 @@ function NavBar({ isNavBarVisible }) {
             });
             return arr;
         } catch (error) {
-            console.error("Error fetching user documents: ", error);
-            return [];
+            navigate("/error", {
+                state: { status: error.response.status || 500, message:"Error fetching user documents" }
+            })
+        
         }
     };
     useEffect(() => {
@@ -73,21 +76,6 @@ function NavBar({ isNavBarVisible }) {
             });
         }
     }
-    // useEffect(() => {
-    //     if (accessToken) {
-    //         const tokenExpiry = 10 * 60 * 1000;
-    //         const bufferTime = 10 * 1000;
-
-    //         const timeId = setTimeout(() => {
-    //             handleLogout();
-    //         }, tokenExpiry - bufferTime);
-
-    //         return () => clearTimeout(timeId);
-    //     }
-
-    // }, [accessToken])
-
-    // console.log("navBar");
     if (!isNavBarVisible) {
         return null;
     }

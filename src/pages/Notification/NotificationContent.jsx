@@ -119,7 +119,7 @@ function NotificationContent({ notifications }) {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="detailNotificationModalLabel">Chi tiết thông báo</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bbs-dismiss="modal" aria-lael="Close"></button>
                         </div>
                         <div className="modal-body">
                             <h2 className="d-flex justify-content-center text-primary">

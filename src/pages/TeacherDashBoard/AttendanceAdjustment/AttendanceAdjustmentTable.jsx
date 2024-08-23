@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import * as XLSX from "xlsx"
+
 import { attendanceService } from '../../../services/attendanceService';
 import { convertDay } from '../../../utils/convertDay';
 const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
@@ -9,7 +11,6 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
     const [inputTimer, setInputTimer] = useState(null);
 
     const [disabled, setDisabled] = useState(false);
-
     useEffect(() => {
         setTableData(attendanceData);
     }, [attendanceData]);
@@ -68,6 +69,52 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
         setAttendDetail({})
     }
 
+    // Export 
+    const handleExportToExcel = () => {
+        // Dữ liệu
+        const data = attendanceData.map(student => ({
+            'MSSV': student.username,
+            'Họ Và Tên': student.nickname,
+            'Trạng thái': student.attend_yn === true ? 'Có mặt' : 'Vắng',
+            'Giờ vào lớp': student.enter_time,
+            'Ghi chú': student.note
+        }));
+
+        // Define headers
+        const headers = [
+            'MSSV',
+            'Họ Và Tên',
+            'Trạng thái',
+            'Giờ vào lớp',
+            'Ghi chú'
+        ];
+
+        const ws = XLSX.utils.aoa_to_sheet([]);
+        XLSX.utils.sheet_add_aoa(ws, [[`Dữ liệu điểm danh môn ${attendanceData[0]?.course_name}, ngày: ${attendanceData[0].attend_date_dmy}`]], { origin: 'A1' });
+        XLSX.utils.sheet_add_aoa(ws, [headers], { origin: 'A2' });
+        XLSX.utils.sheet_add_json(ws, data, { origin: 'A3', skipHeader: true });
+
+        const columnWidths = [
+            { wch: 15 },
+            { wch: 30 },
+            { wch: 10 },
+            { wch: 10 },
+            { wch: 50 },
+
+        ];
+        ws['!cols'] = columnWidths;
+
+        // Merge cells for title
+        ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 6 } }];
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Dữ liệu điểm danh');
+
+        const fileName = `Dulieudiemdanh_${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+        XLSX.writeFile(wb, fileName);
+    };
+
     return (
         <div>
             {tableData.length > 0 ? (
@@ -100,9 +147,22 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
                     </tbody>
                     <tfoot>
                         <tr>
-                            <tr className='table-primary'>
-                                <th>Tổng: <b className='text-danger'>{tableData.length}</b></th>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th>
+                                    <button
+                                        className="btn btn-outline-success"
+                                        onClick={handleExportToExcel}
+
+                                    >
+                                        <i className="bi bi-box-arrow-up-right"></i> Xuất file (excel)
+                                    </button>
+                                </th>
+
                             </tr>
+
                         </tr>
                     </tfoot>
                 </table>

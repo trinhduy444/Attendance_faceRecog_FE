@@ -17,8 +17,8 @@ export const StudentManagement = () => {
             <div className="h-screen flex-grow-1">
                 <Header toggleNavBar={toggleNavBar} />
                 <main className="py-6 bg-surface-secondary">
-                        <StudentManagementContent />
-\                </main>
+                    <StudentManagementContent />
+                </main>
             </div>
         </div>
     )

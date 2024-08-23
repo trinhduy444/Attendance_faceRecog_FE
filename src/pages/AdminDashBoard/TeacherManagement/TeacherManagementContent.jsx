@@ -32,7 +32,7 @@ function TeacherManagementContent({ toggleNavBar }) {
         setCurrentUsers(showTeacher.slice(indexOfFirstUser, indexOfLastUser));
     }, [showTeacher, currentPage]);
 
-    
+
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
@@ -207,30 +207,56 @@ function TeacherManagementContent({ toggleNavBar }) {
     }
 
     const handleLockAccount = async (userId) => {
-        const response = await adminService.lockUserAccount(userId,2)
-        // console.log("lock",response);
-        console.log(response);
-        if (response.status === 200) {
-            Swal.fire("Thành công!", "Khóa tài khoản thành công.", "success")
-            fetchTeachers()
-            return;
-        } else {
-            Swal.fire("Thất bại!", "Khóa tài khoản thất bại", "error")
-            return;
+        const result = await Swal.fire({
+            title: 'Bạn có chắc chắn?',
+            text: "Bạn có muốn khóa tài khoản này không?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đồng ý, khóa!',
+            cancelButtonText: 'Hủy',
+        });
+
+        if (result.isConfirmed) {
+            const response = await adminService.lockUserAccount(userId, 2);
+            console.log(response);
+            if (response.status === 200) {
+                Swal.fire("Thành công!", "Khóa tài khoản thành công.", "success");
+                setViewTeacher(prevTeacher => ({
+                    ...prevTeacher,
+                    status: false,
+                }));
+                fetchTeachers();
+            } else {
+                Swal.fire("Thất bại!", "Khóa tài khoản thất bại", "error");
+            }
         }
     };
-    const handleUnLockAccount = async (userId) => {
-        const response = await adminService.unLockUserAccount(userId,2)
 
-        if (response.status === 200) {
-            Swal.fire("Thành công!", "Mở khóa tài khoản thành công.", "success")
-            fetchTeachers()
-            return;
-        } else {
-            Swal.fire("Thất bại!", "Mở khóa tài khoản thất bại", "error")
-            return;
+    const handleUnLockAccount = async (userId) => {
+        const result = await Swal.fire({
+            title: 'Bạn có chắc chắn?',
+            text: "Bạn có muốn mở khóa tài khoản này không?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đồng ý, mở khóa!',
+            cancelButtonText: 'Hủy',
+        });
+
+        if (result.isConfirmed) {
+            const response = await adminService.unLockUserAccount(userId, 2);
+            if (response.status === 200) {
+                Swal.fire("Thành công!", "Mở khóa tài khoản thành công.", "success");
+                setViewTeacher(prevTeacher => ({
+                    ...prevTeacher,
+                    status: true,
+                }));
+                fetchTeachers();
+            } else {
+                Swal.fire("Thất bại!", "Mở khóa tài khoản thất bại", "error");
+            }
         }
-    }
+    };
+
     return (
 
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
@@ -293,6 +319,8 @@ function TeacherManagementContent({ toggleNavBar }) {
                                         </th>
                                         <th scope="col" onClick={() => handleSortUser('gender')}>
                                             Giới tính {getSortIcon('gender')}</th>
+                                        <th scope="col" onClick={() => handleSortUser('status')}>
+                                            Trạng thái {getSortIcon('status')}</th>
                                         <th scope="col">Thao tác</th>
                                         <th></th>
                                     </tr>
@@ -307,6 +335,8 @@ function TeacherManagementContent({ toggleNavBar }) {
                                             <td>{item.faculty_name}</td>
                                             <td>{item.course_year}</td>
                                             {item.gender ? <td>Nam</td> : <td>Nữ</td>}
+                                            <td className={item.status ? "text-success" : "text-danger"}>{item.status ? "Hoạt động" : "Đã Khóa"}</td>
+
                                             <td><button type="button" className="btn btn-warning" onClick={() => handleViewTeacher(item)} data-bs-toggle="modal"
                                                 data-bs-target="#viewTeacherModel">Xem</button></td>                                        </tr>
                                     ))}
@@ -386,6 +416,7 @@ function TeacherManagementContent({ toggleNavBar }) {
                                     <ul className="list-unstyled mb-1-9 ms-3">
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">MSGV:</span> {viewTeacher?.username}</li>
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Giới tính:</span>{viewTeacher?.gender ? 'Nam' : 'Nữ'}</li>
+                                        <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Trạng thái tài khoản:</span>{viewTeacher?.status ? 'Bình thường' : 'Đã bị khóa'}</li>
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Email:</span><a href={`mailto:${viewTeacher?.email}`}>{viewTeacher?.email}</a> </li>
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Số điện thoại:</span>+{viewTeacher?.phone}</li>
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Địa chỉ:</span> Phường Tân Phong, TP. Hồ Chí Minh, Việt Nam</li>
@@ -393,15 +424,6 @@ function TeacherManagementContent({ toggleNavBar }) {
                                     </ul>
                                 </div>
                             </div>
-
-                            <div className="row p-2 border border-bottom-3 ">
-
-                                <label htmlFor="message" className="fw-bold">Gửi tin nhắn cho Giảng viên:</label>
-
-                                <textarea name="message" className="border border-black rounded p-2" id="messageText" rows="5" placeholder="Nhập tin nhắn..."></textarea>
-
-                            </div>
-
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>

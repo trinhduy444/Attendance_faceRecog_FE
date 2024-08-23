@@ -97,6 +97,13 @@ const headerLinks = {
             { path: '/request', label: 'Đơn yêu cầu', icon: 'bi bi-clipboard-data' },
         ]
     },
+    '/teacherInfo': {
+        title: 'Thông tin giảng viên',
+        links: [
+            { path: '/', label: 'Trang chủ', icon: 'bi bi-house' },
+            { path: '/teacherInfo', label: 'Thông tin giảng viên', icon:'bi bi-people' },
+        ]
+    },
 };
 
 function Header({ toggleNavBar }) {

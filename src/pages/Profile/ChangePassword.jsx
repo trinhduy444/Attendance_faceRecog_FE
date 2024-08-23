@@ -37,12 +37,16 @@ export const ChangePassword = () => {
             if (responeCheckPassword.status === 200) {
                 const responeChangePassword = await authService.changePassword(newPassword)
                 if (responeChangePassword.status === 201) {
-                    return Swal.fire({
+                    Swal.fire({
                         icon: 'success',
                         title: "Đổi mật khẩu thành công",
                         showConfirmButton: false,
                         timer: 1500
                     });
+                    setCurrentPassword('');
+                    setNewPassword('');
+                    setRepeatNewPassword('');
+                    return
                 }
                 return Swal.fire({
                     icon: 'error',
@@ -112,16 +116,16 @@ export const ChangePassword = () => {
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="currentPassword" className="form-label">Mật khẩu hiện tại:</label>
-                                        <input type="password" className="form-control" onChange={(e) => setCurrentPassword(e.target.value)} id="currentPassword" required autoComplete="current-password"
+                                        <input type="password" className="form-control" onChange={(e) => setCurrentPassword(e.target.value)} id="currentPassword" value={currentPassword} required autoComplete="current-password"
                                         />
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="newPassword" className="form-label">Mật khẩu mới:</label>
-                                        <input type="password" className="form-control" onChange={(e) => setNewPassword(e.target.value)} id="newPassword" required autoComplete="new-password" />
+                                        <input type="password" className="form-control" onChange={(e) => setNewPassword(e.target.value)} id="newPassword" value={newPassword} required autoComplete="new-password" />
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="repeatNewPassword" className="form-label">Nhập lại mật khẩu mới:</label>
-                                        <input type="password" className="form-control" onChange={(e) => setRepeatNewPassword(e.target.value)} id="repeatNewPassword" required autoComplete="repeat-new-password" />
+                                        <input type="password" className="form-control" onChange={(e) => setRepeatNewPassword(e.target.value)} id="repeatNewPassword" value={repeatNewPassword} required autoComplete="repeat-new-password" />
                                     </div>
                                     <button type="submit" className="btn btn-primary">Lưu mật khẩu</button>
                                 </form>

@@ -173,7 +173,6 @@ function ClassManagementContent({ toggleNavBar }) {
                                         <th scope="col">Tòa</th>
                                         <th scope="col">Số lượng tối đa</th>
                                         <th scope="col">Tầng</th>
-                                        <th scope="col">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
