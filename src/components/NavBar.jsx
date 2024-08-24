@@ -167,8 +167,8 @@ function NavBar({ isNavBarVisible }) {
                                             <li><a className="dropdown-item" href="/coursegroup"><i className="bi bi-people"></i> Nhóm học</a></li>
                                             <li><a className="dropdown-item" href="/attendanceData"><i className="bi bi-clipboard-data"></i> Quản lý dữ liệu điểm danh</a></li>
                                             <li><a className="dropdown-item" href="/attendance/adjustment"><i className="bi bi-clipboard-data"></i> Điều chỉnh dữ liệu điểm danh</a></li>
-                                            <li><a className="dropdown-item" href="/teacher/userManagement"><i className="bi bi-people"></i> Quản lý sinh viên</a></li>
-                                            <li><a className="dropdown-item" href="/attendance/scan"><i className="bi bi-clipboard-data">Điểm danh nhận diện khuôn mặt</i></a></li>
+                                            <li><a className="dropdown-item" href="/teacher/userManagement"><i className="bi bi-people"></i> Danh sách sinh viên</a></li>
+                                            {/* <li><a className="dropdown-item" href="/attendance/scan"><i className="bi bi-clipboard-data">Điểm danh nhận diện khuôn mặt</i></a></li> */}
                                         </ul>
                                     </li>
                                 ) : user.role_id === 1 ? (<>

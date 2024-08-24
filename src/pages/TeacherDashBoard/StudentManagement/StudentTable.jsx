@@ -5,6 +5,8 @@ import { sortArray } from "../../../utils/sortArray";
 import Pagination from "../../AdminDashBoard/UserManagement/Pagination";
 import Swal from "sweetalert2";
 import { teacherService } from "../../../services/teacherService";
+import Chart2 from "../Chart/Chart2";
+import AttendanceChart from "../Chart/AttendanceChart";
 function StudentTable({ studentsData, courseName }) {
     const [currentUsers, setCurrentUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -13,9 +15,32 @@ function StudentTable({ studentsData, courseName }) {
         title: "",
         content: "",
     });
+    const [chartData, setChartData] = useState({
+        banData: [],
+        genderData: []
+    })
     const usersPerPage = 10;
     // console.log("cn", courseName)
     // console.log(studentsData);
+    const calculateBanAndNormalStudents = (studentsData) => {
+        const banCount = studentsData.filter(student => student.ban_yn === true).length;
+        const normalCount = studentsData.filter(student => student.ban_yn === false).length;
+        const maleCount = studentsData.filter(student => student.gender === true).length;
+        const femaleCount = studentsData.filter(student => student.gender === false).length;
+        const banData = [
+            { name: 'ban', value: banCount },
+            { name: 'normal', value: normalCount },
+        ];
+
+        const genderData = [
+            { name: 'male', value: maleCount },
+            { name: 'female', value: femaleCount },
+        ];
+        setChartData({
+            banData: banData,
+            genderData: genderData
+        });
+    };
     //Sort
     const [lastSortedColumn, setLastSortedColumn] = useState({ key: '', ascending: true });
 
@@ -25,6 +50,7 @@ function StudentTable({ studentsData, courseName }) {
 
     useEffect(() => {
         // Tính toán các chỉ số của trang hiện tại
+        calculateBanAndNormalStudents(studentsData)
         const indexOfLastUser = currentPage * usersPerPage;
         const indexOfFirstUser = indexOfLastUser - usersPerPage;
 
@@ -237,7 +263,7 @@ function StudentTable({ studentsData, courseName }) {
                     </table>
                     <div className="card-footer border-0 py-5">
                         <div className="row">
-                            <div className="col-8">
+                            <div className="col-6">
                                 <span className="text-muted text-sm">
                                     Hiển thị {currentUsers.length} sinh viên trong số <b className="text-danger">{studentsData.length}</b> sinh viên
                                 </span>
@@ -261,6 +287,17 @@ function StudentTable({ studentsData, courseName }) {
 
                                 <button
                                     type="button"
+                                    className="btn btn-outline-info"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#statistical"
+                                >
+                                    <i className="bi bi-bar-chart"></i> Thống kê
+                                </button>
+                            </div>
+                            <div className="col-2 d-flex justify-content-end">
+
+                                <button
+                                    type="button"
                                     className="btn btn-outline-warning"
                                     data-bs-toggle="modal"
                                     data-bs-target="#sendMail"
@@ -270,6 +307,47 @@ function StudentTable({ studentsData, courseName }) {
                             </div>
                         </div>
 
+                    </div>
+                </div>
+            </div>
+            <div className="modal fade" id="statistical" tabIndex="-1"
+                aria-labelledby="statistical" aria-hidden="true">
+                <div className="modal-dialog modal-xl">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="statistical">Thống kê  </h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="row text-center">
+                                <div className="col-6">
+                                    <Chart2 data={chartData?.banData} type="pie" />
+                                    <h4>Biểu đồ Pie Chart thể hiện tình trạng sinh viên trong lớp</h4>
+                                </div>
+                                <div className="col-6">
+                                    <Chart2 data={chartData?.banData} type="bar" />
+                                    <h4>Biểu đồ Bar Chart thể hiện tình trạng sinh viên trong lớp</h4>
+                                </div>
+                            </div>
+
+                            <div className="row text-center mt-2">
+                                <div className="col-6">
+                                    <Chart2 data={chartData?.genderData} type="pie" />
+                                    <h4>Biểu đồ Pie Chart thể hiện giới tính sinh viên trong lớp</h4>
+                                </div>
+                                <div className="col-6">
+                                    <Chart2 data={chartData?.genderData} type="bar" />
+                                    <h4>Biểu đồ Bar Chart thể hiện giới tính sinh viên trong lớp</h4>
+                                </div>
+                            </div>
+
+                            {/* <Chart2 data={heatmapData} type="heatmap" /> */}
+
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" >Đóng</button>
+
+                        </div>
                     </div>
                 </div>
             </div>

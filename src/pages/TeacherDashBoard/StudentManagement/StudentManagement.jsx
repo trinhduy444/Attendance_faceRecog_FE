@@ -5,7 +5,7 @@ import StudentManagementContent from "./StudentManagementContent"
 export const StudentManagement = () => {
     const [isNavBarVisible, setIsNavBarVisible] = useState(false);
     useEffect(() => {
-        document.title = "Quản lý sinh viên"
+        document.title = "Danh sách sinh viên"
     }, [])
     const toggleNavBar = () => {
         setIsNavBarVisible(!isNavBarVisible);

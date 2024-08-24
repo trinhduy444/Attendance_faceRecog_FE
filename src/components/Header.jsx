@@ -84,14 +84,14 @@ const headerLinks = {
         ]
     },
     '/teacher/userManagement': {
-        title: 'Quản lý sinh viên',
+        title: 'Danh sách sinh viên',
         links: [
             { path: '/', label: 'Trang chủ', icon: 'bi bi-house' },
-            { path: '/teacher/userManagement', label: 'Quản lý sinh viên', icon: 'bi bi-people' },
+            { path: '/teacher/userManagement', label: 'Danh sách sinh viên', icon: 'bi bi-people' },
         ]
     },
     '/request': {
-        title: 'Yêu cầu điểm danh',
+        title: 'Đơn yêu cầu',
         links: [
             { path: '/', label: 'Trang chủ', icon: 'bi bi-house' },
             { path: '/request', label: 'Đơn yêu cầu', icon: 'bi bi-clipboard-data' },

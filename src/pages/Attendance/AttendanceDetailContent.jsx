@@ -13,7 +13,8 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
     const [attendanceInfo, setAttendanceInfo] = useState([]);
     const [attendDetail, setAttendDetail] = useState({});
     const [requestContent, setRequestContent] = useState({});
-    
+    const [selectedImageFile, setSelectedImageFile] = useState(null);
+
     useEffect(() => {
         fetchUserInfo()
         fetchCourseGroupInfo(courseGroupId)
@@ -24,7 +25,7 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
         const response = await attendanceService.getAttendanceHaveUserId(studentId, course_group_id);
         if (response.status === 200) {
             setAttendanceInfo(response.data.data);
-        }else {
+        } else {
             Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
             return
         }
@@ -36,7 +37,7 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
         const response = await userService.getSomeinfo();
         if (response.status === 200) {
             setUserInfo(response.metadata)
-        }else {
+        } else {
             Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
             return
         }
@@ -53,18 +54,18 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
         const response = await attendanceService.getAttendanceDetail(userId, courseGroupId, attenDate)
         if (response.status === 200) {
             setAttendDetail(response.data.metadata)
-        }else {
+        } else {
             Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
             return
         }
     }
-    
+
     const handleCloseModel = () => {
         setAttendDetail({})
     }
 
     const setContent = (content) => {
-        setRequestContent((requestContent) => ({...requestContent, content: content}));
+        setRequestContent((requestContent) => ({ ...requestContent, content: content }));
     }
 
     // Handle show attendance request modal
@@ -85,13 +86,56 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
 
     // Create attendance request
     const handleCreateAttendanceRequest = async () => {
-        const response = await requestService.createAttendanceRequest(requestContent);
-        if (response.status === 201) {
-            closeModalButtonRef.current.click();
-            Swal.fire('Thành công!', 'Gửi yêu cầu thành công', 'success', 1500);
-        }
-    }
+        try {
+            Swal.fire({
+                title: 'Đang gửi yêu cầu...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+            });
 
+            const response = await requestService.createAttendanceRequest(requestContent);
+
+            if (response.status === 201) {
+                const requestId = response.data.data.request_id;
+
+                if (selectedImageFile) {
+                    await requestService.uploadImageRequest(requestId, selectedImageFile);
+                }
+
+                closeModalButtonRef.current.click();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: 'Gửi yêu cầu thành công',
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+            } else {
+                Swal.fire('Thất bại!', 'Có lỗi xảy ra, vui lòng thử lại sau.', 'error');
+                return;
+            }
+        } catch (error) {
+            Swal.fire('Thất bại!', 'Bạn đã tạo đơn khiếu nại cho ngày này rồi.', 'error');
+        }
+    };
+
+    const displaySelectedImage = (event, imageId) => {
+        const file = event.target.files[0];
+        setSelectedImageFile(file); // Lưu file vào state
+        const reader = new FileReader();
+        reader.onload = () => {
+            document.getElementById(imageId).src = reader.result; // Hiển thị hình ảnh đã chọn
+        };
+        reader.readAsDataURL(file);
+    };
+    function handleCloseModelSendRequest(){
+        console.log("vo")
+        setSelectedImageFile(null)
+        setRequestContent({})
+    }
     return (
         <main className="py-2 bg-surface-secondary">
             <div className="container">
@@ -272,6 +316,36 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
                             <div className="row mt-3">
                                 <div className="row">
                                     <div className="col-8">
+                                        <label htmlFor="imageRequest" className='fw-bold contentLabel'>Chọn hình ảnh minh chứng:</label>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="mb-4 d-flex justify-content-center">
+                                        <img
+                                            id="selectedImage"
+                                            src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg"
+                                            alt="example placeholder"
+                                            style={{ width: '300px' }}
+                                        />
+                                    </div>
+                                    <div className="d-flex justify-content-center">
+                                        <div className="btn btn-primary btn-rounded" data-mdb-ripple-init>
+                                            <label className="form-label text-white m-1" htmlFor="customFile1">
+                                                Choose file
+                                            </label>
+                                            <input
+                                                type="file"
+                                                className="form-control d-none"
+                                                id="customFile1"
+                                                accept=".png, .jpg, .jpeg"
+                                                onChange={(event) => displaySelectedImage(event, 'selectedImage')}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="row">
+                                    <div className="col-8">
                                         <label htmlFor="contentPost" className='fw-bold contentLabel'>Nhập nội dung yêu cầu:</label>
                                     </div>
                                     {/* <div className="col-4"> <i>1/1 ký tự</i></div> */}
@@ -293,11 +367,12 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
                                         }}
                                     />
                                 </div>
+
                             </div>
                         </div>
                         <div className="modal-footer d-flex justify-content-between">
-                            <button type="button" className="btn btn-primary" onClick={() => {handleCreateAttendanceRequest()}}>Gửi</button>
-                            <button type="button" className="btn btn-secondary" ref={closeModalButtonRef} data-bs-dismiss="modal">Đóng</button>
+                            <button type="button" className="btn btn-primary" onClick={() => { handleCreateAttendanceRequest() }}>Gửi</button>
+                            <button type="button" className="btn btn-secondary" ref={closeModalButtonRef} onClick={handleCloseModelSendRequest} data-bs-dismiss="modal">Đóng</button>
                         </div>
                     </div>
                 </div>

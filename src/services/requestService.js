@@ -67,5 +67,24 @@ export const requestService = {
             console.error(err);
             throw err;
         }
-    }
+    },
+    uploadImageRequest: async (request_id, image) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const formData = new FormData();
+            formData.append('image', image);
+
+            const response = await axiosConfig.post(`/requests/uploadImageRequest/${request_id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+            return response;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+
 };

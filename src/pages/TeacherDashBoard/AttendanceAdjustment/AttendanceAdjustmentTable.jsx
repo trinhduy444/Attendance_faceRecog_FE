@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as XLSX from "xlsx"
-
+import Chart2 from '../Chart/Chart2'
 import { attendanceService } from '../../../services/attendanceService';
 import { convertDay } from '../../../utils/convertDay';
 const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
@@ -18,7 +18,18 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
     useEffect(() => {
         setDisabled(disabledTable);
     }, [disabledTable])
-
+    const barAndPieData = [
+        { name: 'Present', value: 40 },
+        { name: 'Late', value: 15 },
+        { name: 'Absent', value: 5 }
+    ];
+    const data = [
+        { name: 'Week 1', present: 40, late: 15, absent: 5 },
+        { name: 'Week 2', present: 35, late: 10, absent: 10 },
+        { name: 'Week 3', present: 50, late: 5, absent: 5 },
+        { name: 'Week 4', present: 45, late: 10, absent: 5 },
+      ];
+      
     const handleInputChange = (student, index, e) => {
         const o = e.target;
         let requestBody = {
@@ -147,21 +158,28 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
                     </tbody>
                     <tfoot>
                         <tr>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th>
-                                    <button
-                                        className="btn btn-outline-success"
-                                        onClick={handleExportToExcel}
 
-                                    >
-                                        <i className="bi bi-box-arrow-up-right"></i> Xuất file (excel)
-                                    </button>
-                                </th>
+                            <th>
 
-                            </tr>
+                            </th>
+                            <th>
+                                <button
+                                    className="btn btn-outline-success"
+                                    onClick={handleExportToExcel}
+
+                                >
+                                    <i className="bi bi-box-arrow-up-right"></i> Xuất file (excel)
+                                </button>
+                            </th>
+                            <th>
+                                <button
+                                    className="btn btn-outline-info "
+                                    data-bs-toggle='modal'
+                                    data-bs-target='#statistical'
+                                >
+                                    <i className="bi bi-bar-chart"></i> Xem thống kê
+                                </button>
+                            </th>
 
                         </tr>
                     </tfoot>
@@ -218,6 +236,30 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseModel}>Đóng</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* <!-- Modal --> */}
+            <div className="modal fade" id="statistical" tabIndex="-1"
+                aria-labelledby="statistical" aria-hidden="true">
+                <div className="modal-dialog modal-xl">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="statistical">Thống kê dữ liệu điểm danh <i className='text-info'>{attendDetail?.nickname}</i> </h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <Chart2 data={data} type="bar" />
+
+                            <Chart2 data={barAndPieData} type="pie" />
+
+                            {/* <Chart2 data={heatmapData} type="heatmap" /> */}
+
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" >Đóng</button>
 
                         </div>
                     </div>
