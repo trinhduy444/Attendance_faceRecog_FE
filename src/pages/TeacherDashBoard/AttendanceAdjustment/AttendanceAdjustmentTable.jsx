@@ -37,34 +37,47 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
             courseGroupId: student.course_group_id,
             attendDate: student.attend_date,
             attendYn: student.attend_yn,
+            lateYn: student.late_yn,
             enterTime: student.enter_time,
             note: student.note
         }
 
         const data = [...tableData];
-        if (o.name === 'note') {
-            // Pause sent data to server if user still inputing
-            if (inputIndex === index) clearTimeout(inputTimer);
-            setInputIndex(index);
+        switch (o.name) {
+            case 'note':
+                // Pause sent data to server if user still inputing
+                if (inputIndex === index) clearTimeout(inputTimer);
+                setInputIndex(index);
 
-            requestBody.note = o.value;
-            data[index].note = o.value;
+                requestBody.note = o.value;
+                data[index].note = o.value;
 
-            const newTimer = setTimeout(() => {
+                const newTimer = setTimeout(() => {
+                    setTableData(data);
+                    handleUpdateAttendance(requestBody);
+                }, 500);
+                setInputTimer(newTimer);
+                break;
+            case 'attend_yn':
+                requestBody.attendYn = o.checked;
+                data[index].attend_yn = o.checked;
                 setTableData(data);
                 handleUpdateAttendance(requestBody);
-            }, 500);
-            setInputTimer(newTimer);
-        } else if (o.name === 'attend_yn') {
-            requestBody.attendYn = o.checked;
-            data[index].attend_yn = o.checked;
-            setTableData(data);
-            handleUpdateAttendance(requestBody);
+                break;
+            case 'late_yn':
+                requestBody.lateYn = o.checked;
+                data[index].late_yn = o.checked;
+                setTableData(data);
+                handleUpdateAttendance(requestBody);
+                break;
+            default:
+                break;
         }
     }
 
     // Handle update attendance adjustment to server
     const handleUpdateAttendance = async (requestBody) => {
+        console.log(requestBody)
         attendanceService.updateAttendance(requestBody);
     }
 
@@ -73,7 +86,6 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
         const response = await attendanceService.getAttendanceDetail(userId, courseGroupId, attenDate)
         if (response.status === 200) {
             setAttendDetail(response.data.metadata)
-            console.log(response.data.metadata)
         }
     }
     const handleCloseModel = () => {
@@ -137,6 +149,7 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
                             <th scope="col" className='fw-bold'>Họ và tên</th>
                             <th scope="col" className='fw-bold'>Giờ vào lớp</th>
                             <th scope="col" className='fw-bold'>Có mặt</th>
+                            <th scope="col" className='fw-bold'>Trễ</th>
                             <th scope="col" className='fw-bold'>Ghi chú</th>
                             <th scope="col" className='fw-bold'>Xem chi tiết</th>
                         </tr>
@@ -150,6 +163,7 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
                                     <td>{student.nickname}</td>
                                     <td>{student.enter_time}</td>
                                     <td><input name='attend_yn' type="checkbox" disabled={disabled} checked={student.attend_yn} onChange={(e) => handleInputChange(student, index, e)}></input></td>
+                                    <td><input name='late_yn' type="checkbox" disabled={disabled} checked={student.late_yn} onChange={(e) => handleInputChange(student, index, e)}></input></td>
                                     <td><input name='note' disabled={disabled} value={student.note} onChange={(e) => handleInputChange(student, index, e)}></input></td>
                                     <td><a type='button' className="bi bi-view-stacked" data-bs-toggle="modal" data-bs-target="#detailAttendanceModal" onClick={() => onViewDetail(student.student_id, student.course_group_id, student.attend_date)}> Xem</a></td>
                                 </tr>
@@ -158,16 +172,12 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
                     </tbody>
                     <tfoot>
                         <tr>
-
-                            <th>
-
-                            </th>
+                            <th></th>
                             <th>
                                 <button
                                     className="btn btn-outline-success"
                                     onClick={handleExportToExcel}
-
-                                >
+                                 >
                                     <i className="bi bi-box-arrow-up-right"></i> Xuất file (excel)
                                 </button>
                             </th>

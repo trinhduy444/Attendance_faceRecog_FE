@@ -96,9 +96,6 @@ function AttendanceAdjustmentContent({ role }) {
     }
     // Handle finish update data
     const handleFinishUpdate = () => {
-        // setAttendanceData([]);
-        // setShowButton(false);
-        // setDisableFilter(false);
         Swal.fire({
             title: "Bạn có muốn gửi mail cảnh tới sinh viên?",
             showDenyButton: true,
@@ -114,7 +111,6 @@ function AttendanceAdjustmentContent({ role }) {
                     Swal.fire('Thành công!', 'Điều chỉnh dữ liệu và gửi mail điểm danh thành công', 'success', 1500)
                 } else {
                     Swal.fire('Thất bại!', 'Điều chỉnh dữ liệu và gửi mail thất bại, vui lòng thử lại', 'error', 1500)
-
                 }
             } else if (result.isDenied) {
                 const response = await attendanceService.updateTotalAbsentAllCourseGroup(selectedGroup, false)
@@ -129,7 +125,6 @@ function AttendanceAdjustmentContent({ role }) {
         setShowButton(false);
         setDisableFilter(false);
         setDisabledTable(true);
-        // Swal.fire('Thành công!', 'Chỉnh sửa dữ liệu điểm danh thành công', 'success', 1500)
     };
 
     // Handle repull attendance data from raw data
