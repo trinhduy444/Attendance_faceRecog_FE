@@ -32,6 +32,7 @@ import { Schedule } from './pages/Schedule/Schedule';
 import { CourseGroup } from './pages/CourseGroup/CourseGroup';
 import { CourseGroupDetail } from './pages/CourseGroup/CourseGroupDetail';
 import { ChatRealTime } from './pages/ChatRealTime/ChatRealTime';
+import { AttendanceRequest } from './pages/AttendanceRequest/AttendanceRequest';
 import { TeacherInfo } from './pages/TeacherInfo/TeacherInfo';
 //Teacher
 import { AttendanceManagement } from './pages/TeacherDashBoard/Attendance/AttendanceManagement';
@@ -87,9 +88,9 @@ root.render(
             <Route path="/coursegroup" element={<ProtectedRoute element={<CourseGroup />} />} />
             <Route path="/coursegroup/detail/:course_group" element={<ProtectedRoute element={<CourseGroupDetail />} />} />
             <Route path="/chat" element={<ProtectedRoute element={<ChatRealTime />} />} />
+            <Route path="/request" element={<ProtectedRoute element={<AttendanceRequest />} />} />
             <Route path="/news" element={<ProtectedRoute element={<News />} />} />
             <Route path="/teacherInfo" element={<ProtectedRoute element={<TeacherInfo />} />} />
-
 
             <Route path="/createNotify" element={<ProtectedRoute type={4} element={<CreateNotify />} />} />
             <Route path="/attendanceData" element={<ProtectedRoute type={2} element={<AttendanceManagement />} />} />
@@ -97,7 +98,6 @@ root.render(
             <Route path="/attendanceData/detail/:student_id/:course_group_id" element={<ProtectedRoute type={4} element={<AttendanceDetailManagement />} />} />
             <Route path="/attendRecog/:course_group_id" element={<ProtectedRoute type={4} element={<RecogFace />} />} />
             <Route path="/teacher/userManagement" element={<ProtectedRoute type={4} element={<StudentManagement />} />} />
-
 
             <Route path="/admin/attendanceManagement" element={<ProtectedRoute type={1} element={<AttendanceManagement />} />} />
             <Route path="/admin/userManagement" element={<ProtectedRoute type={1} element={<UserManagement />} />} />

@@ -147,10 +147,10 @@ function NavBar({ isNavBarVisible }) {
                                             <i className="bi bi-activity"></i> Hoạt động
                                         </a>
                                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-
+                                            <li><a className="dropdown-item" href="/request"><i className="bi bi-clipboard-data"></i> Đơn yêu cầu</a></li>
                                             <li><a className="dropdown-item" href="/notification"><i className="bi bi-bell"></i> Thông báo</a></li>
                                             <li><a className="dropdown-item" href="/schedule"><i className="bi bi-calendar2-week"></i> Thời khóa biểu</a></li>
-                                            <li><a className="dropdown-item" href="#"><i className="bi bi-newspaper"></i> Tin tức</a></li>
+                                            {/* <li><a className="dropdown-item" href="#"><i className="bi bi-newspaper"></i> Tin tức</a></li> */}
                                             <li><a className="dropdown-item" href="/attendance"><i className="bi bi-clipboard-data"></i> Dữ liệu điểm danh</a></li>
                                             <li><a className="dropdown-item" href="/coursegroup"><i className="bi bi-people"></i> Nhóm học</a></li>
                                         </ul>
@@ -162,6 +162,7 @@ function NavBar({ isNavBarVisible }) {
                                             <i className="bi bi-activity"></i> Hoạt động
                                         </a>
                                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                            <li><a className="dropdown-item" href="/request"><i className="bi bi-clipboard-data"></i> Đơn yêu cầu</a></li>
                                             <li><a className="dropdown-item" href="/notification"><i className="bi bi-bell"></i> Thông báo</a></li>
                                             <li><a className="dropdown-item" href="/coursegroup"><i className="bi bi-people"></i> Nhóm học</a></li>
                                             <li><a className="dropdown-item" href="/attendanceData"><i className="bi bi-clipboard-data"></i> Quản lý dữ liệu điểm danh</a></li>
