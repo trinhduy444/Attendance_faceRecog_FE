@@ -49,7 +49,7 @@ function HomeContent() {
     return (
         <main className="bg-surface-secondary">
             <div className="container">
-                <div className="row ">
+                <div className="row mt-1">
                     <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
                         <div className="carousel-indicators">
                             <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0"
@@ -63,22 +63,19 @@ function HomeContent() {
                             <div className="carousel-item active">
                                 <img src={slide1} className="img-fluid" alt="..." />
                                 <div className="carousel-caption d-none d-md-block">
-                                    <h5>First slide label</h5>
-                                    <p>Coppyright by SCHOOL'S NAME UNIVERSITY</p>
+                                    <p>Coppyright by TON DUC THANG UNIVERSITY</p>
                                 </div>
                             </div>
                             <div className="carousel-item">
                                 <img src={slide2} className="img-fluid w-100" alt="..." />
                                 <div className="carousel-caption d-none d-md-block">
-                                    <h5>Second slide label</h5>
-                                    <p>Some representative placeholder content for the second slide.</p>
+                                    <p>Coppyright by TON DUC THANG UNIVERSITY</p>
                                 </div>
                             </div>
                             <div className="carousel-item">
                                 <img src={slide3} className="img-fluid" alt="..." />
                                 <div className="carousel-caption d-none d-md-block">
-                                    <h5>Third slide label</h5>
-                                    <p>Some representative placeholder content for the third slide.</p>
+                                    <p>Coppyright by TON DUC THANG UNIVERSITY</p>
                                 </div>
                             </div>
                         </div>
@@ -112,12 +109,7 @@ function HomeContent() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-2 mb-0 text-sm">
-                                        <span className="badge badge-pill bg-soft-success text-success me-2">
-                                            <i className="bi bi-arrow-up me-1"></i>80%
-                                        </span>
-                                        <span className="text-nowrap text-xs text-muted">Since last month</span>
-                                    </div>
+                    
                                 </div>
                             </div>
                         </div>
@@ -137,12 +129,7 @@ function HomeContent() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-2 mb-0 text-sm">
-                                        <span className="badge badge-pill bg-soft-success text-success me-2">
-                                            <i className="bi bi-arrow-up me-1"></i>37%
-                                        </span>
-                                        <span className="text-nowrap text-xs text-muted">Since last month</span>
-                                    </div>
+                      
                                 </div>
                             </div>
                         </div>
@@ -161,12 +148,7 @@ function HomeContent() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-2 mb-0 text-sm">
-                                        <span className="badge badge-pill bg-soft-danger text-danger me-2">
-                                            <i className="bi bi-arrow-down me-1"></i>-5%
-                                        </span>
-                                        <span className="text-nowrap text-xs text-muted">Since last month</span>
-                                    </div>
+                 
                                 </div>
                             </div>
                         </div>
@@ -185,12 +167,7 @@ function HomeContent() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-2 mb-0 text-sm">
-                                        <span className="badge badge-pill bg-soft-success text-success me-2">
-                                            <i className="bi bi-arrow-up me-1"></i>10%
-                                        </span>
-                                        <span className="text-nowrap text-xs text-muted">Since last month</span>
-                                    </div>
+                               
                                 </div>
                             </div>
                         </div>
@@ -210,12 +187,7 @@ function HomeContent() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-2 mb-0 text-sm">
-                                        <span className="badge badge-pill bg-soft-success text-success me-2">
-                                            <i className="bi bi-arrow-up me-1"></i>37%
-                                        </span>
-                                        <span className="text-nowrap text-xs text-muted">Since last month</span>
-                                    </div>
+       
                                 </div>
                             </div>
                         </div>
@@ -233,12 +205,7 @@ function HomeContent() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-2 mb-0 text-sm">
-                                        <span className="badge badge-pill bg-soft-success text-success me-2">
-                                            <i className="bi bi-arrow-up me-1"></i>80%
-                                        </span>
-                                        <span className="text-nowrap text-xs text-muted">Since last month</span>
-                                    </div>
+                
                                 </div>
                             </div>
                         </div>
@@ -258,12 +225,7 @@ function HomeContent() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-2 mb-0 text-sm">
-                                        <span className="badge badge-pill bg-soft-danger text-danger me-2">
-                                            <i className="bi bi-arrow-down me-1"></i>-5%
-                                        </span>
-                                        <span className="text-nowrap text-xs text-muted">Since last month</span>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -283,12 +245,7 @@ function HomeContent() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="mt-2 mb-0 text-sm">
-                                        <span className="badge badge-pill bg-soft-success text-success me-2">
-                                            <i className="bi bi-arrow-up me-1"></i>10%
-                                        </span>
-                                        <span className="text-nowrap text-xs text-muted">Since last month</span>
-                                    </div>
+   
                                 </div>
                             </div>
                         </div>

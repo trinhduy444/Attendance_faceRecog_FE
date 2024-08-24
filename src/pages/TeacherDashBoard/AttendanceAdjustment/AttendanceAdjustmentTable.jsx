@@ -11,25 +11,38 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
     const [inputTimer, setInputTimer] = useState(null);
 
     const [disabled, setDisabled] = useState(false);
+    const [barAndPieData, setBarAndPieData] = useState([]);
+
     useEffect(() => {
         setTableData(attendanceData);
+
+        const statusCounts = attendanceData.reduce((counts, user) => {
+            if (user.attend_yn) {
+                if (user.late_yn) {
+                    counts.late += 1;
+                } else {
+                    counts.present += 1;
+                }
+            } else {
+                counts.absent += 1;
+            }
+            return counts;
+        }, { present: 0, late: 0, absent: 0 });
+
+        // Prepare data for the chart
+        const barAndPieData = [
+            { name: 'Present', value: statusCounts.present },
+            { name: 'Late', value: statusCounts.late },
+            { name: 'Absent', value: statusCounts.absent },
+        ];
+        setBarAndPieData(barAndPieData);
+
+
     }, [attendanceData]);
 
     useEffect(() => {
         setDisabled(disabledTable);
     }, [disabledTable])
-    const barAndPieData = [
-        { name: 'Present', value: 40 },
-        { name: 'Late', value: 15 },
-        { name: 'Absent', value: 5 }
-    ];
-    const data = [
-        { name: 'Week 1', present: 40, late: 15, absent: 5 },
-        { name: 'Week 2', present: 35, late: 10, absent: 10 },
-        { name: 'Week 3', present: 50, late: 5, absent: 5 },
-        { name: 'Week 4', present: 45, late: 10, absent: 5 },
-      ];
-      
     const handleInputChange = (student, index, e) => {
         const o = e.target;
         let requestBody = {
@@ -177,7 +190,7 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
                                 <button
                                     className="btn btn-outline-success"
                                     onClick={handleExportToExcel}
-                                 >
+                                >
                                     <i className="bi bi-box-arrow-up-right"></i> Xuất file (excel)
                                 </button>
                             </th>
@@ -257,13 +270,19 @@ const AttendanceAdjustmentTable = ({ attendanceData, disabledTable }) => {
                 <div className="modal-dialog modal-xl">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title" id="statistical">Thống kê dữ liệu điểm danh <i className='text-info'>{attendDetail?.nickname}</i> </h5>
+                            <h5 className="modal-title" id="statistical">Thống kê dữ liệu điểm danh </h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <Chart2 data={data} type="bar" />
+                            <div className="row text-center">
+                                <Chart2 data={barAndPieData} type="bar" />
+                                <h4>Biểu đổ Bar Chart biểu diễn tình trạng sinh viên đi học</h4>
+                            </div>
+                            <div className="row text-center">
+                                <Chart2 data={barAndPieData} type="pie" />
+                                <h4>Biểu đổ Pie Chart biểu diễn tình trạng sinh viên đi học</h4>
+                            </div>
 
-                            <Chart2 data={barAndPieData} type="pie" />
 
                             {/* <Chart2 data={heatmapData} type="heatmap" /> */}
 

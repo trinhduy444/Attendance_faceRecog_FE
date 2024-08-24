@@ -131,7 +131,7 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
         };
         reader.readAsDataURL(file);
     };
-    function handleCloseModelSendRequest(){
+    function handleCloseModelSendRequest() {
         console.log("vo")
         setSelectedImageFile(null)
         setRequestContent({})
@@ -220,8 +220,21 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
                                 <tr key={index}>
                                     <th scope="row">{index + 1}</th>
                                     <td>{convertDay(attend.attend_date)}</td>
-                                    <td className={attend.attend_yn === true ? 'text-success' : 'text-danger'}>
-                                        {attend.attend_yn === true ? 'Có mặt' : 'Vắng'}
+                                    <td
+                                        className={
+                                            attend.attend_yn === true
+                                                ? attend.late_yn === true
+                                                    ? 'text-warning'
+                                                    : 'text-success'
+                                                : 'text-danger' 
+                                        }
+                                    >
+                                        {attend.attend_yn === true
+                                            ? attend.late_yn === true
+                                                ? 'Trễ' 
+                                                : 'Có mặt'
+                                            : 'Vắng'
+                                        }
                                     </td>
                                     <td><a className="card-link" type="button" data-bs-toggle="modal" data-bs-target="#detailAttendanceModal" onClick={() => handleVieweDetails(attend.attend_date)}>Xem chi tiết</a></td>
                                     <td><button type="button" data-bs-toggle="modal" data-bs-target="#attendanceRequestModal" className='btn btn-danger' disabled={attend.attend_yn} onClick={() => handleViewCreateAttendanceRequest(attend.attend_date)}><i className="bi bi-flag"></i> Khiếu nại</button></td>

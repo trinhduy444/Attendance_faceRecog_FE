@@ -53,7 +53,7 @@ function AttendanceAdjustmentContent({ role }) {
             }
         }
     }
-    console.log(attendanceData)
+    // console.log(attendanceData)
     // Handle input
     const handleSelectChange = (event) => {
         setSelectedGroup(event.target.value);

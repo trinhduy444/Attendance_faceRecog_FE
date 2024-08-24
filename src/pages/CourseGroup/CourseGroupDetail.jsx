@@ -44,7 +44,7 @@ export const CourseGroupDetail = () => {
                         <div className="mb-npx">
                             <div className="row align-items-center">
                                 <div className="col-sm-6 col-12 mb-4 mb-sm-0">
-                                    <h1 className="h2 mb-0 ls-tight">
+                                    <h1 className="h2 mb-0 ls-tight" id="nameUni">
                                         <NavBarToggle toggleNavBar={toggleNavBar} />Chi tiết nhóm học
                                     </h1>
                                 </div>

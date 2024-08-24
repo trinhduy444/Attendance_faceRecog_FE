@@ -27,13 +27,17 @@ const AttendanceTable = ({ data, courseGroupId }) => {
     }
     const groupDataByStudent = (data) => {
         const grouped = data.reduce((acc, curr) => {
-            const { student_id, username, nickname, attend_date, attend_yn } = curr;
+            const { student_id, username, nickname, attend_date, attend_yn, late_yn } = curr;
             const date = new Date(attend_date).toLocaleDateString();
 
             if (!acc[username]) {
                 acc[username] = { student_id, nickname, attendance: {} };
             }
-            acc[username].attendance[date] = attend_yn === undefined ? 'Không có dữ liệu' : attend_yn === true ? 'Đã điểm danh' : 'Vắng';
+            acc[username].attendance[date] = attend_yn === undefined
+                ? 'Không có dữ liệu'
+                : attend_yn === true
+                    ? (late_yn === true ? 'Trễ' : 'Đã điểm danh')
+                    : 'Vắng';
             return acc;
         }, {});
 
@@ -52,7 +56,17 @@ const AttendanceTable = ({ data, courseGroupId }) => {
         // Dữ liệu
         const data = groupedData.map((user, index) => {
             const attendanceData = dates.reduce((acc, date) => {
-                acc[date] = user.attendance[date] === 'Đã điểm danh' ? 'Có mặt' : 'Vắng';
+                const attendanceStatus = user.attendance[date];
+
+                // Xác định trạng thái dựa trên attend_yn và late_yn
+                acc[date] = attendanceStatus === undefined
+                    ? 'Không có dữ liệu'
+                    : attendanceStatus === 'Đã điểm danh'
+                        ? 'Có mặt'
+                        : attendanceStatus === 'Trễ'
+                            ? 'Trễ'
+                            : 'Vắng';
+
                 return acc;
             }, {});
 
@@ -130,7 +144,18 @@ const AttendanceTable = ({ data, courseGroupId }) => {
                                     <td>{student.username}</td>
                                     <td>{student.nickname}</td>
                                     {dates.map((date, i) => (
-                                        <td key={i} className={student.attendance[date] === 'Đã điểm danh' ? 'text-success' : 'text-danger'}>
+                                        <td
+                                            key={i}
+                                            className={
+                                                student.attendance[date] === 'Đã điểm danh'
+                                                    ? 'text-success' // Màu cho đã điểm danh
+                                                    : student.attendance[date] === 'Trễ'
+                                                        ? 'text-warning' // Màu cho trễ
+                                                        : student.attendance[date] === 'Vắng'
+                                                            ? 'text-danger' // Màu cho vắng
+                                                            : 'text-muted' // Màu cho không có dữ liệu
+                                            }
+                                        >
                                             {student.attendance[date] || 'Không có dữ liệu'}
                                         </td>
 
