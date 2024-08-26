@@ -55,7 +55,7 @@ export function CreateNotify() {
         e.preventDefault();
         let valuetype = ''
         if (selectedOption === 'users') {
-            console.log(userType)
+            // console.log(userType)
             valuetype = userType;
         } else if (selectedOption === 'courseGroup') {
             valuetype = selectedCourseGroup
@@ -67,14 +67,20 @@ export function CreateNotify() {
             type: selectedOption,
             valueType: valuetype
         }
-        const response = await notifyService.createNotify(requestBody)
-        if (response.status === 201) {
-            Swal.fire("Thành công", "Tạo thông báo thành công", 'success')
-            return hideModalChose();
-        }else {
-            Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
-            return
+        try {
+            const response = await notifyService.createNotify(requestBody)
+            if (response.status === 201) {
+                Swal.fire("Thành công", "Tạo thông báo thành công", 'success')
+                return hideModalChose();
+            }else {
+                Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
+                return
+            }
+        }catch(err){
+            Swal.fire("Thất bại!", "Vui lòng chọn đối tượng gửi thông báo!", "error")
+                return
         }
+       
 
     };
     const filteredData = data.filter(coursegroup =>

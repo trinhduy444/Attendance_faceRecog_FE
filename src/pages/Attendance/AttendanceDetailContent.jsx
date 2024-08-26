@@ -344,7 +344,7 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
                                     <div className="d-flex justify-content-center">
                                         <div className="btn btn-primary btn-rounded" data-mdb-ripple-init>
                                             <label className="form-label text-white m-1" htmlFor="customFile1">
-                                                Choose file
+                                                Chọn ảnh
                                             </label>
                                             <input
                                                 type="file"

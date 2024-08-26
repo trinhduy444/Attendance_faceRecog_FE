@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react"
 import Swal from "sweetalert2"
 import { adminService } from "../../../services/adminService";
-function ScheduleManagementContent() {
+import NavBarToggle from "../../../components/NavBarToggle"
+
+function ScheduleManagementContent({ toggleNavBar }) {
     return (
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
             <header className="bg-surface-primary border-bottom pt-3 pb-3">
@@ -11,7 +13,7 @@ function ScheduleManagementContent() {
                             <div className="col-sm-6 col-12 mb-4 mb-sm-0">
 
                                 <h1 className="h2 mb-0 ls-tight">
-                                    QUẢN LÝ LỊCH HỌC - ADMIN DASHBOARD</h1>
+                                    <NavBarToggle toggleNavBar={toggleNavBar} />QUẢN LÝ LỊCH HỌC</h1>
                             </div>
                             <div className="col-sm-6 col-12 text-sm-end">
                                 <div className="mx-n1">

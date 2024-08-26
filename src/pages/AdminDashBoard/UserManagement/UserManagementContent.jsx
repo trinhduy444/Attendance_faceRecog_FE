@@ -10,9 +10,10 @@ import '../../../assets/css/adminDashboard.css'
 import NavBarToggle from "../../../components/NavBarToggle";
 function UserManagementContent({ toggleNavBar }) {
     const navigate = useNavigate()
-    
+
     // Declare array to show
     const [showUser, setShowUser] = useState([]);
+
     // Declare pagination and sort arrays
     const [currentPage, setCurrentPage] = useState(1);
     const [currentUsers, setCurrentUsers] = useState([]);
@@ -26,6 +27,8 @@ function UserManagementContent({ toggleNavBar }) {
 
     // View User
     const [viewUser, setViewUser] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
     // Fetch all users
     const fetchUsers = async () => {
         const response = await adminService.getAllUsers();
@@ -180,7 +183,7 @@ function UserManagementContent({ toggleNavBar }) {
                 });
 
             } catch (error) {
-                navigate("/error",{
+                navigate("/error", {
                     state: { status: error.reponse?.status || 500, message: 'Error uploading image' }
                 })
             }
@@ -241,7 +244,58 @@ function UserManagementContent({ toggleNavBar }) {
     // View user
     const handleViewUser = (user) => {
         setViewUser(user)
+        setSelectedImage(user?.avatar_path)
     }
+
+    const displaySelectedImage = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setSelectedImage(e.target.result);
+                setImageFile(file);
+            };
+            reader.readAsDataURL(file); // Đọc tệp dưới dạng URL dữ liệu
+        }
+    };
+    const handleChangeAvatar = async (user_id) => {
+        if (imageFile) {
+            const formData = new FormData();
+            formData.append('image', imageFile);
+            formData.append('user_id', user_id);
+
+            try {
+                Swal.fire({
+                    title: 'Đang cập nhật...',
+                    text: 'Vui lòng chờ trong giây lát!',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                const response = await adminService.uploadImage(formData);
+
+                Swal.close();
+
+                if (response.status === 201) {
+                    Swal.fire("Thành công!", "Ảnh đã được cập nhật thành công!", "success")
+                    fetchUsers()
+                    setImageFile(null);
+                    return
+                } else {
+                    Swal.fire("Thất bại!", "Lỗi khi cập nhật ảnh, Vui lòng thử lại sau!", "warning")
+                    return
+                }
+            } catch (error) {
+                Swal.fire("Thất bại!", 'Đã xảy ra lỗi khi cập nhật ảnh.', "error")
+                return
+            }
+        } else {
+            Swal.fire("Thất bại!", "Vui lòng chọn ảnh trước khi lưu!", "warning")
+            return
+        }
+    };
 
     const handleLockAccount = async (userId) => {
         const result = await Swal.fire({
@@ -499,7 +553,27 @@ function UserManagementContent({ toggleNavBar }) {
                         <div className="modal-body">
                             <div className="row p-2 border border-bottom-3 ">
                                 <div className="col-4">
-                                    <img src={viewUser?.avatar_path} className="rounded" alt="Ảnh Sinh viên.." />
+                                    <img
+                                        id="selectedImage"
+                                        src={selectedImage || 'https://mdbootstrap.com/img/Photos/Others/placeholder.jpg'}
+                                        alt="Ảnh đại diện"
+                                        style={{ width: '300px' }}
+                                        className="rounded"
+                                    />
+                                    <button className="d-flex justify-content-center mt-1">
+                                        <div className="btn btn-primary btn-rounded" data-mdb-ripple-init>
+                                            <label className="form-label text-white m-1" htmlFor="customFile1">
+                                                Chọn ảnh
+                                            </label>
+                                            <input
+                                                type="file"
+                                                className="form-control d-none"
+                                                id="customFile1"
+                                                accept=".png, .jpg, .jpeg"
+                                                onChange={(event) => displaySelectedImage(event, 'selectedImage')}
+                                            />
+                                        </div>
+                                    </button>
                                 </div>
                                 <div className="col-8">
                                     <div className="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded p-3">
@@ -517,12 +591,18 @@ function UserManagementContent({ toggleNavBar }) {
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Địa chỉ:</span> Phường Tân Phong, TP. Hồ Chí Minh, Việt Nam</li>
 
                                     </ul>
+
                                 </div>
+
                             </div>
 
                         </div>
-                        <div className="modal-footer">
+                        <div className="modal-footer d-flex justify-content-between">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+
+                            {imageFile && (
+                                <button type="button" className="btn btn-success" onClick={() => handleChangeAvatar(viewUser.user_id)}>Lưu hình ảnh</button>
+                            )}
 
                             {viewUser?.status === true ? (<button type="button" id="submitFileBtn" className="btn btn-danger" onClick={() => handleLockAccount(viewUser.user_id)}>Khóa tài khoản</button>
                             ) : (<button type="button" id="submitFileBtn" className="btn btn-success" onClick={() => handleUnLockAccount(viewUser.user_id)}>Mở tài khoản</button>

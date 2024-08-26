@@ -22,7 +22,7 @@ export const userService = {
             const response = await axiosConfig.get(`/users/faces/${user_id}`, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                  'Authorization': 'Bearer ' + accessToken
+                    'Authorization': 'Bearer ' + accessToken
                 }
             });
             return response.data;
@@ -48,7 +48,7 @@ export const userService = {
             throw err;
         }
     },
-    getSomeinfo: async() =>{
+    getSomeinfo: async () => {
         try {
             const accessToken = localStorage.getItem('accessToken');
             const response = await axiosConfig.post('/users/getSomeinfo', {}, {

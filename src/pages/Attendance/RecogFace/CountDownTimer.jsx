@@ -4,9 +4,12 @@ import Swal from 'sweetalert2';
 const CountdownTimer = ({ minutes }) => {
     const [timeLeft, setTimeLeft] = useState(minutes * 60);
     const [showAlert, setShowAlert] = useState(false);
+    const [isLate, setIsLate] = useState(false);
 
     useEffect(() => {
-        if (timeLeft <= 0) {
+        const totalCountdown = (20 - minutes) * 60;
+
+        if (timeLeft <= -totalCountdown) {
             window.close();
             return;
         }
@@ -15,13 +18,17 @@ const CountdownTimer = ({ minutes }) => {
             setShowAlert(true);
             Swal.fire({
                 title: 'Cảnh báo!',
-                text: 'Cửa sổ sẽ đóng sau 30 giây.',
+                text: 'Thời gian điểm danh đúng giờ còn 30 giây.',
                 timer: 2000,
                 timerProgressBar: true,
                 showConfirmButton: false,
             }).then(() => {
-                setShowAlert(false); // Reset showAlert để có thể sử dụng lại nếu cần
+                setShowAlert(false);
             });
+        }
+
+        if (timeLeft <= 0 && !isLate) {
+            setIsLate(true);
         }
 
         const timer = setInterval(() => {
@@ -29,17 +36,19 @@ const CountdownTimer = ({ minutes }) => {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [timeLeft, showAlert]);
+    }, [timeLeft, showAlert, isLate]);
 
     const formatTime = (seconds) => {
-        const min = Math.floor(seconds / 60);
-        const sec = seconds % 60;
-        return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        const sign = seconds < 0 ? '-' : '';
+        const absSeconds = Math.abs(seconds);
+        const min = Math.floor(absSeconds / 60);
+        const sec = absSeconds % 60;
+        return `${sign}${min}:${sec < 10 ? '0' : ''}${sec}`;
     };
 
     return (
         <div className="row">
-            <p>Thời gian còn lại: <i className="text-danger">{formatTime(timeLeft)}</i></p>
+            <p>Thời gian còn lại: <i className={`text-${isLate ? 'secondary' : 'danger'}`}>{formatTime(timeLeft)}</i></p>
         </div>
     );
 };

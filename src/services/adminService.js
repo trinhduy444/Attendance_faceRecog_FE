@@ -146,6 +146,21 @@ export const adminService = {
             throw err;
         }
     },
+    uploadImage: async (formData) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/admin/uploadimage', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+            return response;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
     uploadImages: async (formData) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
@@ -161,7 +176,7 @@ export const adminService = {
             throw err;
         }
     },
-    lockAccount: async(userId) =>{
+    lockAccount: async (userId) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
             const response = await axiosConfig.put(`/admin/lockAccount/${userId}`, {}, {
@@ -175,7 +190,7 @@ export const adminService = {
             throw err;
         }
     },
-    unLockAccount: async(userId) =>{
+    unLockAccount: async (userId) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
             const response = await axiosConfig.put(`/admin/unLockAccount/${userId}`, {}, {
@@ -189,9 +204,9 @@ export const adminService = {
             throw err;
         }
     },
-    lockUserAccount: async(userId,role_id) =>{
-        console.log(userId,role_id);
-        
+    lockUserAccount: async (userId, role_id) => {
+        console.log(userId, role_id);
+
         try {
             const accessToken = localStorage.getItem('accessToken');
             const response = await axiosConfig.put(`/admin/lockUserAccount/${userId}/${role_id}`, {}, {
@@ -205,7 +220,7 @@ export const adminService = {
             throw err;
         }
     },
-    unLockUserAccount: async(userId,role_id) =>{
+    unLockUserAccount: async (userId, role_id) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
             const response = await axiosConfig.put(`/admin/unLocUserkAccount/${userId}/${role_id}`, {}, {

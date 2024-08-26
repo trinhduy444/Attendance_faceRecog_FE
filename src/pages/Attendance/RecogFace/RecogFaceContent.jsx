@@ -42,8 +42,9 @@ function RecogFaceContent({ course_group_id, minutes }) {
                             faceImg.src = face.face_image_path;
                             const faceDetection = await faceapi.detectSingleFace(faceImg).withFaceLandmarks().withFaceDescriptor();
                             descriptors.push(faceDetection.descriptor);
+                            
                         });
-
+                        console.log('ta',descriptors);
                         return new faceapi.LabeledFaceDescriptors(student.student_username, descriptors);
                     })
                 );
@@ -87,16 +88,17 @@ function RecogFaceContent({ course_group_id, minutes }) {
 
     // Get user faces
     const fetchUserFaces = async (user_id) => {
-        const res = await userService.getUserFaces(user_id);
-        return res.data.faces;
+        try {
+            const res = await userService.getUserFaces(user_id);
+            return res.data.faces;
+        } catch (err) {
+            console.error("err:", err);
+            navigate("/error", {
+                state: { status: err.reponse?.status || 500, message: err.message }
+            })
+        }
     }
 
-    // Format time
-    const formatTime = (seconds) => {
-        const minutes = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-    };
 
     // Face recognition
     const sentFaceData = async () => {
