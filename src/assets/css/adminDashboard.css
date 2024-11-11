@@ -29,3 +29,23 @@
 #viewRoominCourse {
   height: 200px;
 }
+
+.delete-time {
+  position: absolute;
+  top: 2px;
+  right: 15px;
+  z-index: 100;
+  color: black;
+  font-size: 30px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.delete-time:hover {
+  opacity: 0.5;
+}
+
+.list-image {
+  display: block;
+  height: 250px;
+}

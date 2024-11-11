@@ -9,12 +9,12 @@ export const RecogFace = () => {
     const query = new URLSearchParams(location.search);
     const minutes = query.get('minutes');
     useEffect(() => {
-        document.title = "Điểm danh"
+        document.title = "Điểm danh";
     }, [])
     return (
         <div className="d-flex flex-column flex-lg-row h-lg-full recogFace">
             <div className="h-screen flex-grow-1">
-                <RecogFaceContent course_group_id={decodeURIComponent(decodeId(course_group_id))}  minutes={parseInt(minutes)}  />
+                <RecogFaceContent course_group_id={decodeURIComponent(decodeId(course_group_id))} minutes={parseInt(minutes)}/>
             </div>
         </div>
     )

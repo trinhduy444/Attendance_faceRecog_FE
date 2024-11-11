@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react"
-import * as XLSX from "xlsx"
-import Swal from "sweetalert2"
-import { useNavigate } from "react-router-dom"
+import React, { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 import { adminService } from "../../../services/adminService";
-import { sortArray } from "../../../utils/sortArray"
-import Pagination from './Pagination'
-import '../../../assets/css/adminDashboard.css'
+import { faceService } from "../../../services/faceService";
+import { sortArray } from "../../../utils/sortArray";
+import Pagination from './Pagination';
+import '../../../assets/css/adminDashboard.css';
 // import MyErrorBoundary from "../../Error/ErrorFallback";
 import NavBarToggle from "../../../components/NavBarToggle";
 function UserManagementContent({ toggleNavBar }) {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     // Declare array to show
     const [showUser, setShowUser] = useState([]);
@@ -29,14 +30,18 @@ function UserManagementContent({ toggleNavBar }) {
     const [viewUser, setViewUser] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [imageFile, setImageFile] = useState(null);
+
+    // View user faces
+    const [userFaces, setUserFaces] = useState([]);
+
     // Fetch all users
     const fetchUsers = async () => {
         const response = await adminService.getAllUsers();
         if (response.status === 200) {
             setShowUser(response.data.metadata);
         }
-
     }
+
     useEffect(() => {
         fetchUsers();
     }, [])
@@ -76,7 +81,6 @@ function UserManagementContent({ toggleNavBar }) {
         setCurrentPage(pageNumber);
     };
 
-
     // Sort
     const handleSortUser = function (key) {
         const ascending = lastSortedColumn.key === key ? !lastSortedColumn.ascending : true;
@@ -109,7 +113,6 @@ function UserManagementContent({ toggleNavBar }) {
     }
 
     // Thao tác upload
-
     const handleFileUploadUser = async (e) => {
         const reader = new FileReader();
         const file = e.target.files[0];
@@ -247,6 +250,57 @@ function UserManagementContent({ toggleNavBar }) {
         setSelectedImage(user?.avatar_path)
     }
 
+    // View user faces
+    const handleViewUserFaces = async (user_id) => {
+        const response = await faceService.getAllUserFacesById(user_id);
+        if (response.status === 200) {
+            setUserFaces(response.data);
+        }
+    }
+
+    const handleUploadUserFaces = async (event) => {
+        const files = event.target.files;
+        if (files.length === 0) return;
+
+        console.log(files)
+        /*
+        const formData = new FormData();
+        if (files) {
+            Array.from(files).forEach(file => formData.append('images', file));
+            try {
+                const result = await Swal.fire({
+                    title: 'Bạn có chắc chắn?',
+                    text: `Bạn muốn tải lên ${files.length} ảnh?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, tải lên!',
+                    cancelButtonText: 'Không, hủy!',
+                    showLoaderOnConfirm: true,
+                    preConfirm: async () => {
+                        try {
+                            const response = await adminService.uploadImages(formData);
+                            if (response.status === 201) {
+                                Swal.fire('Thành công', `Đã tải lên ${files.length} ảnh`, 'success');
+                            } else {
+                                Swal.fire('Có lỗi xảy ra', 'Vui lòng thử lại', 'error');
+                            }
+                        } catch (error) {
+                            console.error('Error uploading images:', error);
+                            Swal.fire('Lỗi', 'Không thể tải ảnh lên. Vui lòng thử lại sau.', 'error');
+                        }
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                });
+
+            } catch (error) {
+                navigate("/error", {
+                    state: { status: error.reponse?.status || 500, message: 'Error uploading image' }
+                })
+            }
+        }
+        */
+    };
+
     const displaySelectedImage = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -347,11 +401,8 @@ function UserManagementContent({ toggleNavBar }) {
         }
     };
 
-
     return (
-
         <div className="h-screen flex-grow-1 overflow-y-lg-auto">
-
             <header className="bg-surface-primary border-bottom pt-3 pb-3">
                 <div className="container">
                     <div className="mb-npx">
@@ -383,8 +434,6 @@ function UserManagementContent({ toggleNavBar }) {
                                         </span>
                                         <span>Tạo nhiều sinh viên</span>
                                     </button>
-
-
                                 </div>
                             </div>
                         </div>
@@ -443,10 +492,7 @@ function UserManagementContent({ toggleNavBar }) {
                                         </button>
                                     </div>
                                 </div>
-
-
                             </div>
-
                         </div>
                         <div className="table-responsive">
                             <table className="table table-hover table-nowrap">
@@ -465,9 +511,8 @@ function UserManagementContent({ toggleNavBar }) {
                                             Giới tính {getSortIcon('gender')}</th>
                                         <th scope="col" onClick={() => handleSortUser('status')}>
                                             Trạng thái {getSortIcon('status')}</th>
-
-
                                         <th scope="col">Thao tác</th>
+                                        <th scope="col">Khuôn mặt</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -481,9 +526,8 @@ function UserManagementContent({ toggleNavBar }) {
                                             <td>{item.course_year}</td>
                                             <td>{item.gender ? "Nam" : "Nữ"}</td>
                                             <td className={item.status ? "text-success" : "text-danger"}>{item.status ? "Hoạt động" : "Đã Khóa"}</td>
-
-                                            <td><button type="button" className="btn btn-warning" onClick={() => handleViewUser(item)} data-bs-toggle="modal"
-                                                data-bs-target="#viewUserModel">Xem</button></td>
+                                            <td><button type="button" className="btn btn-warning" onClick={() => handleViewUser(item)} data-bs-toggle="modal" data-bs-target="#viewUserModel">Xem</button></td>
+                                            <td><button type="button" className="btn btn-warning" onClick={() => handleViewUserFaces(item.user_id)} data-bs-toggle="modal" data-bs-target="#viewUserFacesModel">Xem</button></td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -511,7 +555,6 @@ function UserManagementContent({ toggleNavBar }) {
                                     </button>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -589,13 +632,9 @@ function UserManagementContent({ toggleNavBar }) {
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Email:</span><a href={`mailto:${viewUser?.email}`}>{viewUser?.email}</a> </li>
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Số điện thoại:</span>+{viewUser?.phone}</li>
                                         <li className="mb-2 mb-xl-3 display-28"><span className="display-26 me-2 fw-bolder">Địa chỉ:</span> Phường Tân Phong, TP. Hồ Chí Minh, Việt Nam</li>
-
                                     </ul>
-
                                 </div>
-
                             </div>
-
                         </div>
                         <div className="modal-footer d-flex justify-content-between">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -607,6 +646,37 @@ function UserManagementContent({ toggleNavBar }) {
                             {viewUser?.status === true ? (<button type="button" id="submitFileBtn" className="btn btn-danger" onClick={() => handleLockAccount(viewUser.user_id)}>Khóa tài khoản</button>
                             ) : (<button type="button" id="submitFileBtn" className="btn btn-success" onClick={() => handleUnLockAccount(viewUser.user_id)}>Mở tài khoản</button>
                             )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="modal fade bd-example-modal-lg" id="viewUserFacesModel" tabIndex="-1" aria-labelledby="viewUserFacesModel" aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content" style={{height: '90vh'}}>
+                        <div className="modal-header">
+                            <h5 className="modal-title">Danh sách khuôn mặt</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body overflow-auto">
+                            {
+                                userFaces.map((face, index) => {
+                                    return (
+                                        // handleDeleteUserFace(face,user_face_id)
+                                        <div key={index} className="col-4 border p-2 mb-2">
+                                            <div className="p-0 position-relative">
+                                                <span className="delete-time" onClick={console.log(face.user_face_id)}>&times;</span>
+                                                <img alt={face.user_face_id} src={face.face_image_path} className="list-image mx-auto"></img>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                        <div className="modal-footer d-flex justify-content-between">
+                            <label className="btn btn-primary" htmlFor="faceImage">Thêm</label>
+                            <input type="file" className="d-none" id="faceImage" accept=".png, .jpg, .jpeg" onChange={(event) => handleUploadUserFaces(event)}/>
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                         </div>
                     </div>
                 </div>

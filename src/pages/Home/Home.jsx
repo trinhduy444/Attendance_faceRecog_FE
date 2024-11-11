@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 
-import NavBar from "../../components/NavBar"
+import NavBar from "../../components/NavBar";
 import NavBarToggle from "../../components/NavBarToggle";
 import HomeContent from "./HomeContent";
-import "../../assets/css/home.css"
-
-import sclogo from "../../assets/images/sclogo.jpg"
+import "../../assets/css/home.css";
+import sclogo from "../../assets/images/sclogo.jpg";
 
 export const Home = () => {
     const [isNavBarVisible, setIsNavBarVisible] = useState(true);
     useEffect(() => {
-        document.title = "Trang chủ"
+        document.title = "Trang chủ";
     }, []);
 
     const toggleNavBar = () => {

@@ -5,22 +5,27 @@ import { dateUtils } from '../../../utils/dateUtils';
 import { userService } from '../../../services/userService';
 import { courseService } from '../../../services/courseService';
 import { attendanceService } from '../../../services/attendanceService';
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import AttendanceList from './AttendanceList';
-import CountDownTimer from './CountDownTimer'
+import CountDownTimer from './CountDownTimer';
+
+// Socket
+import io from 'socket.io-client';
+const SOCKET_BASE_URL = process.env.BACKEND_URL || 'http://localhost:5000';
+const socket = io.connect(SOCKET_BASE_URL);
+
 function RecogFaceContent({ course_group_id, minutes }) {
     const navigate = useNavigate()
 
     const webcamRef = useRef(null);
     const webcamCanvasRef = useRef(null);
     const dataCanvasRef = useRef(null);
-    const faceMatcher = useRef(null);
+    const faceRecog = useRef(null);
     const attendedList = useRef(['unknown']);
     const [studentInfo, setStudentInfo] = useState(new Map());
     const [courseGroupInfo, setCourseGroupInfo] = useState(null);
     const [attendListSuccess, setAttendListSuccess] = useState([]);
     const [isUploading, setIsUploading] = useState(0);
-    var faceRecog;
 
     // Load student face with descriptors
     const loadStudentFaceList = async (course_group_id) => {
@@ -54,11 +59,11 @@ function RecogFaceContent({ course_group_id, minutes }) {
                 state: { status: err.reponse?.status || 500, message: err.message }
             })
         }
-
     }
 
     useEffect(() => {
         // Load models weight
+        /*
         Promise.all([
             faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
             faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
@@ -66,19 +71,27 @@ function RecogFaceContent({ course_group_id, minutes }) {
         ]).then(async () => {
             const studentFaceList = await loadStudentFaceList(course_group_id);
             faceMatcher.current = new faceapi.FaceMatcher(studentFaceList, 0.5);
+            });
+        */
 
-            handleFetchCourseGroupInfo(course_group_id);
-            // Initial call for webcam
-            webcamRef.current.video.onplay = () => {
-                setTimeout(sentFaceData, 100);
-            }
+        // Process after face recognition
+        socket.on('faceRecog', (face) => {
+            faceRecog.current = setTimeout(sentFaceData, 100);
+            drawFaceBox(face);
         });
 
+        // Get course group info
+        handleFetchCourseGroupInfo(course_group_id);
+        
+        // Initial call for webcam
+        webcamRef.current.video.onplay = () => {
+            faceRecog.current = setTimeout(sentFaceData, 100);
+        }
+
         return () => {
-            clearTimeout(faceRecog);
+            clearTimeout(faceRecog.current);
         };
     }, []);
-
 
     // Set course group info
     const handleFetchCourseGroupInfo = async (course_group_id) => {
@@ -99,15 +112,18 @@ function RecogFaceContent({ course_group_id, minutes }) {
         }
     }
 
-
     // Face recognition
-    const sentFaceData = async () => {
+    const sentFaceData = () => {
         var ctx = dataCanvasRef.current.getContext('2d');
+
         dataCanvasRef.current.width = webcamRef.current.video.offsetWidth;
         dataCanvasRef.current.height = webcamRef.current.video.offsetHeight;
 
         ctx.drawImage(webcamRef.current.video, 0, 0, dataCanvasRef.current.width, dataCanvasRef.current.height);
 
+        socket.emit('faceRecog', dataCanvasRef.current.toDataURL('image/jpeg'));
+        
+        /*
         // Face detection
         var detections = await faceapi.detectAllFaces(dataCanvasRef.current).withFaceLandmarks().withFaceDescriptors();
 
@@ -138,7 +154,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
 
         // Draw face box with label
         drawFaceBox(detections);
-        faceRecog = setTimeout(sentFaceData, 200);
+        */
     }
 
     // Process success face recognition
@@ -214,7 +230,7 @@ function RecogFaceContent({ course_group_id, minutes }) {
             <div className="container">
                 <div className="row">
                     <div className="col-8 position-relative" style={{ height: '90vh' }}>
-                        <Webcam ref={webcamRef} className="d-block" style={{ width: '100%', height: '100%' }}></Webcam>
+                        <Webcam ref={webcamRef} className="d-block" videoConstraints={{ width: 1080, height: 720 }} style={{ width: '100%', height: '100%' }}></Webcam>
                         <canvas id="webcamCanvas" ref={webcamCanvasRef} className="position-absolute top-0 left-0 z-1"></canvas>
                     </div>
                     <div className="col-4">
