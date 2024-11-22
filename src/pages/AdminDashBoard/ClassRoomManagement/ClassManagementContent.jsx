@@ -18,7 +18,7 @@ function ClassManagementContent({ toggleNavBar }) {
             if (response.status === 200) {
                 setRoomData(response.metadata)
                 return;
-            }else{
+            } else {
                 Swal.fire('Lỗi', 'Không thể thêm phòng học, vui lòng thử lại sau.', 'error');
                 return;
             }
@@ -86,9 +86,9 @@ function ClassManagementContent({ toggleNavBar }) {
         try {
             const response = await roomService.createRooms(data);
             if (response.status === 201) {
-                console.log(response)
-                Swal.fire('Thêm thành công', `Đã thêm các phòng: ${response.created}, và không thêm được các phòng: ${response.skipped}`, 'info');
-                window.location.reload();
+                // console.log(response)
+                Swal.fire('Thêm thành công', `Đã thêm các phòng: ${response.created}; và không thêm được các phòng: ${response.skipped}`, 'info');
+                handleFectchRooms()
             } else {
                 Swal.fire('Có lỗi xảy ra', 'Vui lòng thử lại', 'error');
             }

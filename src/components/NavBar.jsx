@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from '../configs/firebaseConfig'
 function NavBar({ isNavBarVisible }) {
-    
+
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
     const user = useSelector(state => state.auth.user);
     const navigate = useNavigate();
@@ -49,9 +49,9 @@ function NavBar({ isNavBarVisible }) {
             return arr;
         } catch (error) {
             navigate("/error", {
-                state: { status: error.response.status || 500, message:"Error fetching user documents" }
+                state: { status: error.response.status || 500, message: "Error fetching user documents" }
             })
-        
+
         }
     };
     useEffect(() => {
@@ -171,7 +171,7 @@ function NavBar({ isNavBarVisible }) {
                                             {/* <li><a className="dropdown-item" href="/attendance/scan"><i className="bi bi-clipboard-data">Điểm danh nhận diện khuôn mặt</i></a></li> */}
                                         </ul>
                                     </li>
-                                ) : user.role_id === 1 ? (<>
+                                ) : user.role_id === 1 || user.role_id === 4 ? (<>
                                     <li className="nav-item dropdown">
                                         <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                             aria-expanded="false">
@@ -183,7 +183,7 @@ function NavBar({ isNavBarVisible }) {
                                             <li><a className="dropdown-item" href="/admin/courseManagement"><i className="bi bi-book"></i> Quản lý môn học</a></li>
                                             <li><a className="dropdown-item" href="/admin/coursegroupManagement"><i className="bi bi-collection"></i> Quản lý nhóm học</a></li>
                                             <li><a className="dropdown-item" href="/admin/attendanceManagement"><i className="bi bi-clipboard-data"></i> Quản lý dữ liệu điểm danh</a></li>
-                                            <li><a className="dropdown-item" href="/admin/scheduleManagement"><i className="bi bi-calendar2-week"></i> Quản lý lịch học</a></li>
+                                            {/* <li><a className="dropdown-item" href="/admin/scheduleManagement"><i className="bi bi-calendar2-week"></i> Quản lý lịch học</a></li> */}
                                         </ul>
                                     </li>
                                     <li className="nav-item dropdown">
@@ -195,7 +195,7 @@ function NavBar({ isNavBarVisible }) {
                                             <li><a className="dropdown-item" href="/admin/userManagement"><i className="bi bi-person"></i> Quản lý sinh viên</a></li>
                                             <li><a className="dropdown-item" href="/admin/teacherManagement"><i className="bi bi-person"></i> Quản lý giảng viên</a></li>
                                             {
-                                                user.user_id === 1 ? (<li><a className="dropdown-item" href="/admin/managerManagement"><i className="bi bi-person-fill-gear"></i> Quản lý quản trị</a></li>
+                                                user.role_id === 4 ? (<li><a className="dropdown-item" href="/admin/managerManagement"><i className="bi bi-person-fill-gear"></i> Quản lý quản trị</a></li>
                                                 ) : (null)
                                             }
 

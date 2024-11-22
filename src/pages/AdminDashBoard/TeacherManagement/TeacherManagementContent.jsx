@@ -303,7 +303,7 @@ function TeacherManagementContent({ toggleNavBar }) {
                 <div className="container">
                     <div className="card shadow border-1 mb-7">
                         <div className="card-header">
-                            <h5 className="mb-0">DANH SÁCH Giảng Viên</h5>
+                            <h5 className="mb-0">DANH SÁCH GIẢNG VIÊN</h5>
                         </div>
                         <div className="table-responsive">
                             <table className="table table-hover table-nowrap">

@@ -138,7 +138,7 @@ function AttendanceRequestContent({ attendanceRequests, onChange }) {
             </div>
             {/* <!-- Modal --> */}
             <div className="modal fade" id="detailAttendanceRequestModal" tabIndex="-1" aria-labelledby="detailAttendanceRequestModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-xl">
+                <div className="modal-dialog modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="detailAttendanceRequestModalLabel">Chi tiết yêu cầu</h5>

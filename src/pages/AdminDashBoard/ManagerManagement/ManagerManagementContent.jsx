@@ -177,7 +177,7 @@ function ManagerManagementContent({ toggleNavBar }) {
                                         <span className=" pe-2">
                                             <i className="bi bi-plus"></i>
                                         </span>
-                                        <span>Tạo người dùng</span>
+                                        <span>Tạo tài khoản quản trị</span>
                                     </a>
                                 </div>
                             </div>
