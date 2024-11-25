@@ -24,6 +24,8 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
     const fetchAttendanceInfo = async (studentId, course_group_id) => {
         const response = await attendanceService.getAttendanceHaveUserId(studentId, course_group_id);
         if (response.status === 200) {
+            console.log("Detail: " + JSON.stringify(response.data.data));
+            
             setAttendanceInfo(response.data.data);
         } else {
             Swal.fire("Thất bại!", "Vui lòng thử lại sau!", "error")
@@ -210,6 +212,7 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
                             <tr className="table-primary">
                                 <th scope="col"><b>Buổi</b></th>
                                 <th scope="col"><b>Ngày Tháng, Năm</b></th>
+                                <th scope="col"><b>Giờ điểm danh</b></th>
                                 <th scope="col"><b>Trạng thái</b></th>
                                 <th scope="col"><b>Chi tiết</b></th>
                                 <th scope="col"><b>Khiếu nại</b></th>
@@ -220,6 +223,7 @@ function AttendanceDetailContent({ userId, courseGroupId, ban_yn }) {
                                 <tr key={index}>
                                     <th scope="row">{index + 1}</th>
                                     <td>{convertDay(attend.attend_date)}</td>
+                                    <td>{attend.enter_time}</td>
                                     <td
                                         className={
                                             attend.attend_yn === true

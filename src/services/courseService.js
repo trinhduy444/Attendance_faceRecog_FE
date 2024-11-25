@@ -126,6 +126,21 @@ export const courseService = {
             throw err;
         }
     },
+    checkTeacherAccessCourseGroup: async (course_group_id) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post(`/courses/checkAccessCourseGroupTeacher/${course_group_id}`, {}, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                },
+                withCredentials: true
+            });
+            return response.data;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
     getAllCourseGroupActive: async () => {
         try {
             const accessToken = localStorage.getItem('accessToken');

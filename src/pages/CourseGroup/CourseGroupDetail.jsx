@@ -7,7 +7,6 @@ import CourseGroupDetailContent from "./CourseGroupDetailContent"
 import { useParams } from "react-router-dom";
 import { decodeId } from "../../utils/secureEncoding";
 import { courseService } from "../../services/courseService";
-import sclogo from "../../assets/images/sclogo.jpg"
 export const CourseGroupDetail = () => {
     const navigate = useNavigate();
     const { course_group } = useParams()

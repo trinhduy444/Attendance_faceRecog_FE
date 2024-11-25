@@ -40,7 +40,7 @@ const headerLinks = {
         ]
     },
     '/attendance': {
-        title: 'Dữ liệu điiểm danh',
+        title: 'Dữ liệu điểm danh',
         links: [
             { path: '/', label: 'Trang chủ', icon: 'bi bi-house' },
             { path: '/attendance', label: 'Dữ liệu điểm danh', icon: 'bi bi-clipboard-data' },

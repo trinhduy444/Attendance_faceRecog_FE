@@ -27,7 +27,7 @@ function AttendanceDetailContent({ student_id, course_group_id }) {
         }
     };
     return (
-        <main className="container py-2">
+        <main>
             <section className="row bg-section p-2" id='top'>
                 <div className="card col-6 pt-2 mt-2">
                     <AttendanceChart data={attendanceData} type={'line'} />
@@ -45,7 +45,6 @@ function AttendanceDetailContent({ student_id, course_group_id }) {
                 </div>
             </section>
             <section className="middle row bg-section p-2">
-
                 <div className="col-8 mt-3" >
                     {attenDetails.map((attend, index) => (
                         <div className="card m-2" key={index}>
@@ -63,7 +62,7 @@ function AttendanceDetailContent({ student_id, course_group_id }) {
                                         <br />
                                     </span>
                                     )}
-                                    <a type='button' className='btn btn-warning'>Chỉnh sửa</a>
+                                    <a type='button' className='bi bi-pen'>Chỉnh sửa</a>
 
                                 </div>
                             </div>

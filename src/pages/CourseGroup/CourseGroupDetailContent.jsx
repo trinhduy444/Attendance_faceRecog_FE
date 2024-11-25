@@ -131,38 +131,6 @@ function CourseGroupDetailContent({ role, course_group }) {
         return
     }
 
-    const handleOpenAttendance = (e) => {
-        e.preventDefault();
-
-        Swal.fire({
-            title: "Nhập số phút cho phép điểm danh",
-            input: "number",
-            inputAttributes: {
-                autocapitalize: "off",
-                min: 1,
-                max: 15,
-            },
-            showCancelButton: true,
-            confirmButtonText: "Mở đường dẫn",
-            showLoaderOnConfirm: true,
-            preConfirm: (minutes) => {
-                if (!minutes || minutes <= 0) {
-                    Swal.showValidationMessage("Vui lòng nhập số phút hợp lệ!");
-                    return false;
-                }
-                return minutes;
-            },
-            allowOutsideClick: () => !Swal.isLoading()
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const course_group_id_encode = encodeURIComponent(encodeId(course_group));
-                const minutes = result.value;
-                const url = `/attendRecog/${course_group_id_encode}?minutes=${minutes}`;
-                window.open(url, '_blank');
-            }
-        });
-    }
-
     return (
 
         <main className="py-6 bg-surface-secondary">
@@ -246,11 +214,10 @@ function CourseGroupDetailContent({ role, course_group }) {
                                 </div>
                                 {role === 2 || role === 1 ? (<div className='card-footer'>
                                     <a
-                                        href="#"
+                                        href={`/attendRecog/${encodeURIComponent(encodeId(course_group))}`}
                                         target="_blank"
                                         className='btn btn-info text-white'
                                         rel="noopener noreferrer"
-                                        onClick={handleOpenAttendance}
                                     >
                                         Mở link điểm danh
                                     </a>

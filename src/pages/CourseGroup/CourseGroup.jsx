@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 import NavBar from "../../components/NavBar"
-import NavBarToggle from "../../components/NavBarToggle"
 import Header from "../../components/Header"
 import CourseGroupContent from "./CourseGroupContent"
 import { useSelector } from 'react-redux';

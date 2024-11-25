@@ -47,8 +47,7 @@ function HomeContent() {
 
     // console.log("Render Home Content")
     return (
-        <main className="bg-surface-secondary">
-            <div className="container">
+        <main className="bg-surface-secondary p-2">
                 <div className="row mt-1">
                     <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
                         <div className="carousel-indicators">
@@ -251,7 +250,6 @@ function HomeContent() {
                         </div>
                     </div>
                 </div>
-            </div>
         </main>
     );
 }

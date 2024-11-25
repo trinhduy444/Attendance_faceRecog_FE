@@ -8,7 +8,7 @@ import { attendanceService } from '../../../services/attendanceService';
 import { useNavigate } from "react-router-dom"
 import AttendanceList from './AttendanceList';
 import CountDownTimer from './CountDownTimer'
-function RecogFaceContent({ course_group_id, minutes }) {
+function RecogFaceContent({ course_group_id }) {
     const navigate = useNavigate()
 
     const webcamRef = useRef(null);
@@ -231,7 +231,6 @@ function RecogFaceContent({ course_group_id, minutes }) {
                         {/* <div className="row">
                             <p className="text-danger">Thời gian còn lại: {formatTime(timeLeft)}</p>
                         </div> */}
-                        <CountDownTimer minutes={minutes} ></CountDownTimer>
                     </div>
                 </div>
             </div>
