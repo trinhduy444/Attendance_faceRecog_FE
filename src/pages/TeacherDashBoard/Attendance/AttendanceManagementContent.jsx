@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { courseService } from '../../../services/courseService';
 import { attendanceService } from '../../../services/attendanceService';
-import AttendanceTable from './AttendanceTable'
+import AttendanceTable1 from './AttendanceTable1'
 import Swal from 'sweetalert2';
 function AttendanceManagementContent({ role }) {
     const [courseGroups, setCourseGroups] = useState([]);
@@ -27,7 +27,7 @@ function AttendanceManagementContent({ role }) {
     }
 
     const fetchDataCG = async () => {
-        if (role === 1) {
+        if (role === 1 || role === 4) {
             const response = await courseService.getAllCourseGroup(selectedSemester);
             // console.log("Ad",response);
             if (response.status === 200) {
@@ -113,7 +113,7 @@ function AttendanceManagementContent({ role }) {
 
                 </form>
                 <hr className='text-black' />
-               <AttendanceTable data={attendanceData} courseGroupId={selectedGroup} />
+                <AttendanceTable1 data={attendanceData} courseGroupId={selectedGroup} />
 
             </div>
         </main >

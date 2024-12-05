@@ -138,7 +138,7 @@ section>.card {
 
 .recogFace {
     background: rgb(2, 0, 36);
-    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(120, 120, 245, 1) 41%, rgba(0, 212, 255, 1) 100%);
+    background: linear-gradient(90deg, rgb(116, 110, 223) 0%, rgb(168, 168, 233) 41%, rgb(158, 225, 238) 100%);
 }
 .select-Management-Attendances{
     border: 0.5px solid;

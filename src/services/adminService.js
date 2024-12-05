@@ -176,6 +176,21 @@ export const adminService = {
             throw err;
         }
     },
+    uploadSysFaces: async (formData) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/admin/uploadSysFaces', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+            return response;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
     lockAccount: async (userId) => {
         try {
             const accessToken = localStorage.getItem('accessToken');

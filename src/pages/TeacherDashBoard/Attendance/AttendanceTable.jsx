@@ -8,6 +8,9 @@ const AttendanceTable = ({ data = [], courseGroupId }) => {
     const [editedData, setEditedData] = useState({});
     const [visibleNotes, setVisibleNotes] = useState({});
     const [courseInfo, setCourseInfo] = useState([]);
+
+    const [searchQuery, setSearchQuery] = useState('');
+
     const allDates = [
         ...new Set(data.flatMap(student => student.attendances.map(record => record.attend_date_dmy))),
     ];
@@ -15,6 +18,23 @@ const AttendanceTable = ({ data = [], courseGroupId }) => {
         fetchInfoCG(courseGroupId)
 
     }, [data]);
+
+    const filteredData = data.filter(
+        (student) =>
+            student.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            student.nickname.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+
+    useEffect(() => {
+        // Lọc dữ liệu dựa trên tìm kiếm và lựa chọn dropdown
+        let filteredUsers = data.filter((student) => {
+            const matchesSearchQuery = student.username.includes(searchQuery) || student.nickname.toLowerCase().includes(searchQuery.toLowerCase());
+
+            return matchesSearchQuery;
+        });
+
+    }, [data, searchQuery]);
     const fetchInfoCG = async (course_group_id) => {
         if (course_group_id === 'none') {
             return
@@ -224,23 +244,35 @@ const AttendanceTable = ({ data = [], courseGroupId }) => {
         // Step 7: Export to Excel file
         XLSX.writeFile(wb, fileName);
     };
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
 
 
     return (
         <div>
-            <div className="row">
-                <div className="col-4" id="topData">
+            <div className="row d-flex justify-content-between">
+                <div className="col-5" id="topData">
                     <h5 className="mb-0">DỮ LIỆU ĐIỂM DANH CỦA TẤT CẢ SINH VIÊN MÔN</h5>
                 </div>
-                <div className="col-8 d-flex justify-content-evenly">
-                    <button className="btn btn-outline-success"
-                        onClick={handleExportToExcel}>
-                        <i className="bi bi-box-arrow-up-right"></i> Xuất file (excel)
-                    </button>
-                    <button className="btn btn-primary me-2" onClick={handleSave}>
-                        Lưu chỉnh sửa
-                    </button>
+                <div className="col-3">
+                    <input
+                        type="search"
+                        className="form-control"
+                        placeholder="Nhập tên hoặc MSSV"
+                        aria-label="Search"
+                        aria-describedby="search-addon"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                    />
                 </div>
+                <button className="col-2 btn btn-primary" onClick={handleSave}>
+                    Lưu chỉnh sửa
+                </button>
+                <button className="col-2 btn btn-outline-success"
+                    onClick={handleExportToExcel}>
+                    <i className="bi bi-box-arrow-up-right"></i> Xuất file (excel)
+                </button>
 
             </div>
             <table className="table table-striped">
@@ -258,13 +290,34 @@ const AttendanceTable = ({ data = [], courseGroupId }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((student, studentIndex) => (
+                    {filteredData.map((student, studentIndex) => (
                         <tr key={studentIndex} className="tr-data">
                             <td>{studentIndex + 1}</td>
                             <td>{student.username}</td>
                             <td>{student.nickname}</td>
-                            {student?.ban_yn ? (<td> <a href={`/attendanceData/detail/${encodeURIComponent(encodeId(student.student_id))}/${encodeURIComponent(encodeId(courseGroupId))}`} target="_blank" className="text-danger bi bi-view-stacked" rel="noopener noreferrer">Cấm thi</a></td>
-                            ) : <td> <a href={`/attendanceData/detail/${encodeURIComponent(encodeId(student.student_id))}/${encodeURIComponent(encodeId(courseGroupId))}`} target="_blank" className="bi bi-view-stacked text-success" rel="noopener noreferrer">Bình thường</a></td>}
+                            {student?.ban_yn ? (
+                                <td>
+                                    <a
+                                        href={`/attendanceData/detail/${encodeURIComponent(encodeId(student.student_id))}/${encodeURIComponent(encodeId(courseGroupId))}`}
+                                        target="_blank"
+                                        className="text-danger bi bi-view-stacked"
+                                        rel="noopener noreferrer"
+                                    >
+                                        Cấm thi
+                                    </a>
+                                </td>
+                            ) : (
+                                <td>
+                                    <a
+                                        href={`/attendanceData/detail/${encodeURIComponent(encodeId(student.student_id))}/${encodeURIComponent(encodeId(courseGroupId))}`}
+                                        target="_blank"
+                                        className="bi bi-view-stacked text-success"
+                                        rel="noopener noreferrer"
+                                    >
+                                        Bình thường
+                                    </a>
+                                </td>
+                            )}
                             {allDates.map((date, dateIndex) => {
                                 const attendanceRecord = student.attendances.find(record => record.attend_date_dmy === date);
                                 const editedRecord = editedData[student.student_id]?.find(
@@ -287,7 +340,6 @@ const AttendanceTable = ({ data = [], courseGroupId }) => {
                                     const noteKey = `${student.student_id}-${date}`;
                                     return (
                                         <td key={dateIndex}>
-                                            {/* Select để chỉnh sửa trạng thái */}
                                             <select className='select-Management-Attendances'
                                                 value={status}
                                                 onChange={e =>
@@ -304,7 +356,6 @@ const AttendanceTable = ({ data = [], courseGroupId }) => {
                                                 <option value="Trễ">Trễ</option>
                                             </select>
 
-                                            {/* Nút ghi chú */}
                                             <button
                                                 className="btn btn-sm btn-outline-info ms-1"
                                                 onClick={() => toggleNoteVisibility(student.student_id, date)}
@@ -312,14 +363,13 @@ const AttendanceTable = ({ data = [], courseGroupId }) => {
                                                 {visibleNotes[noteKey] ? "Ẩn" : "Ghi chú"}
                                             </button>
 
-                                            {/* Textarea để hiển thị và chỉnh sửa ghi chú */}
                                             {visibleNotes[noteKey] && (
                                                 <textarea
                                                     className="form-control mt-1"
                                                     value={
                                                         editedRecord
-                                                            ? editedRecord.note // Ghi chú đã chỉnh sửa
-                                                            : attendanceRecord.note || "" // Ghi chú gốc
+                                                            ? editedRecord.note
+                                                            : attendanceRecord.note || ""
                                                     }
                                                     onChange={e =>
                                                         handleChangeStatus(student.student_id, date, "note", e.target.value)
@@ -332,7 +382,6 @@ const AttendanceTable = ({ data = [], courseGroupId }) => {
                                     return <td key={dateIndex}>-</td>;
                                 }
                             })}
-
                         </tr>
                     ))}
                 </tbody>

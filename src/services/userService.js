@@ -62,6 +62,21 @@ export const userService = {
             throw err;
         }
     },
+    findClosestVector: async (inputVector) => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axiosConfig.post('/users/findClosetVector', { inputVector: inputVector }, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+
+            return response;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
     checkExistUser: async (username) => {
         try {
             const accessToken = localStorage.getItem('accessToken');
