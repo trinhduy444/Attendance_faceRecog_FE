@@ -190,6 +190,46 @@ function UserManagementContent({ toggleNavBar }) {
         }
     };
 
+    const handleUploadSysUsers = async (event) => {
+        const files = event.target.files;
+        if (files.length === 0) return;
+
+        const formData = new FormData();
+        if (files) {
+            Array.from(files).forEach(file => formData.append('images', file));
+            try {
+                const result = await Swal.fire({
+                    title: 'Bạn có chắc chắn?',
+                    text: `Bạn muốn tải lên ${files.length} ảnh?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Có, tải lên!',
+                    cancelButtonText: 'Không, hủy!',
+                    showLoaderOnConfirm: true,
+                    preConfirm: async () => {
+                        try {
+                            const response = await adminService.uploadSysFaces(formData);
+                            if (response.status === 201) {
+                                Swal.fire('Thành công', `Đã tải lên ${files.length} ảnh`, 'success');
+                            } else {
+                                Swal.fire('Có lỗi xảy ra', 'Vui lòng thử lại', 'error');
+                            }
+                        } catch (error) {
+                            console.error('Error uploading images:', error);
+                            Swal.fire('Lỗi', 'Không thể tải ảnh lên. Vui lòng thử lại sau.', 'error');
+                        }
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                });
+
+            } catch (error) {
+                navigate("/error", {
+                    state: { status: error.reponse?.status || 500, message: 'Error uploading image' }
+                })
+            }
+        }
+    };
+
     // Export 
     const handleExportToExcel = () => {
         // Dữ liệu
@@ -530,10 +570,13 @@ function UserManagementContent({ toggleNavBar }) {
                             </div>
 
                             <div className="mb-3">
-                                <label htmlFor="userImages">Nhập ảnh người dùng(.png hoặc .jpg)</label>
+                                <label htmlFor="userImages">Chọn file ảnh đại diện người dùng(.png hoặc .jpg)</label>
                                 <input className="btn d-inline-flex btn-sm btn-warning mx-1" type="file" id="userImages" accept=".png, .jpg" onChange={handleUploadImageUsers} multiple />
                             </div>
-
+                            <div className="mb-3">
+                                <label htmlFor="userFaces">Chọn file ảnh người dùng(.png hoặc .jpg)</label>
+                                <input className="btn d-inline-flex btn-sm btn-warning mx-1" type="file" id="userFaces" accept=".png, .jpg" onChange={handleUploadSysUsers} multiple />
+                            </div>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>

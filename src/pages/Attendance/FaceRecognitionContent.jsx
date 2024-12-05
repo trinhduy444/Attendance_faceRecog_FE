@@ -6,6 +6,9 @@ import { attendanceService } from '../../services/attendanceService';
 import Swal from 'sweetalert2';
 
 function FaceRecognitionContent() {
+    const recognitionCounter = useRef(new Map());
+    const recognitionStartTime = useRef(new Map());
+
     const webcamRef = useRef(null);
     const webcamCanvasRef = useRef(null);
     const dataCanvasRef = useRef(null);
@@ -21,7 +24,6 @@ function FaceRecognitionContent() {
             return Promise.all(
                 response.data.students.map(async (student) => {
                     setStudentInfo(studentInfo.set(student.student_username, student.student_id));
-
                     const descriptors = [];
                     const faceImg = new Image();
                     faceImg.crossOrigin = 'Anonymous';
@@ -43,7 +45,7 @@ function FaceRecognitionContent() {
     useEffect(() => {
         // Load models weight
         Promise.all([
-            faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
+            faceapi.nets.mtcnn.loadFromUri('/models'),
             faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
             faceapi.nets.faceRecognitionNet.loadFromUri('/models')
         ]).then(async () => {
@@ -58,60 +60,121 @@ function FaceRecognitionContent() {
     // Request webcam access
     const requestWebcam = async () => {
         navigator.getUserMedia(
-            { audio: false, video: { width: 800, height: 600 } },
+            {
+                audio: false,
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                }
+            },
             (stream) => {
                 webcamRef.current.srcObject = stream;
                 webcamRef.current.onloadedmetadata = (e) => {
                     webcamRef.current.play();
                 };
                 webcamRef.current.onplay = () => {
-                    setTimeout(sentFaceData, 100);
-                }
-            }, (err) => {
+                    setTimeout(sentFaceData, 1000); // Tăng thời gian chờ
+                };
+            },
+            (err) => {
                 console.error(`The following error occurred: ${err.name}`);
             }
-        )
-    }
+        );
+    };
+
 
     // Face recognition
     const sentFaceData = async () => {
-        var ctx = dataCanvasRef.current.getContext('2d');
+        const ctx = dataCanvasRef.current.getContext('2d');
         dataCanvasRef.current.width = webcamRef.current.offsetWidth;
         dataCanvasRef.current.height = webcamRef.current.offsetHeight;
 
         ctx.drawImage(webcamRef.current, 0, 0, dataCanvasRef.current.width, dataCanvasRef.current.height);
 
-        // Face detection
-        var detections = await faceapi.detectAllFaces(dataCanvasRef.current).withFaceLandmarks().withFaceDescriptors();
+        const detections = await faceapi
+            .detectAllFaces(dataCanvasRef.current)
+            .withFaceLandmarks()
+            .withFaceDescriptors();
 
-        let requestBody, currDatetime, currDate, currTime;
-        for (var i = 0; i < detections.length; i++) {
-            // Face recognition
-            const result = faceMatcher.current.findBestMatch(detections[i].descriptor);
-            detections[i].detection._className = result._label;
-            if (!attendedList.current.includes(result._label)) {
-                attendedList.current.push(result._label);
-                // Get current date and time string
-                currDatetime = new Date();
-                currDate = currDatetime.toISOString().split('T')[0] + 'T00:00';
-                currTime = dateUtils.getTimeString(currDatetime, 'hh:mm');
+        const timeThreshold = 1500; // Thời gian xác nhận (1.5 giây)
+        const distanceThreshold = 0.6; // Ngưỡng độ tin cậy
 
-                // Add attendance data to backend.
-                requestBody = {
-                    studentId: studentInfo.get(result._label),
-                    courseGroupId: 100,
-                    attendDate: currDate,
-                    attendType: 0,
-                    attendTime: currTime,
-                    attendImagePath: ''
+        const currentTime = Date.now(); // Thời gian hiện tại
+
+        for (const detection of detections) {
+            const landmarks = detection.landmarks;
+
+            if (isFaceStraight(landmarks)) {
+                const result = faceMatcher.current.findBestMatch(detection.descriptor);
+
+                if (result.distance < distanceThreshold) {
+                    const label = result.label;
+
+                    if (!attendedList.current.includes(label)) {
+                        const startTime = recognitionStartTime.current.get(label) || currentTime;
+                        recognitionStartTime.current.set(label, startTime);
+
+                        // Nếu đã nhận diện liên tục quá ngưỡng thời gian
+                        if (currentTime - startTime >= timeThreshold) {
+                            attendedList.current.push(label);
+
+                            const currDatetime = new Date();
+                            const currDate = currDatetime.toISOString().split('T')[0] + 'T00:00';
+                            const currTime = dateUtils.getTimeString(currDatetime, 'hh:mm');
+
+                            const requestBody = {
+                                studentId: studentInfo.get(label),
+                                courseGroupId: 100,
+                                attendDate: currDate,
+                                attendType: 0,
+                                attendTime: currTime,
+                                attendImagePath: ''
+                            };
+
+                            processAfterRecognition(dataCanvasRef.current, label, requestBody);
+
+                            recognitionCounter.current.delete(label);
+                            recognitionStartTime.current.delete(label);
+                        }
+                    }
                 }
-                processAfterRecognition(dataCanvasRef.current, result._label, requestBody);
+            } else {
+                console.warn('Face angle too large, skipping recognition');
             }
         }
-        // Draw face box with label
+
+        // Xóa khuôn mặt không còn nhận diện
+        Array.from(recognitionStartTime.current.keys()).forEach((label) => {
+            if (!detections.some((detection) => faceMatcher.current.findBestMatch(detection.descriptor).label === label)) {
+                recognitionStartTime.current.delete(label);
+            }
+        });
+
         drawFaceBox(detections);
-        setTimeout(sentFaceData, 200);
-    }
+        setTimeout(sentFaceData, 1000); // Lặp lại mỗi giây
+    };
+
+    const isFaceStraight = (landmarks) => {
+        const leftEye = landmarks.getLeftEye();
+        const rightEye = landmarks.getRightEye();
+
+        const eyeMidpoint = {
+            x: (leftEye[0].x + rightEye[3].x) / 2,
+            y: (leftEye[0].y + rightEye[3].y) / 2
+        };
+
+        const nose = landmarks.getNose();
+        const noseTip = nose[6]; // Điểm đầu mũi
+
+        // Tính khoảng cách ngang và dọc
+        const dx = Math.abs(noseTip.x - eyeMidpoint.x);
+        const dy = Math.abs(noseTip.y - eyeMidpoint.y);
+
+        // Tính tỷ lệ góc nghiêng
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+        return angle <= 30; // Chỉ nhận diện nếu góc nghiêng <= 30 độ
+    };
 
     // Process success face recognition
     const processAfterRecognition = async (canvas, label, requestBody) => {

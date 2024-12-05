@@ -39,6 +39,8 @@ import { AttendanceAdjustment } from './pages/TeacherDashBoard/AttendanceAdjustm
 import { RecogFace } from './pages/Attendance/RecogFace/RecogFace';
 import { AttendanceDetailManagement } from './pages/TeacherDashBoard/Attendance/AttendanceDetailManagement';
 import { StudentManagement } from './pages/TeacherDashBoard/StudentManagement/StudentManagement';
+import { AttendanceManagement2 } from './pages/TeacherDashBoard/Attendance/AttendanceManagement2';
+
 //Admin Pages
 import { UserManagement } from './pages/AdminDashBoard/UserManagement/UserManagement';
 import { ClassRoomManagement } from './pages/AdminDashBoard/ClassRoomManagement/ClassRoomManagement';
@@ -80,6 +82,8 @@ root.render(
             <Route path="/notification" element={<ProtectedRoute element={<Notification />} />} />
             <Route path="/attendance" element={<ProtectedRoute element={<Attendance />} />} />
             <Route path="/attendance/detail/:course_group_id/:ban_yn" element={<ProtectedRoute element={<AttendanceDetail />} />} />
+            <Route path="/attendance/management/:course_group_id" element={<ProtectedRoute type={2} element={<AttendanceManagement2 />} />} />
+
             {/* <Route path="/attendance/scan" element={<ProtectedRoute element={<FaceRecognition />} />} /> */}
             <Route path="/editProfile" element={<ProtectedRoute element={<EditProfile />} />} />
             <Route path="/changePassword" element={<ProtectedRoute element={<ChangePassword />} />} />
